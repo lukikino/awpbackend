@@ -2695,5 +2695,8 @@ var app = new Vue({
     },
     created: function () {
         this.getUserStatus();
+    },
+    mounted: function(){
+        initJqueryPlugin();
     }
 })

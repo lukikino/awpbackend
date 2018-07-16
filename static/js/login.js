@@ -54,5 +54,6 @@ var app = new Vue({
         else if (this.$refs.dMessage.value){
             alert(this.$refs.dMessage.value);
         }
+        initJqueryPlugin();
     }
 });

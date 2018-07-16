@@ -52,7 +52,7 @@ func Login(account, pw, ip string) ReturnData {
 	var err error
 	u := LoginStatus{}
 	ps := []Permission{}
-	pwd := encryptedPassword(pw, account)
+	pwd := EncryptedPassword(pw, account)
 	err = db.Get(&u, "call sp_login(?,?,?)", account, pwd, ip)
 	if err == nil && u != (LoginStatus{}) {
 		_ = db.Select(&ps, "call sp_loginPermisisons(?)", u.ID)

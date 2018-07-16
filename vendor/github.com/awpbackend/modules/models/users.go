@@ -36,7 +36,7 @@ type usersTree struct {
 }
 
 //common use
-func encryptedPassword(pwd, pwdMask string) string {
+func EncryptedPassword(pwd, pwdMask string) string {
 	maskedPwd := make([]byte, 128)
 	//use id to genrator mask
 	maskSha512 := sha512.New()
@@ -103,7 +103,7 @@ func ChangeUserPassword(loginID int, id, pw string) ReturnData {
 	u := User{}
 	db.Get(&u, "call sp_getUser(?,?)", loginID, id)
 	if u.ID != 0 {
-		pwd := encryptedPassword(pw, u.Account)
+		pwd := EncryptedPassword(pw, u.Account)
 		err = db.Get(&count, "call sp_editUserPassword(?,?,?)", loginID, id, pwd)
 	}
 	returnData := BoxingToResult(count, err)
@@ -121,7 +121,7 @@ func ToggleUserActive(loginID int, id string) ReturnData {
 func AddUser(loginID int, ip string, data User, admin bool) ReturnData {
 	db := GetConnection()
 	var id int64
-	pwd := encryptedPassword(data.Password, data.Account)
+	pwd := EncryptedPassword(data.Password, data.Account)
 	err := db.Get(&id, "call sp_addUser(?,?,?,?,?)", ip, loginID, data.Account, pwd, admin)
 	returnData := BoxingToResult(id, err)
 	return returnData

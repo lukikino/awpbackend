@@ -1,0 +1,2 @@
+init.sql error: Access denied; you need (at least one of) the SUPER privilege(s) for this operation
+solution: replace regex /\sDEFINER=`[^`]*`@`[^`]*`/

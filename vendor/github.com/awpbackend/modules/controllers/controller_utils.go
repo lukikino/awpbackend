@@ -54,6 +54,7 @@ func (t *Common) GetLists() {
 	list := Lists{}
 	list.Users = m.GetListUsers(GetLoginStatus(t.Ctx.Request()).ID).Data.([]m.ListUsers)
 	list.Machines = m.GetListMachines(GetLoginStatus(t.Ctx.Request()).ID).Data.([]m.ListMachines)
+	list.Stores = []string{}
 	for _, item := range list.Machines {
 		if !common.Contains(list.Stores, item.StoreName) {
 			list.Stores = append(list.Stores, item.StoreName)

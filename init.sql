@@ -858,7 +858,7 @@ INSERT INTO `role_permission` (`role_id`, `permission_id`, `created_time`, `upda
 -- 傾印  程序 pcb.sp_addMachine 結構
 DROP PROCEDURE IF EXISTS `sp_addMachine`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addMachine`(
+CREATE PROCEDURE `sp_addMachine`(
 	IN `p_exeid` INT,
 	IN `p_pcbID` VARCHAR(50),
 	IN `p_storeName` VARCHAR(50),
@@ -885,7 +885,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_addTransaction 結構
 DROP PROCEDURE IF EXISTS `sp_addTransaction`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addTransaction`(
+CREATE PROCEDURE `sp_addTransaction`(
 	IN `p_pcb_id` VARCHAR(50),
 	IN `p_round_id` VARCHAR(50),
 	IN `p_money_to_credit_radio` DOUBLE,
@@ -922,7 +922,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_addUser 結構
 DROP PROCEDURE IF EXISTS `sp_addUser`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addUser`(
+CREATE PROCEDURE `sp_addUser`(
 	IN `p_ip` VARCHAR(50),
 	IN `p_exeid` INT,
 	IN `p_account` VARCHAR(50),
@@ -1039,7 +1039,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_deleteMachine 結構
 DROP PROCEDURE IF EXISTS `sp_deleteMachine`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteMachine`(
+CREATE PROCEDURE `sp_deleteMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT
 
@@ -1089,7 +1089,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_editMachine 結構
 DROP PROCEDURE IF EXISTS `sp_editMachine`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editMachine`(
+CREATE PROCEDURE `sp_editMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT,
 	IN `p_storeName` VARCHAR(50),
@@ -1137,7 +1137,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_editUserActive 結構
 DROP PROCEDURE IF EXISTS `sp_editUserActive`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserActive`(
+CREATE PROCEDURE `sp_editUserActive`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -1185,7 +1185,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_editUserPassword 結構
 DROP PROCEDURE IF EXISTS `sp_editUserPassword`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserPassword`(
+CREATE PROCEDURE `sp_editUserPassword`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_pwd` VARCHAR(500)
@@ -1236,7 +1236,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_editUserPermissions 結構
 DROP PROCEDURE IF EXISTS `sp_editUserPermissions`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserPermissions`(
+CREATE PROCEDURE `sp_editUserPermissions`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_permissions` VARCHAR(500)
@@ -1369,7 +1369,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getAccountings 結構
 DROP PROCEDURE IF EXISTS `sp_getAccountings`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAccountings`(
+CREATE PROCEDURE `sp_getAccountings`(
 	IN `p_exeid` INT,
 	IN `p_users` TEXT,
 	IN `p_stores` TEXT,
@@ -1555,7 +1555,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getDashboard 結構
 DROP PROCEDURE IF EXISTS `sp_getDashboard`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getDashboard`(
+CREATE PROCEDURE `sp_getDashboard`(
 	IN `p_start_time` DATETIME,
 	IN `p_end_time` DATETIME
 
@@ -1630,7 +1630,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getListMachines 結構
 DROP PROCEDURE IF EXISTS `sp_getListMachines`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getListMachines`(
+CREATE PROCEDURE `sp_getListMachines`(
 	IN `p_exeid` INT
 
 
@@ -1651,7 +1651,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getListUsers 結構
 DROP PROCEDURE IF EXISTS `sp_getListUsers`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getListUsers`(
+CREATE PROCEDURE `sp_getListUsers`(
 	IN `p_exeid` INT
 
 )
@@ -1674,7 +1674,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getMachine 結構
 DROP PROCEDURE IF EXISTS `sp_getMachine`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachine`(
+CREATE PROCEDURE `sp_getMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT
 
@@ -1712,7 +1712,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getMachines 結構
 DROP PROCEDURE IF EXISTS `sp_getMachines`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachines`(
+CREATE PROCEDURE `sp_getMachines`(
 	IN `p_exeid` INT
 
 
@@ -1747,7 +1747,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getMachinesWithUsers 結構
 DROP PROCEDURE IF EXISTS `sp_getMachinesWithUsers`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachinesWithUsers`(
+CREATE PROCEDURE `sp_getMachinesWithUsers`(
 	IN `p_exeid` INT
 
 
@@ -1787,7 +1787,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getOperations 結構
 DROP PROCEDURE IF EXISTS `sp_getOperations`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getOperations`(
+CREATE PROCEDURE `sp_getOperations`(
 	IN `p_exeid` INT,
 	IN `p_users` TEXT,
 	IN `p_stores` TEXT,
@@ -2019,7 +2019,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getReportJackpot 結構
 DROP PROCEDURE IF EXISTS `sp_getReportJackpot`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportJackpot`(
+CREATE PROCEDURE `sp_getReportJackpot`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT
@@ -2164,7 +2164,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getReportMachine 結構
 DROP PROCEDURE IF EXISTS `sp_getReportMachine`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportMachine`(
+CREATE PROCEDURE `sp_getReportMachine`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT,
@@ -2313,7 +2313,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getReportRevenue 結構
 DROP PROCEDURE IF EXISTS `sp_getReportRevenue`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportRevenue`(
+CREATE PROCEDURE `sp_getReportRevenue`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT,
@@ -2418,7 +2418,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getTopHitRate 結構
 DROP PROCEDURE IF EXISTS `sp_getTopHitRate`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopHitRate`()
+CREATE PROCEDURE `sp_getTopHitRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (IFNULL(SUM(bet > 0 && win > 0), 0)/IFNULL(SUM(bet > 0), 0)) AS value
@@ -2432,7 +2432,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getTopOutRate 結構
 DROP PROCEDURE IF EXISTS `sp_getTopOutRate`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopOutRate`()
+CREATE PROCEDURE `sp_getTopOutRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (SUM(credit_out)/SUM(credit_in)) AS value
@@ -2446,7 +2446,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getTopWinRate 結構
 DROP PROCEDURE IF EXISTS `sp_getTopWinRate`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopWinRate`()
+CREATE PROCEDURE `sp_getTopWinRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (Sum(win)/SUM(bet)) AS value
@@ -2460,7 +2460,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getTransactions 結構
 DROP PROCEDURE IF EXISTS `sp_getTransactions`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTransactions`(
+CREATE PROCEDURE `sp_getTransactions`(
 	IN `p_exeid` INT
 
 
@@ -2515,7 +2515,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getUser 結構
 DROP PROCEDURE IF EXISTS `sp_getUser`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUser`(
+CREATE PROCEDURE `sp_getUser`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -2545,7 +2545,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getUserByAccount_temp 結構
 DROP PROCEDURE IF EXISTS `sp_getUserByAccount_temp`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUserByAccount_temp`(
+CREATE PROCEDURE `sp_getUserByAccount_temp`(
 	IN `p_account` VARCHAR(50)
 
 
@@ -2578,7 +2578,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getUserPermissions 結構
 DROP PROCEDURE IF EXISTS `sp_getUserPermissions`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUserPermissions`(
+CREATE PROCEDURE `sp_getUserPermissions`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -2618,7 +2618,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getUsers 結構
 DROP PROCEDURE IF EXISTS `sp_getUsers`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUsers`(
+CREATE PROCEDURE `sp_getUsers`(
 	IN `p_exeid` INT,
 	IN `p_admin` BIT
 
@@ -2649,7 +2649,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_getUsersTree 結構
 DROP PROCEDURE IF EXISTS `sp_getUsersTree`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUsersTree`(
+CREATE PROCEDURE `sp_getUsersTree`(
 	IN `p_exeid` INT
 
 
@@ -2679,7 +2679,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_login 結構
 DROP PROCEDURE IF EXISTS `sp_login`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_login`(
+CREATE PROCEDURE `sp_login`(
 	IN `p_account` VARCHAR(50),
 	IN `p_pwd` CHAR(128)
 
@@ -2747,7 +2747,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_loginPermisisons 結構
 DROP PROCEDURE IF EXISTS `sp_loginPermisisons`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_loginPermisisons`(
+CREATE PROCEDURE `sp_loginPermisisons`(
 	IN `p_userid` INT
 
 
@@ -2761,7 +2761,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_transferMachines 結構
 DROP PROCEDURE IF EXISTS `sp_transferMachines`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_transferMachines`(
+CREATE PROCEDURE `sp_transferMachines`(
 	IN `p_exeid` INT,
 	IN `p_machinids` VARCHAR(16384),
 	IN `p_targetid` INT
@@ -2844,7 +2844,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_userNodeAdd_temp 結構
 DROP PROCEDURE IF EXISTS `sp_userNodeAdd_temp`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_userNodeAdd_temp`(
+CREATE PROCEDURE `sp_userNodeAdd_temp`(
 	IN `p_parentid` INT,
 	IN `p_userid` INT
 
@@ -2886,7 +2886,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.sp_userNodeMove 結構
 DROP PROCEDURE IF EXISTS `sp_userNodeMove`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_userNodeMove`(
+CREATE PROCEDURE `sp_userNodeMove`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_targetid` INT
@@ -3017,7 +3017,7 @@ DELIMITER ;
 -- 傾印  程序 pcb.tempExec 結構
 DROP PROCEDURE IF EXISTS `tempExec`;
 DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `tempExec`(p_exeid int, p_account varchar(50), p_pwd varchar(50), p_admin bit, p_createdtime datetime)
+CREATE PROCEDURE `tempExec`(p_exeid int, p_account varchar(50), p_pwd varchar(50), p_admin bit, p_createdtime datetime)
 BEGIN
 	DECLARE `_rollback` BOOL DEFAULT 0;
 	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
