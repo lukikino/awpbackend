@@ -1,0 +1,125 @@
+<div class="page-wrapper">
+    <div class="row page-titles">
+        <div class="col-md-12 align-self-center">
+            <h2 class="text-primary">Machine List</h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-title">
+                        <b-btn v-if="$root.chkPermission('machineList.create')" v-b-modal.addMachineDialog variant="btn btn-sm btn-primary">
+                            <i class="ti-plus"></i> Add Machine
+                        </b-btn>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                            </svg>
+                            <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loading}'>
+                                <div class="dataTables_length" id="myTable_length">
+                                    <label>Show
+                                        <select name="myTable_length" aria-controls="myTable" class="" v-model="unit">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select> entries</label>
+                                </div>
+                                <div id="myTable_filter" class="dataTables_filter">
+                                    <label>Filter:
+                                        <input type="search" class="" placeholder="" aria-controls="myTable" v-model="filter">
+                                    </label>
+                                </div>
+                                <div class="alert alert-danger" v-if="viewData.length === 0">There is no data cloud display.</div>
+                                <table id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info" v-if="viewData.length > 0">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending">Machine ID</th>
+                                            <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending">Store Name</th>
+                                            <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row" v-for="item in viewData">
+                                            <td>{/ item.pcbID /}</td>
+                                            <td>{/ item.storeName /}</td>
+                                            <td>
+                                                <b-btn v-if="$root.chkPermission('machineList.edit')" @click="startEditMachine($event, item.ID)" variant="btn btn-sm btn-primary">
+                                                    <i class="ti-edit"></i> Edit
+                                                </b-btn>
+                                                <b-btn v-if="$root.chkPermission('machineList.delete')" @click="startDeleteMachine($event, item.ID)" variant="btn btn-sm btn-secondary">
+                                                    <i class="ti-delete"></i> Delete
+                                                </b-btn>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <pagination :data="machines" :dataChanged="dataChanged" :currentPage="currentPage" :changePage="changePage" :unit="unit"></pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <b-modal ok-title="Add" @hidden="cancelAdd" @ok="addMachine" :no-close-on-backdrop="true" :no-close-on-esc="true" id="addMachineDialog"
+                title="Add Machine">
+                <b-form @submit="addMachine" @reset="cancelAdd">
+                    <b-form-group label="*Machine ID:">
+                        <b-form-input v-model="addModel.pcbID" required placeholder="Input Machine ID" :class='{"is-invalid": !addModel.pcbID&&submited}'>
+                        </b-form-input>
+                        <div class="invalid-feedback">
+                            Please input pcb/machine ID.
+                        </div>
+                    </b-form-group>
+                    <b-form-group label="Store Name:">
+                        <b-form-input v-model="addModel.storeName" placeholder="Input Store Name">
+                        </b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Owner:">
+                        <b-form-select :options="listUsers" required v-model="addModel.userID" :class='{"is-invalid": !addModel.userID&&submited}'>
+                        </b-form-select>
+                        <div class="invalid-feedback">
+                            Please choose a owner.
+                        </div>
+                    </b-form-group>
+                </b-form>
+            </b-modal>
+            <b-modal ok-title="Save" @hidden="cancelEdit" @ok="editMachine" :no-close-on-backdrop="true" :no-close-on-esc="true" id="editMachineDialog"
+                title="Edit Machine">
+                <b-form @submit="addMachine" @reset="cancelAdd">
+                    <b-form-group label="Machine ID:">
+                        <p class="form-control-static">{/editModel.pcbID/}</p>
+                    </b-form-group>
+                    <b-form-group label="Store Name:">
+                        <b-form-input v-model="editModel.storeName" placeholder="Input Store Name">
+                        </b-form-input>
+                    </b-form-group>
+                    <b-form-group label="Owner:">
+                        <b-form-select :options="listUsers" required v-model="editModel.userID" :class='{"is-invalid": !addModel.owner&&submited}'>
+                        </b-form-select>
+                        <div class="invalid-feedback">
+                            Please choose a owner.
+                        </div>
+                    </b-form-group>
+                </b-form>
+            </b-modal>
+            <b-modal ok-title="Delete" @ok="deleteMachine" :no-close-on-backdrop="true" :no-close-on-esc="true" id="deleteMachineDialog"
+                title="Delete Confirm">
+                <b-form @submit="addMachine" @reset="cancelAdd">
+                    <b-form-group label="Machine ID:">
+                        <p class="form-control-static">{/deleteModel.pcbID/}</p>
+                    </b-form-group>
+                    <b-form-group label="*Machine ID(Confirm):">
+                        <b-form-input v-model="deleteModel.confirm" placeholder="Input MachineID to confirm." :class='{"is-invalid": !(deleteModel.confirm==deleteModel.pcbID)&&submited}'>
+                        </b-form-input>
+                        <div class="invalid-feedback">
+                            Machine ID not match.
+                        </div>
+                    </b-form-group>
+                </b-form>
+            </b-modal>
+        </div>
+    </div>
+</div>

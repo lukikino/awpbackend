@@ -1,0 +1,218 @@
+<div class="page-wrapper">
+    <div class="row page-titles">
+        <div class="col-md-12 align-self-center">
+            <h2 class="text-primary">Dashboard</h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <dropdown :items="accounts"></dropdown>
+                                <dropdown :items="stores"></dropdown>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-sm" type="button" @click="search">
+                                        <i class="ti-search"> Search</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive">
+                            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                            </svg>
+                            <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loading}'>
+                                <table id="myTable" class="table no-footer table-hover" role="grid" aria-describedby="myTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>METRICS</th>
+                                            <th>TODAY</th>
+                                            <th>YESTERDAY</th>
+                                            <th>WTD</th>
+                                            <th>MTD</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row">
+                                            <td>Total In</td>
+                                            <td>{/ thousandFormat(summaryData.today.Total_In) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.Total_In) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.Total_In) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.Total_In) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Total Out</td>
+                                            <td>{/ thousandFormat(summaryData.today.Total_Out) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Out) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.Total_Out) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.Total_Out) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Out Rate</td>
+                                            <td>{/ percentageFormat(summaryData.today.Out_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.Out_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.Out_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.Out_Rate) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Total Bet</td>
+                                            <td>{/ thousandFormat(summaryData.today.Total_Bet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Bet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.Total_Bet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.Total_Bet) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Total Win</td>
+                                            <td>{/ thousandFormat(summaryData.today.Total_Win) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Win) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.Total_Win) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.Total_Win) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Win Rate</td>
+                                            <td>{/ percentageFormat(summaryData.today.Win_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.Win_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.Win_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.Win_Rate) /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Total Play Times</td>
+                                            <td>{/ summaryData.today.Total_Play_Times /}</td>
+                                            <td>{/ summaryData.yesterday.Total_Play_Times /}</td>
+                                            <td>{/ summaryData.wtd.Total_Play_Times /}</td>
+                                            <td>{/ summaryData.mtd.Total_Play_Times /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Total Win Times</td>
+                                            <td>{/ summaryData.today.Total_Win_Times /}</td>
+                                            <td>{/ summaryData.yesterday.Total_Win_Times /}</td>
+                                            <td>{/ summaryData.wtd.Total_Win_Times /}</td>
+                                            <td>{/ summaryData.mtd.Total_Win_Times /}</td>
+                                        </tr>
+                                        <tr role="row">
+                                            <td>Hit Rate</td>
+                                            <td>{/ percentageFormat(summaryData.today.Hit_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.Hit_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.Hit_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.Hit_Rate) /}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <h4>Charts</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <img src="/static/2018-04-20_183732.png" />
+                        </div>
+                        <div>
+                            <img src="/static/2018-04-20_184045.png" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="">
+                    <div class="card">
+                        <div class="card-title">
+                            <h4>Top 5 Out Rate Machine</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                                </svg>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                    <thead>
+                                        <tr>
+                                            <th>Store Name</th>
+                                            <th>Machine</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in topOutRate.items">
+                                            <td>{/ item.Store_Name /}</td>
+                                            <td>
+                                                <a>{/ item.Machine_Name /}</a>
+                                            </td>
+                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">
+                            <h4>Top 5 Win Rate Machine</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                                </svg>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                    <thead>
+                                        <tr>
+                                            <th>Store Name</th>
+                                            <th>Machine</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in topWinRate.items">
+                                            <td>{/ item.Store_Name /}</td>
+                                            <td>
+                                                <a>{/ item.Machine_Name /}</a>
+                                            </td>
+                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">
+                            <h4>Top 5 Hit Rate Machine</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                                </svg>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                    <thead>
+                                        <tr>
+                                            <th>Store Name</th>
+                                            <th>Machine</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in topHitRate.items">
+                                            <td>{/ item.Store_Name /}</td>
+                                            <td>
+                                                <a>{/ item.Machine_Name /}</a>
+                                            </td>
+                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,178 @@
+<div class="page-wrapper">
+    <div class="row page-titles">
+        <div class="col-md-12 align-self-center">
+            <h2 class="text-primary">Version Setting</h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-title">
+                        <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#setByStoreDialog">
+                            <i class="ti-edit"></i> Set By Store
+                        </button>
+                        <button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#setAllDialog">
+                            <i class="ti-edit"></i> Set All
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loading}'>
+                            <div class="dataTables_length" id="myTable_length">
+                                <label>Show
+                                    <select name="myTable_length" aria-controls="myTable" class="" v-model="unit">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select> entries</label>
+                            </div>
+                            <div id="myTable_filter" class="dataTables_filter">
+                                <label>Filter:
+                                    <input type="search" class="" placeholder="" aria-controls="myTable" v-model="filter">
+                                </label>
+                            </div>
+                            <div class="alert alert-danger" v-if="viewData.length === 0">There is no data cloud display.</div>
+                            <table id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info" v-if="viewData.length > 0">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending">Machine ID</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Machine Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending">Store Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Status</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Current Version</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Target Version</th>
+                                        <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr role="row" v-for="item in viewData">
+                                        <td>{/ item.machineId /}</td>
+                                        <td>{/ item.machineName /}</td>
+                                        <td>{/ item.storeName /}</td>
+                                        <td :class="statusClass(item.status)">{/ statusText(item.status) /} ({/ item.lastConnectTime /})</td>
+                                        <td>{/ item.currentVersion /}</td>
+                                        <td>{/ item.targetVersion /}</td>
+                                        <td>
+                                            <button class="btn btn-link btn-sm" type="button" data-toggle="modal" data-target="#setMachineDialog">
+                                                <i class="ti-edit"></i> Set Target Version
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="dataTables_info" id="myTable_info" role="status" aria-live="polite" v-if="viewData.length > 0">Showing {/ startRow+1 /} to {/ Math.min(filteredData.length, endRow) /} of {/ filteredData.length /} entries</div>
+                            <div class="dataTables_paginate paging_simple_numbers" id="myTable_paginate" v-if="viewData.length > 0">
+                                <a @click="changePage(currentPage-1)" v-if="currentPage > 1" class="paginate_button btn-sm previous" aria-controls="myTable"
+                                    data-dt-idx="0" tabindex="0" id="myTable_previous">Previous</a>
+                                <span>
+                                    <a @click="changePage(index)" :class="chkPageCurrent(index)" class="paginate_button btn-sm" aria-controls="myTable" data-dt-idx="1"
+                                        tabindex="0" v-for="index in totalPage">{/ index /}</a>
+                                </span>
+                                <a @click="changePage(currentPage+1)" v-if="currentPage < totalPage" class="paginate_button btn-sm next" aria-controls="myTable"
+                                    data-dt-idx="7" tabindex="0" id="myTable_next">Next</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="setMachineDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Set Target Version</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="basic-form">
+                                <form>
+                                    <div class="form-group">
+                                        <p class="form-control-static">風昂皇后: 8b5df4h20cdd7e6a200(Grance333)</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <p class="form-control-static">Current Version: 1.0.0.0</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Target Version</label>
+                                        <input type="text" class="form-control input-sm" placeholder="Input Target Version" value="1.1.0.0">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary btn-sm">cancel</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="setByStoreDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Set Target Version</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="basic-form">
+                                <form>
+                                    <div class="form-group">
+                                        <label>*Store Name</label>
+                                        <select class="form-control input-sm">
+                                            <option selected>Giaent989</option>
+                                            <option>MoneyMoneyK</option>
+                                            <option>Villanet888</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Target Version</label>
+                                        <input type="text" class="form-control input-sm" placeholder="Input Target Version" value="1.1.0.0">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary btn-sm">cancel</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="setAllDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Set Target Version</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="basic-form">
+                                <form>
+                                    <div class="form-group">
+                                        <p class="form-control-static">Set all machines version to</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Target Version</label>
+                                        <input type="text" class="form-control input-sm" placeholder="Input Target Version" value="1.1.0.0">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary btn-sm">cancel</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

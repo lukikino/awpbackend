@@ -1,0 +1,158 @@
+/*over write font-size*/
+html{
+    font-size: 90%;
+}
+/*over write layout*/
+.container-fluid {
+    padding: 0 15px 15px;
+}
+.page-titles {
+    margin: 0 0 0px;
+}
+
+/*pagination*/
+.dataTables_paginate .pagination-input{
+    width: 40px;
+}
+
+/*treemenu*/
+.tree-menu .label-wrapper{
+    /*padding-bottom: 10px;*/
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.tree-menu .has-children {
+}
+
+.tree-menu .label-wrapper .label-item{
+    border-bottom: 1px solid #ccc;
+}
+
+/*loading*/
+.loading-opacity{
+    opacity: .2;
+}
+
+/*overwrite input style*/
+.dropdown.btn-group label {
+    cursor: pointer;
+    color: inherit !important;
+}
+/*dropdown style*/
+.dropdown.btn-group ul {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.dropdown .show{
+    display: block;
+}
+
+/*overwirte datepicker*/
+.bootstrap-datetimepicker-widget table td.day{
+    height: 10px;
+    line-height: 10px;
+    width: 10px;
+}
+.bootstrap-datetimepicker-widget.wider{
+    width: 18em;
+}
+.bootstrap-datetimepicker-widget table td, .bootstrap-datetimepicker-widget table td i, .bootstrap-datetimepicker-widget .timepicker-hour,.bootstrap-datetimepicker-widget .timepicker-minute,.bootstrap-datetimepicker-widget .timepicker-second{
+    height: 25px;
+    line-height: 25px;
+    width: 46px;
+}
+.bootstrap-datetimepicker-widget .timepicker-hour{
+}
+
+/*overwrite table*/
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
+    line-height: 26px;
+}
+.table > tbody > tr > td{
+    white-space: nowrap;
+}
+.table td, .table th {
+    padding: 0.1rem 0.6rem;
+}
+
+/*over write sidebar*/
+/*side-bar style*/
+/*brand, header*/
+.header .top-navbar .navbar-header{
+    background: #2A3F54;
+}
+.navbar-light .navbar-brand{
+    color: #FC4513;
+}
+.navbar-light .navbar-brand:focus, .navbar-light .navbar-brand:hover{
+    color: rgba(252,69,19,.7);
+}
+/*sidebar-nav*/
+.sidebar-nav{
+    background: #2A3F54;
+    color: #aaa;
+}
+.left-sidebar{
+    background: #2A3F54;
+}
+.collapse.in{
+    background-color: #334c65;
+}
+.sidebar-nav ul li a:hover{
+    color: #FC4513;
+}
+.sidebar-nav ul li a:hover i{
+    color: #FC4513;
+}
+.sidebar-nav > ul > li > a.active{
+    background-color: #334c65;
+}
+.sidebar-nav ul li a{
+    color: #aaa;
+}
+.sidebar-nav > ul > li.active > a{
+    color: #fff;
+    border-left: 0;
+}
+.sidebar-nav ul li a.active {
+    color: #fff;
+}
+.sidebar-nav > ul > li.active > a i {
+    color: #fff;
+}
+/*user dropdown*/
+.nav-item.dropdown .dropdown-menu button.dropdown-item{
+    cursor: pointer;
+}
+.nav-item.dropdown .dropdown-menu .dropdown-item a{
+    color: #2A3F54
+}
+.nav-item.dropdown .dropdown-menu .dropdown-item a:hover{
+    color: #1976d2
+}
+/*mini-sidebar*/
+.mini-sidebar .sidebar-nav #sidebarnav > li:hover > a{
+    background-color: #334c65;
+}
+.mini-sidebar .sidebar-nav #sidebarnav > li > ul{
+    background-color: #334c65;
+}
+
+/*sidebar layout*/
+@media (min-width: 768px){
+    .navbar-header{
+        width: 180px;
+    }
+}
+.sidebar-nav ul li a{
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.left-sidebar{
+    width: 180px;
+}
+@media (min-width: 1024px){
+    .page-wrapper {
+        margin-left: 180px;
+    }
+}

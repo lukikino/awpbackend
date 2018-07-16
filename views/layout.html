@@ -1,0 +1,494 @@
+{{define "layoutHTML"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon.png">
+    <title>{{.title}} - XSD-PCB</title>
+
+    <link href="/static/css/lib/chartist/chartist.min.css" rel="stylesheet">
+    <link href="/static/css/lib/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/static/css/lib/owl.theme.default.min.css" rel="stylesheet" />
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/icons/font-awesome/css/fontawesome-all.min.css" rel="stylesheet">
+    <!-- <link href="/static/icons/font-awesome/css/fa-regular.css" rel="stylesheet">
+    <link href="/static/icons/font-awesome/css/fa-solid.css" rel="stylesheet"> -->
+    <link href="/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-vue.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <!-- <link href="/static/css/lib/nestable/nestable.css" rel="stylesheet"> -->
+
+    <link href="/static/css/helper.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/custom.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:** -->
+    <!--[if lt IE 9]>
+   <script src="https:**oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+   <script src="https:**oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="fix-header fix-sidebar">
+    <!-- Preloader - style you can find in spinners.css -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+    </div>
+    <!-- Main wrapper  -->
+    <div id="app">
+        <!-- header header  -->
+        <div class="header">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <!-- Logo -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">
+                        <!-- Logo icon -->
+                        <b>
+                            <i class="ti-infinite"></i>
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span> XSG-PCB</span>
+                    </a>
+                </div>
+                <!-- End Logo -->
+                <div class="navbar-collapse">
+                    <!-- toggle and nav items -->
+                    <ul class="navbar-nav mr-auto mt-md-0">
+                        <!-- This is  -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-toggler hidden-md-up text-muted  " href="javascript:void(0)">
+                                <i class="mdi mdi-menu"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item m-l-10">
+                            <a class="nav-link sidebartoggler hidden-sm-down text-muted  " href="javascript:void(0)">
+                                <i class="ti-menu"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- User profile and search -->
+                    <ul class="navbar-nav my-lg-0">
+                        <!-- Comment -->
+                        <li class="nav-item dropdown" v-show="false">
+                            <a class="nav-link dropdown-toggle text-muted text-muted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <div class="notify">
+                                    <span class="heartbit"></span>
+                                    <span class="point"></span>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mailbox animated zoomIn">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title">Notifications</div>
+                                    </li>
+                                    <li>
+                                        <div class="message-center">
+                                            <!-- Message -->
+                                            <a href="#">
+                                                <div class="btn btn-danger btn-circle m-r-10">
+                                                    <i class="fas fa-link"></i>
+                                                </div>
+                                                <div class="mail-contnet">
+                                                    <h5>This is title</h5>
+                                                    <span class="mail-desc">Just see the my new admin!</span>
+                                                    <span class="time">9:30 AM</span>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="#">
+                                                <div class="btn btn-success btn-circle m-r-10">
+                                                    <i class="ti-calendar"></i>
+                                                </div>
+                                                <div class="mail-contnet">
+                                                    <h5>This is another title</h5>
+                                                    <span class="mail-desc">Just a reminder that you have event</span>
+                                                    <span class="time">9:10 AM</span>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="#">
+                                                <div class="btn btn-info btn-circle m-r-10">
+                                                    <i class="ti-settings"></i>
+                                                </div>
+                                                <div class="mail-contnet">
+                                                    <h5>This is title</h5>
+                                                    <span class="mail-desc">You can customize this template as you want</span>
+                                                    <span class="time">9:08 AM</span>
+                                                </div>
+                                            </a>
+                                            <!-- Message -->
+                                            <a href="#">
+                                                <div class="btn btn-primary btn-circle m-r-10">
+                                                    <i class="ti-user"></i>
+                                                </div>
+                                                <div class="mail-contnet">
+                                                    <h5>This is another title</h5>
+                                                    <span class="mail-desc">Just see the my admin!</span>
+                                                    <span class="time">9:02 AM</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-center" href="javascript:void(0);">
+                                            <strong>Check all notifications</strong>
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- End Comment -->
+                        <!-- Profile -->
+                        <div class="nav-item dropdown">
+                            <b-dropdown id="ddown-aria" right variant="link" class="m-2">
+                                <template slot="button-content">
+                                    <span>{/ loginUserName /}</span>
+                                </template>
+                                <b-dropdown-item-button>
+                                    <a href="#">
+                                        <i class="ti-settings"></i> Setting</a>
+                                </b-dropdown-item-button>
+                                <b-dropdown-item-button @click="logout">
+                                    <a href="javascript:">
+                                        <i class="fas fa-power-off"></i> Logout</a>
+                                </b-dropdown-item-button>
+                            </b-dropdown>
+                        </div>
+                        <!-- <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted  " href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/static/images/users/1.jpg" alt="user" class="profile-pic" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right animated zoomIn">
+                                <ul class="dropdown-user">
+                                    <li>
+                                        <a href="#">
+                                            <i class="ti-settings"></i> Setting</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-power-off"></i> Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- End header header -->
+        <!-- Left Sidebar  -->
+        <div class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li class="nav-devider"></li>
+                        <li class="nav-label">Home</li>
+                        <li>
+                            <router-link :to="{ path:'/dashboard' }" aria-expanded="false">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span class="hide-menu">Dashboard </span>
+                            </router-link>
+                            <!-- <a class="" href="/" aria-expanded="false">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span class="hide-menu">Dashboard </span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('operations.view') || $root.chkPermission('accounting.view') || $root.chkPermission('transactions.view')"
+                            class="nav-label">Accountings</li>
+                        <li v-if="$root.chkPermission('operations.view')">
+                            <a class="has-arrow" aria-expanded="false" href="javascript:">
+                                <i class="fas fa-chart-line"></i>
+                                <span class="hide-menu">Operations</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li>
+                                    <router-link v-if="$root.chkPermission('operations.view')" :to="{ path:'/operations/day' }">Day</router-link>
+                                    <!-- <a href="/operations?interval=day">Day</a> -->
+                                </li>
+                                <li>
+                                    <router-link v-if="$root.chkPermission('operations.view')" :to="{ path:'/operations/week' }">Week</router-link>
+                                    <!-- <a href="/operations?interval=week">Week</a> -->
+                                </li>
+                                <li>
+                                    <router-link v-if="$root.chkPermission('operations.view')" :to="{ path:'/operations/month' }">Month</router-link>
+                                    <!-- <a href="/operations?interval=month">Month</a> -->
+                                </li>
+                            </ul>
+                        </li>
+                        <li v-if="$root.chkPermission('accounting.view')">
+                            <a class="has-arrow" aria-expanded="false" href="javascript:">
+                                <i class="fas fa-money-bill-alt"></i>
+                                <span class="hide-menu">Accounting</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li>
+                                    <router-link v-if="$root.chkPermission('accounting.view')" :to="{ path:'/accounting/machine' }">Machines</router-link>
+                                    <!-- <a href="/accounting?group=machine">Machines</a> -->
+                                </li>
+                                <li>
+                                    <router-link v-if="$root.chkPermission('accounting.view')" :to="{ path:'/accounting/user' }">Account</router-link>
+                                    <!-- <a href="/accounting?group=user">Account</a> -->
+                                </li>
+                                <li>
+                                    <router-link v-if="$root.chkPermission('accounting.view')" :to="{ path:'/accounting/storename' }">Store</router-link>
+                                    <!-- <a href="/accounting?group=storename">Store</a> -->
+                                </li>
+                            </ul>
+                        </li>
+                        <li v-if="$root.chkPermission('transactions.view')">
+                            <router-link :to="{ path:'/transactions' }" aria-expanded="false">
+                                <i class="fas fa-handshake"></i>
+                                <span class="hide-menu">Transactions </span>
+                            </router-link>
+                            <!-- <a class="" href="/transactions" aria-expanded="false">
+                                <i class="fas fa-handshake"></i>
+                                <span class="hide-menu">Transactions</span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('reportJackpot.view') || $root.chkPermission('reportMachine.view') || $root.chkPermission('reportRevenue.view')" class="nav-label">Reports</li>
+                        <li>
+                            <router-link v-if="$root.chkPermission('reportJackpot.view')" :to="{ path:'/reports/jackpot' }" aria-expanded="false">
+                                <i class="fa fa-rocket"></i>
+                                <span class="hide-menu">Jackpot</span>
+                                </a>
+                        </li>
+                        <li>
+                            <router-link v-if="$root.chkPermission('reportMachine.view')" :to="{ path:'/reports/machine' }" aria-expanded="false">
+                                <i class="far fa-hdd"></i>
+                                <span class="hide-menu">Machine</span>
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link v-if="$root.chkPermission('reportRevenue.view')" :to="{ path:'/reports/revenue' }" aria-expanded="false">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span class="hide-menu">Revenue</span>
+                                </a>
+                        </li>
+                        <!-- <li>
+                            <router-link :to="{ path:'/reports/behavior' }" aria-expanded="false">
+                                <i class="fa fa-users"></i>
+                                <span class="hide-menu">Behavior</span>
+                                </a>
+                        </li> -->
+                        <li v-if="$root.chkPermission('machineList.view') || $root.chkPermission('machineTransfer.view')" class="nav-label">Machines</li>
+                        <li>
+                            <router-link v-if="$root.chkPermission('machineList.view')" :to="{ path:'/machines/list' }" aria-expanded="false">
+                                <i class="fas fa-laptop"></i>
+                                <span class="hide-menu">Machine List </span>
+                            </router-link>
+                            <!-- <a v-if="$root.chkPermission('machineList.view')" href="/machines/list" aria-expanded="false">
+                                <i class="fas fa-laptop"></i>
+                                <span class="hide-menu">Machine List </span>
+                            </a> -->
+                        </li>
+                        <li>
+                            <router-link v-if="$root.chkPermission('machineTransfer.view')" :to="{ path:'/machines/transfer' }" aria-expanded="false">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span class="hide-menu">Machine Transfer </span>
+                            </router-link>
+                            <!-- <a v-if="$root.chkPermission('machineTransfer.view')" href="/machines/transfer" aria-expanded="false">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span class="hide-menu">Machine Transfer </span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('coreUser.view') || $root.chkPermission('agency.view')" class="nav-label">User Manager</li>
+                        <li v-if="$root.chkPermission('coreUser.view')">
+                            <router-link :to="{ path:'/users/core' }" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i>
+                                <span class="hide-menu">Core Users </span>
+                            </router-link>
+                            <!-- <a class="  " href="/users/core" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i>
+                                <span class="hide-menu">Core Users </span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('agency.view')">
+                            <router-link :to="{ path:'/users/agency' }" aria-expanded="false">
+                                <i class="fas fa-user"></i>
+                                <span class="hide-menu">Agency </span>
+                            </router-link>
+                            <!-- <a class="  " href="/users/agency" aria-expanded="false">
+                                <i class="fas fa-user"></i>
+                                <span class="hide-menu">Agency </span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('versionSetting.view') || $root.chkPermission('jpStatus.view')" class="nav-label">Settings</li>
+                        <li v-if="$root.chkPermission('versionSetting.view')">
+                            <router-link :to="{ path:'/settings/version' }" aria-expanded="false">
+                                <i class="fab fa-vimeo-square"></i>
+                                <span class="hide-menu">Version Setting </span>
+                            </router-link>
+                            <!-- <a class="  " href="/settings/version" aria-expanded="false">
+                                <i class="fab fa-vimeo-square"></i>
+                                <span class="hide-menu">Version Setting </span>
+                            </a> -->
+                        </li>
+                        <li v-if="$root.chkPermission('jpStatus.view')">
+                            <router-link :to="{ path:'/settings/jpserver' }" aria-expanded="false">
+                                <i class="fas fa-wrench"></i>
+                                <span class="hide-menu">JP Status </span>
+                            </router-link>
+                            <!-- <a class="  " href="/settings/jpserver" aria-expanded="false">
+                                <i class="fas fa-wrench"></i>
+                                <span class="hide-menu">JP Status </span>
+                            </a> -->
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </div>
+        <!-- End Left Sidebar  -->
+        <router-view class="view"></router-view>
+    </div>
+    <!-- End Wrapper -->
+    <script type="text/x-template" id="dropdown">
+        <div class="dropdown btn-group" ref="dropdownMenu">
+            <button @click="toggle" class="btn btn-info dropdown-toggle btn-sm" type="button">{/buttonText/}
+                <span class="caret"></span>
+            </button>
+            <ul v-show="show" class="dropdown-menu show">
+                <li>
+                    <div class="form-check">
+                        <label class="form-check-label" for="dropdownCheck" @click="checkAll" v-if="!allChecked">
+                            Check All
+                        </label>
+                        <label class="form-check-label" for="dropdownCheck" @click="uncheckAll" v-if="allChecked">
+                            Uncheck All
+                        </label>
+                    </div>
+                </li>
+                <li v-for="item in items.items">
+                    <div class="form-check">
+                        <label class="form-check-label" :for="domId(item.id)">
+                            <input type="checkbox" class="form-check-input" :id="domId(item.id)" v-model="item.checked"> 
+                            {/ item.text /}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="pagination">
+    <div>
+        <div class="dataTables_info" id="myTable_info" role="status" aria-live="polite" v-if="viewData.length > 0">Showing {/ startRow+1 /} to {/ Math.min(viewData.length+currentPage*unit, endRow) /} of {/ data.items.length
+            /} entries</div>
+        <div v-if="totalPage > 1" class="dataTables_paginate paging_simple_numbers" id="myTable_paginate">
+            <span>Goto </span><input class="fotm-control input-sm pagination-input" @blur="fastGoto" @keydown="keydown" v-model="inputPage"/>
+            <a @click="_changePage(currentPage-1)" v-if="currentPage > 1" class="paginate_button btn-sm previous" aria-controls="myTable"
+                data-dt-idx="0" tabindex="0" id="myTable_previous">Previous</a>
+            <span>
+            <template v-for="index in showPages">
+                <a @click="_changePage(index)" :class="chkPageCurrent(index)" class="paginate_button btn-sm" aria-controls="myTable" data-dt-idx="1"
+                tabindex="0">{/ index /}</a>
+            </template>
+            </span>
+            <a @click="_changePage(currentPage+1)" v-if="currentPage < totalPage" class="paginate_button btn-sm next" aria-controls="myTable"
+                data-dt-idx="7" tabindex="0" id="myTable_next">Next</a>
+        </div>
+    </div>
+    </script>
+    <script type="text/x-template" id="treemenu">
+        <div class="tree-menu" v-if="">
+            <div class="label-wrapper" v-if="machine">
+                <div class="label-item" :style="indent">
+                    <b-form-checkbox :value="machine" v-model="checkList.machines[machine.machineID]" @change="toggleMachineSelect"><i class="fas fa-microchip"></i> {/ machine.pcbID /}({/ machine.storeName /}-{/ machine.machineName /})</b-form-checkbox>
+                </div>
+            </div>
+            <div class="label-wrapper" @click="toggleChildren" v-if="!machine">
+                <div class="label-item" :style="indent" :class="labelClasses">
+                    <i v-if="nodes.children || (nodes.machines && !onlyAccount)" class="" :class="iconClasses"></i>
+                    <b-form-checkbox v-if="!onlyAccount" v-model="nodes.checked" @change="toggleSelectChildren">{/ nodes.account /}</b-form-checkbox>
+                    <b-form-radio v-if="onlyAccount" name="account" :value="nodes" v-model="checkList.account" @change="toggleAccountSelect">{/ nodes.account /}</b-form-radio>
+                </div>
+            </div>
+
+            <treemenu 
+            v-if="!onlyAccount"
+            v-show="showChildren"
+            v-for="machine in nodes.machines" 
+            v-bind:key="machine.machineID"
+            :checkList="checkList"
+            :onlyAccount="onlyAccount"
+            :machine="machine"
+            :depth="depth + 1">
+            </treemenu>
+
+            <treemenu 
+            v-show="showChildren"
+            v-for="node in nodes.children" 
+            v-bind:key="node.userID"
+            :checkList="checkList"
+            :onlyAccount="onlyAccount"
+            :extendLevel="extendLevel"
+            :nodes="node" 
+            :depth="depth + 1">
+            </treemenu>
+        </div>
+    </script>
+    <!-- All Jquery -->
+    <script src="/static/js/lib/jquery/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="/static/js/lib/bootstrap/js/popper.min.js"></script>
+    <!-- <script src="/static/js/lib/bootstrap/js/bootstrap.min.js"></script> -->
+
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="/static/js/jquery.slimscroll.js"></script>
+    <!--Menu sidebar -->
+    <script src="/static/js/sidebarmenu.js"></script>
+    <!--stickey kit -->
+    <script src="/static/js/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+
+    <!-- <script src="/static/js/lib/datamap/d3.min.js"></script> -->
+    <!-- <script src="/static/js/lib/datamap/topojson.js"></script> -->
+    <!-- <script src="/static/js/lib/datamap/datamaps.world.min.js"></script> -->
+    <!-- <script src="/static/js/lib/datamap/datamap-init.js"></script> -->
+
+    <!-- <script src="/static/js/lib/weather/jquery.simpleWeather.min.js"></script> -->
+    <!-- <script src="/static/js/lib/weather/weather-init.js"></script> -->
+    <!-- <script src="/static/js/lib/owl-carousel/owl.carousel.min.js"></script> -->
+    <!-- <script src="/static/js/lib/owl-carousel/owl.carousel-init.js"></script> -->
+
+    <!-- <script src="/static/js/lib/nestable/jquery.nestable.js"></script> -->
+
+    <!-- <script src="/static/js/lib/chartist/chartist.min.js"></script> -->
+    <!-- <script src="/static/js/lib/chartist/chartist-plugin-tooltip.min.js"></script> -->
+    <!-- <script src="/static/js/lib/chartist/chartist-init.js"></script> -->
+    <script src="/static/js/lib/highchart/highcharts.js"></script>
+    <!-- <script src="/static/js/lib/chart-js/chartjs-init.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha512.min.js"></script>
+    <script src="/static/js/palette.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script src="/static/js/vue-router.js"></script>
+    <script src="/static/js/vue-resource.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.0.0-rc.8/dist/bootstrap-vue.js"></script>
+    <!--Custom JavaScript -->
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/moment-timezone-with-data.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/vue-bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/custom.min.js"></script>
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/app.js"></script>
+    <template vueTemplate></template>
+</body>
+
+</html>
+{{end}}

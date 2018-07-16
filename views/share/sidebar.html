@@ -1,0 +1,129 @@
+{{define "sidebarHTML"}}
+<!-- Left Sidebar  -->
+<div class="left-sidebar">
+    <!-- Sidebar scroll-->
+    <div class="scroll-sidebar">
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav">
+            <ul id="sidebarnav">
+                <li class="nav-devider"></li>
+                <li class="nav-label">Home</li>
+                <li>
+                    <a class="" href="/" aria-expanded="false">
+                        <i class="fa fa-tachometer"></i>
+                        <span class="hide-menu">Dashboard </span>
+                    </a>
+                </li>
+                <li class="nav-label">Accountings</li>
+                <li>
+                    <a class="has-arrow  " href="#" aria-expanded="false">
+                        <i class="fa fa-line-chart"></i>
+                        <span class="hide-menu">Operations</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li>
+                            <a href="/operations/day">Day</a>
+                        </li>
+                        <li>
+                            <a href="/operations/week">Week</a>
+                        </li>
+                        <li>
+                            <a href="/operations/month">Month</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="has-arrow  " href="#" aria-expanded="false">
+                        <i class="fa fa-btc"></i>
+                        <span class="hide-menu">Accounting</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li>
+                            <a href="/accounting/machines">Machines</a>
+                        </li>
+                        <li>
+                            <a href="/accounting/accounts">Account</a>
+                        </li>
+                        <li>
+                            <a href="/accounting/stores">Store</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="" href="/transactions" aria-expanded="false">
+                        <i class="fa fa-handshake-o"></i>
+                        <span class="hide-menu">Transactions</span>
+                    </a>
+                </li>
+                <!-- <li class="nav-label">Reports</li>
+                <li>
+                    <a class="  " href="/reports/jackpot" aria-expanded="false">
+                        <i class="fa fa-rocket"></i>
+                        <span class="hide-menu">Jackpot</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/reports/machines" aria-expanded="false">
+                        <i class="fa fa-hdd-o"></i>
+                        <span class="hide-menu">Machines</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/reports/revenue" aria-expanded="false">
+                        <i class="fa fa-money"></i>
+                        <span class="hide-menu">Revenue</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/reports/behavior" aria-expanded="false">
+                        <i class="fa fa-users"></i>
+                        <span class="hide-menu">Behavior</span>
+                    </a>
+                </li> -->
+                <li class="nav-label">Machines</li>
+                <li>
+                    <a class="  " href="/machines/list" aria-expanded="false">
+                        <i class="fa fa-microchip"></i>
+                        <span class="hide-menu">Machine List </span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/machines/transfer" aria-expanded="false">
+                        <i class="fa fa-link"></i>
+                        <span class="hide-menu">Machine Transfer </span>
+                    </a>
+                </li>
+                <li class="nav-label">User Manager</li>
+                <li>
+                    <a class="  " href="/users/core" aria-expanded="false">
+                        <i class="fa fa-user-circle"></i>
+                        <span class="hide-menu">Core Users </span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/users/agency" aria-expanded="false">
+                        <i class="fa fa-user"></i>
+                        <span class="hide-menu">Agency </span>
+                    </a>
+                </li>
+                <li class="nav-label">Settings</li>
+                <li>
+                    <a class="  " href="/settings/version" aria-expanded="false">
+                        <i class="fa fa-vimeo-square"></i>
+                        <span class="hide-menu">Version Setting </span>
+                    </a>
+                </li>
+                <li>
+                    <a class="  " href="/settings/jpserver" aria-expanded="false">
+                        <i class="fa fa-wrench"></i>
+                        <span class="hide-menu">JP Status </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+    </div>
+    <!-- End Sidebar scroll-->
+</div>
+<!-- End Left Sidebar  -->
+{{end}}

@@ -1,0 +1,95 @@
+<div class="page-wrapper">
+    <div class="row page-titles">
+        <div class="col-md-12 align-self-center">
+            <h2 class="text-primary">Report Jackpot</h2>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="col-lg-12">
+                <dropdown :items="users"></dropdown>
+                <dropdown :items="stores"></dropdown>
+                <dropdown :items="machines"></dropdown>
+                <label class="col-form-label m-r-10">Duration :</label>
+                <div class="btn-group">
+                    <date-picker name="date" v-model="searchData.startTime"></date-picker>
+                    <span class="col-form-label"> ～ </span>
+                    <date-picker name="date" v-model="searchData.endTime"></date-picker>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary btn-sm" type="button" @click="search">
+                        <i class="ti-search"> Search</i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                    </svg>
+                    <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loading}'>
+                        <div class="dataTables_length m-r-20" id="myTable_length">
+                            <label>Show
+                                <select name="myTable_length" aria-controls="myTable" class="" v-model="unit">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select> entries</label>
+                        </div>
+                        <div class="dataTables_length m-r-20">
+                            <label>Group View By </label>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('nogroup')" @click="changeGroup('nogroup')">
+                                No Group
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('machine')" @click="changeGroup('machine')">
+                                Machine
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('user')" @click="changeGroup('user')">
+                                Account
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('storename')" @click="changeGroup('storename')">
+                                Store
+                            </button>
+                        </div>
+                        <div class="alert alert-danger" v-if="viewData.length === 0 && searched">There is no data cloud display.</div>
+                        <div class="alert alert-info" v-if="viewData.length === 0 && !searched">Press search button to start.</div>
+                        <table v-if="viewData.length" id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending">Date</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Machine ID: activate to sort column ascending"
+                                        v-if="searchData.groupBy=='machine' || searchData.groupBy=='nogroup'">Machine</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending"
+                                        v-if="searchData.groupBy!='user'">Store Name</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending"
+                                        v-if="searchData.groupBy=='user'">Account</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending"
+                                        v-if="searchData.groupBy=='nogroup'">JP Server</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">JP1 Win</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">JP2 Win</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">JP3 Win</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">JP4 Win</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr role="row" v-for="item in viewData">
+                                    <td>{/ item.createdTime /}</td>
+                                    <td v-if="searchData.groupBy=='machine' || searchData.groupBy=='nogroup'">{/ item.pcbID /}({/ item.machineName /})</td>
+                                    <td v-if="searchData.groupBy!='user'">{/ item.storeName /}</td>
+                                    <td v-if="searchData.groupBy=='user'">{/ item.account /}</td>
+                                    <td v-if="searchData.groupBy=='nogroup'">{/ item.jpServer /}</td>
+                                    <td>{/ thousandFormat(item.totalJp1Win) /}</td>
+                                    <td>{/ thousandFormat(item.totalJp2Win) /}</td>
+                                    <td>{/ thousandFormat(item.totalJp3Win) /}</td>
+                                    <td>{/ thousandFormat(item.totalJp4Win) /}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <pagination :data="reportData" :dataChanged="dataChanged" :currentPage="currentPage" :changePage="changePage" :unit="unit"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
