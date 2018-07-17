@@ -214,7 +214,8 @@
                                 <i class="fas fa-chart-line"></i>
                                 <span class="hide-menu">Operations</span>
                             </a>
-                            <ul aria-expanded="false" class="collapse">
+                            <!-- <ul aria-expanded="false" class="collapse"> -->
+                            <ul aria-expanded="false">
                                 <li>
                                     <router-link v-if="$root.chkPermission('operations.view')" :to="{ path:'/operations/day' }">Day</router-link>
                                     <!-- <a href="/operations?interval=day">Day</a> -->
@@ -234,7 +235,8 @@
                                 <i class="fas fa-money-bill-alt"></i>
                                 <span class="hide-menu">Accounting</span>
                             </a>
-                            <ul aria-expanded="false" class="collapse">
+                            <!-- <ul aria-expanded="false" class="collapse"> -->
+                            <ul aria-expanded="false">
                                 <li>
                                     <router-link v-if="$root.chkPermission('accounting.view')" :to="{ path:'/accounting/machine' }">Machines</router-link>
                                     <!-- <a href="/accounting?group=machine">Machines</a> -->

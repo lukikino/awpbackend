@@ -2693,10 +2693,12 @@ var app = new Vue({
             } cb(r);
         }
     },
+    watch: {
+        loginUser: function(){initJqueryPlugin();}
+    },
     created: function () {
         this.getUserStatus();
     },
     mounted: function(){
-        initJqueryPlugin();
     }
 })
