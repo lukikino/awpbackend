@@ -2694,7 +2694,9 @@ var app = new Vue({
         }
     },
     watch: {
-        loginUser: function(){initJqueryPlugin();}
+        loginUser: function(){
+            initJqueryPlugin();
+        }
     },
     created: function () {
         this.getUserStatus();
