@@ -2346,9 +2346,9 @@ const ReportJackpot = {
             vm.loading = true;
             vm.searched = true;
             var search = {
-                users: determineSearchString(vm.users.items, "checked"),
-                machines: determineSearchString(vm.machines.items, "checked"),
-                stores: determineSearchString(vm.stores.items, "checked"),
+                users: vm.determineSearchString(vm.users.items, "checked"),
+                machines: vm.determineSearchString(vm.machines.items, "checked"),
+                stores: vm.determineSearchString(vm.stores.items, "checked"),
                 groupBy: vm.searchData.groupBy,
                 startTime: vm.searchData.startTime,
                 endTime: vm.searchData.endTime
@@ -2448,9 +2448,9 @@ const ReportMachine = {
             vm.loading = true;
             vm.searched = true;
             var search = {
-                users: determineSearchString(vm.users.items, "checked"),
-                machines: determineSearchString(vm.machines.items, "checked"),
-                stores: determineSearchString(vm.stores.items, "checked"),
+                users: vm.determineSearchString(vm.users.items, "checked"),
+                machines: vm.determineSearchString(vm.machines.items, "checked"),
+                stores: vm.determineSearchString(vm.stores.items, "checked"),
                 startTime: vm.searchData.startTime,
                 endTime: vm.searchData.endTime
             };
@@ -2534,9 +2534,9 @@ const ReportRevenue = {
             vm.loading = true;
             vm.searched = true;
             var search = {
-                users: determineSearchString(vm.users.items, "checked"),
-                machines: determineSearchString(vm.machines.items, "checked"),
-                stores: determineSearchString(vm.stores.items, "checked"),
+                users: vm.determineSearchString(vm.users.items, "checked"),
+                machines: vm.determineSearchString(vm.machines.items, "checked"),
+                stores: vm.determineSearchString(vm.stores.items, "checked"),
                 startTime: vm.searchData.startTime,
                 endTime: vm.searchData.endTime
             };
