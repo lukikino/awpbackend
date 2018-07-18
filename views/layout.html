@@ -389,7 +389,7 @@
 
     <script type="text/x-template" id="pagination">
     <div>
-        <div class="dataTables_info" id="myTable_info" role="status" aria-live="polite" v-if="viewData.length > 0">Showing {/ startRow+1 /} to {/ Math.min(viewData.length+currentPage*unit, endRow) /} of {/ data.items.length
+        <div class="dataTables_info" id="myTable_info" role="status" aria-live="polite" v-if="viewData.length > 0">Showing {/ startRow+1 /} to {/ Math.min(viewData.length+currentPage*unit, endRow) /} of {/ data.length
             /} entries</div>
         <div v-if="totalPage > 1" class="dataTables_paginate paging_simple_numbers" id="myTable_paginate">
             <span>Goto </span><input class="fotm-control input-sm pagination-input" @blur="fastGoto" @keydown="keydown" v-model="inputPage"/>

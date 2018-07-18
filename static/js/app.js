@@ -149,14 +149,7 @@ var PageBase = {
     mixins: [ComponentBase],
     data: function () {
         return {
-            unit: 10, //numbers of row per page
-            view: 1, //1:simple, 2:detail
-            currentPage: 1,
-            searched: false, //controll information
             loading: false, //controll loading/processing/change page etc.
-            reportData: { items: [] },
-            summaryReportData: {},
-            viewData: [], //current view data
             users: {
                 type: "Account",
                 items: []
@@ -172,9 +165,6 @@ var PageBase = {
         }
     },
     watch: {
-        unit: function () {
-            this.currentPage = 1;
-        },
         '$route': function (route) {
             this.loading = true;
             setTimeout(function () {
@@ -183,52 +173,9 @@ var PageBase = {
             if (typeof this.resetParams === "function") { this.resetParams(); }
         }
     },
-    computed: {
-        showDetail: function () {
-            return this.view === 2;
-        },
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.reportData.items.length < s)
-                s = this.reportData.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.reportData.items.length < e)
-                e = this.reportData.items.length;
-            return e;
-        }
-    },
     methods: {
         resetParams: function () {
-            this.reportData.items = [];
-            this.summaryReportData = {};
-            this.searched = false;
             this.loading = false;
-            this.currentPage = 1;
-        },
-        changeView: function (view) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(function () {
-                vm.loading = false;
-                vm.view = view;
-            }, 200);
-        },
-        chkView: function (view) {
-            return view != this.view || 'active';
-        },
-        changePage: function (page) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(() => {
-                vm.loading = false;
-                vm.currentPage = page;
-            }, 200);
-        },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
         }
     },
     created: function () {
@@ -431,27 +378,27 @@ Vue.component('pagination', {
         },
         totalPage: function () {
             if (!this.data) { return 0; }
-            return Math.ceil(this.data.items.length / this.unit);
+            return Math.ceil(this.data.length / this.unit);
         },
         startRow: function () {
             if (!this.data) { return 0; }
             var s = (this.currentPage - 1) * this.unit;
-            if (this.data.items.length < s)
-                s = this.data.items.length - 1;
+            if (this.data.length < s)
+                s = this.data.length - 1;
             return s;
         },
         endRow: function () {
             if (!this.data) { return 0; }
             var e = this.currentPage * this.unit;
-            if (this.data.items.length < e)
-                e = this.data.items.length;
+            if (this.data.length < e)
+                e = this.data.length;
             return e;
         },
         viewData: function () {
             if (!this.data) { return; }
             var start = this.startRow;
             var end = this.endRow;
-            var newDataView = this.data.items.slice(start, end);
+            var newDataView = this.data.slice(start, end);
             if (typeof this.dataChanged === "function") { this.dataChanged(newDataView); }
             return newDataView;
         }
@@ -629,6 +576,13 @@ const Operations = {
         return {
             datePickerOptions: { format: 'YYYY/MM/DD' }, //datetime picker options
             searchData: { groupInterval: 'day', groupBy: 'machine', startTime: Utils.date.yesterdayStart().toString('yyyy/M/d'), endTime: Utils.date.yesterdayStart().toString('yyyy/M/d') },
+            reportData: [],
+            summaryReportData: {},
+            viewData: [], //current view data
+            currentPage: 1,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             groupSeriesData: {},
             groupChart: null,
             summarySeriesData: {},
@@ -653,39 +607,43 @@ const Operations = {
             }
         }
     },
-    /*
     watch: {
         unit: function () {
             this.currentPage = 1;
-            this.totalPage = Math.ceil(this.reportData.items.length / this.unit);
-        },
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
         }
     },
     computed: {
         showDetail: function () {
             return this.view === 2;
-        },
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.reportData.items.length < s)
-                s = this.reportData.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.reportData.items.length < e)
-                e = this.reportData.items.length;
-            return e;
         }
-    },*/
+    },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
+            this.reportData = [];
+            this.summaryReportData = {};
+            this.searched = false;
             this.showGroupChart = false;
             this.searchData.groupInterval = /([A-Za-z\d]+)(\/*|)$/i.exec(this.$route.fullPath)[0];
             this.groupChart && this.groupChart.hasRendered && this.groupChart.destroy && this.groupChart.destroy();//reset chart
@@ -726,10 +684,8 @@ const Operations = {
                 groupInterval: vm.searchData.groupInterval
             };
             Vue.http.post('/api/operations', search).then(function (res) {
-                vm.reportData.items = (res.body.data) ? res.body.data.operations : [];
+                vm.reportData = (res.body.data) ? res.body.data.operations : [];
                 vm.summaryReportData = (res.body.data) ? res.body.data.summary : [];
-                vm.total = vm.reportData.items.length;
-                vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
                 vm.prepareReportData();
                 vm.drawSummaryChart();
@@ -751,8 +707,8 @@ const Operations = {
             var singleData;
             var machineKey;
             var item;
-            for (var index in this.reportData.items) {
-                item = this.reportData.items[index];
+            for (var index in this.reportData) {
+                item = this.reportData[index];
                 //group data by user selected
                 machineKey = item.pcbID + "(" + item.machineName + ")";
                 switch (this.searchData.groupBy) {
@@ -963,8 +919,13 @@ const Accounting = {
         return {
             options: {},
             searchData: { timeRange: "10", groupBy: 'machine', startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
-            unit: 10,
-            view: 1,
+            reportData: [],
+            summaryReportData: {},
+            viewData: [], //current view data
+            currentPage: 1,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             seriesColumns: seriesColumns,
             showGroupChart: false,
             columnsForReport: {
@@ -986,37 +947,42 @@ const Accounting = {
         }
     },
     watch: {
-        // '$route': function (route) {
-        //     this.loading = true;
-        //     setTimeout(() => {
-        //         this.loading = false;
-        //     }, 300);
-        //     this.resetParams();
-        // },
-        // unit: function () {
-        //     this.currentPage = 1;
-        //     this.totalPage = Math.ceil(this.reportData.items.length / this.unit);
-        // }
+        unit: function () {
+            this.currentPage = 1;
+        }
     },
     computed: {
-        // showDetail: function () {
-        //     return this.view == 2;
-        // },
-        // startRow: function () {
-        //     var s = (this.currentPage - 1) * this.unit;
-        //     if (this.reportData.items.length < s)
-        //         s = this.reportData.items.length - 1;
-        //     return s;
-        // },
-        // endRow: function () {
-        //     var e = this.currentPage * this.unit;
-        //     if (this.reportData.items.length < e)
-        //         e = this.reportData.items.length;
-        //     return e;
-        // }
+        showDetail: function () {
+            return this.view === 2;
+        }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
+            this.reportData = [];
+            this.summaryReportData = {};
+            this.searched = false;
             this.showGroupChart = false;
             this.searchData.groupBy = /([A-Za-z\d]+)(\/*|)$/i.exec(this.$route.fullPath)[0];
             this.groupChart && this.groupChart.hasRendered && this.groupChart.destroy && this.groupChart.destroy();//reset chart
@@ -1031,9 +997,6 @@ const Accounting = {
         },
         chkGroup: function (group) {
             return group != this.searchData.groupBy || 'active';
-        },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
         },
         search: function () {
             var vm = this;
@@ -1050,10 +1013,8 @@ const Accounting = {
                 endTime: vm.searchData.endTime
             };
             Vue.http.post('/api/accountings', search).then(function (res) {
-                vm.reportData.items = (res.body.data) ? res.body.data.accountings : [];
+                vm.reportData = (res.body.data) ? res.body.data.accountings : [];
                 vm.summaryReportData = (res.body.data) ? res.body.data.summary : [];
-                vm.total = vm.reportData.items.length;
-                vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
                 vm.prepareReportData();
                 vm.drawSummaryChart();
@@ -1075,8 +1036,8 @@ const Accounting = {
             var singleData;
             var machineKey;
             var item;
-            for (var index in this.reportData.items) {
-                item = this.reportData.items[index];
+            for (var index in this.reportData) {
+                item = this.reportData[index];
                 //group data by user selected
                 machineKey = item.pcbID + "(" + item.machineName + ")";
                 switch (this.searchData.groupBy) {
@@ -1289,12 +1250,12 @@ const Transactions = {
             searching: false,
             options: {},
             searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d H:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d H:mm:ss') },
-            // searchData: {startTime: new Date(), endTime: new Date()},
-            reportData: { items: [] },
-            viewData: [],
-            unit: 10,
+            reportData: [],
+            viewData: [], //current view data
             currentPage: 1,
-            view: 1,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             users: {
                 type: "Account",
                 items: []
@@ -1318,43 +1279,43 @@ const Transactions = {
         }
     },
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
-        },
         unit: function () {
             this.currentPage = 1;
-            this.totalPage = Math.ceil(this.reportData.items.length / this.unit);
         }
     },
     computed: {
         showDetail: function () {
-            return this.view == 2;
-        },
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.reportData.items.length < s)
-                s = this.reportData.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.reportData.items.length < e)
-                e = this.reportData.items.length;
-            return e;
+            return this.view === 2;
         }
     },
     methods: {
-        resetParams: function () {
-            this.reportData.items = [];
-            this.searched = false;
-            this.currentPage = 1;
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
         },
         dataChanged: function (viewData) {
             this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
+        resetParams: function () {
+            this.reportData = [];
+            this.summaryReportData = {};
+            this.searched = false;
+            this.currentPage = 1;
         },
         jpTitle: function (item) {
             return ["JP1：", this.thousandFormat(item.jp1Win), "\nJP2：", this.thousandFormat(item.jp2Win), "\nJP3：", this.thousandFormat(item.jp3Win), "\nJP4：", this.thousandFormat(item.jp4Win)].join("");
@@ -1374,9 +1335,9 @@ const Transactions = {
                 endTime: vm.searchData.endTime
             };
             Vue.http.post('/api/transactions', search).then(function (res) {
-                vm.reportData.items = res.body.data;
-                for (var i in vm.reportData.items) {
-                    vm.reportData.items[i].memo = JSON.parse(vm.reportData.items[i].memo);
+                vm.reportData = res.body.data;
+                for (var i in vm.reportData) {
+                    vm.reportData[i].memo = JSON.parse(vm.reportData[i].memo);
                 }
                 vm.loading = false;
             }).catch(app.handlerError);
@@ -1396,7 +1357,6 @@ const Transactions = {
         }).bind(vm));
     },
     mounted: function () {
-        this.totalPage = Math.ceil(this.reportData.items.length / this.unit);
     }
 };
 
@@ -1407,12 +1367,13 @@ const MachineList = {
             loading: false,
             filter: '',
             listUsers: [],
-            machines: { items: [] },
-            unit: 10,
+            reportData: [],
+            viewData: [], //current view data
             currentPage: 1,
-            total: 0,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             submited: false,
-            viewData: [],
             addModel: {
                 pcbID: null, storeName: null, userID: null
             },
@@ -1425,59 +1386,24 @@ const MachineList = {
         }
     },
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
-        },
         unit: function () {
             this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
-        },
-        filter: function () {
-            this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
         }
     },
     computed: {
-        resetParams: function () {
-            this.machines.items = [];
-            this.searched = false;
-            this.currentPage = 1;
-        },
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.total < s)
-                s = this.total - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.total < e)
-                e = this.total;
-            return e;
+        showDetail: function () {
+            return this.view === 2;
         },
         filteredData: function () {
-            var rex = new RegExp(this.filter, "i");
-            var _filtered = this.machines.items.filter(function (item) {
+            if(!this.filter) return this.reportData;
+            var rex = new RegExp(this.filter, "ig");
+            var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.storeName) || rex.test(item.pcbID);
             });
             return _filtered;
         }
     },
     methods: {
-        getMachines: function () {
-            var vm = this;
-            vm.loading = true;
-            Vue.http.get('/api/machines').then(function (res) {
-                vm.machines.items = res.body.data;
-                vm.total = res.body.total;
-                vm.totalPage = Math.ceil(vm.total / vm.unit);
-                vm.loading = false;
-            }).catch(app.handlerError);
-        },
         changePage: function (page) {
             var vm = this;
             vm.loading = true;
@@ -1489,10 +1415,35 @@ const MachineList = {
         dataChanged: function (viewData) {
             this.viewData = viewData;
         },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
+        resetParams: function () {
+            this.reportData = [];
+            this.summaryReportData = {};
+            this.searched = false;
+            this.currentPage = 1;
+        },
         cancelAdd: function () {
             this.submited = false;
             this.addModel.userID = this.$root.loginUser.ID;
             this.addModel.pcbID = this.addModel.storeName = null;
+        },
+        getMachines: function () {
+            var vm = this;
+            vm.loading = true;
+            Vue.http.get('/api/machines').then(function (res) {
+                vm.reportData = res.body.data;
+                vm.loading = false;
+            }).catch(app.handlerError);
         },
         addMachine: function (ev) {
             var vm = this;
@@ -1583,17 +1534,11 @@ const MachineList = {
     },
     mounted: function () {
         var vm = this;
-        Vue.http.get('/api/common/list/users').then(function (res) {
-            if (res.body.code == 200) {
-                vm.listUsers = res.body.data.map(function (item) {
-                    return { text: item.account, value: item.userID };
-                });
-                vm.listUsers.unshift({ text: "Select an owner", value: null });
-            }
-            else {
-                alert("Get MachineList Error: " + res.body.message);
-            }
-        }).catch(app.handlerError);
+        vm.getLists((function (data) {
+            Vue.set(vm, "listUsers", data.users.map(function (item) { return { checked: true, id: item.userID, text: item.account } }));
+            vm.listUsers.unshift({ text: vm.$root.loginUser.account, value: vm.$root.loginUser.ID });
+            vm.listUsers.unshift({ text: "Select an owner", value: null });
+        }).bind(vm));
     }
 };
 
@@ -1724,9 +1669,13 @@ const Core = {
     data: function () {
         return {
             loading: false,
-            filter: '',
-            users: { items: [] },
-            permissionList: { items: [] },
+            filter: '',            
+            reportData: [],
+            viewData: [], //current view data
+            currentPage: 1,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             addModel: {
                 account: null, password: null, confirm: null
             },
@@ -1736,32 +1685,53 @@ const Core = {
             permissionModel: {
                 ID: null, account: null, items: [], list: {}
             },
-            viewData: [],
-            unit: 10,
-            currentPage: 1,
             submited: false
         }
     },
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
-        },
         unit: function () {
             this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
+        }
+    },
+    computed: {
+        showDetail: function () {
+            return this.view === 2;
         },
-        filter: function () {
-            this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
+        filteredData: function () {
+            if(!this.filter) return this.reportData;
+            var rex = new RegExp(this.filter, "ig");
+            var _filtered = this.reportData.filter(function (item) {
+                return rex.test(item.account);
+            });
+            return _filtered;
         }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
-            this.users.items = [];
+            this.reportData = [];
+            this.summaryReportData = {};
             this.searched = false;
             this.currentPage = 1;
         },
@@ -1817,7 +1787,7 @@ const Core = {
             var vm = this;
             vm.loading = true;
             Vue.http.get('/api/coreusers').then(function (res) {
-                vm.users.items = res.body.data;
+                vm.reportData = res.body.data;
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
@@ -1825,7 +1795,7 @@ const Core = {
         },
         toggleActive: function (id) {
             var vm = this;
-            var user = vm.users.items.filter(function (item) {
+            var user = vm.reportData.filter(function (item) {
                 return item.ID === id;
             });
             if (user && user.length === 1) {
@@ -1867,7 +1837,7 @@ const Core = {
         },
         openChangePassword: function (id) {
             var vm = this;
-            var user = vm.users.items.filter(function (item) {
+            var user = vm.reportData.filter(function (item) {
                 return item.ID === id;
             });
             if (user && user.length === 1) {
@@ -1900,17 +1870,9 @@ const Core = {
                 ev.preventDefault();
             }
         },
-        changePage: function (page) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(() => {
-                vm.loading = false;
-                vm.currentPage = page;
-            }, 200);
-        },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
-        },
+        // dataChanged: function (viewData) {
+        //     // this.viewData = viewData;
+        // },
         stateText: function (state) {
             switch (state) {
                 case 1: return "Active";
@@ -1925,30 +1887,8 @@ const Core = {
             }
         }
     },
-    computed: {
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.users.items.length < s)
-                s = this.users.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.users.items.length < e)
-                e = this.users.items.length;
-            return e;
-        },
-        filteredData: function () {
-            var rex = new RegExp(this.filter, "ig");
-            var _filtered = this.users.items.filter(function (item) {
-                return rex.test(item.account);
-            });
-            return _filtered;
-        }
-    },
     created: function () {
         this.getUsers();
-        // this.getPermissionList();
     },
     mounted: function () {
     }
@@ -1959,9 +1899,13 @@ const Agency = {
     data: function () {
         return {
             loading: false,
-            filter: '',
-            users: { items: [] },
-            permissionList: { items: [] },
+            filter: '',            
+            reportData: [],
+            viewData: [], //current view data
+            currentPage: 1,
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             addModel: {
                 account: null, password: null, confirm: null
             },
@@ -1971,34 +1915,53 @@ const Agency = {
             permissionModel: {
                 ID: null, account: null, items: [], list: {}
             },
-            viewData: [],
-            unit: 10,
-            currentPage: 1,
             submited: false
         }
     },
     watch: {
-        watch: {
-            '$route': function (route) {
-                this.loading = true;
-                setTimeout(() => {
-                    this.loading = false;
-                }, 300);
-                this.resetParams();
-            }
-        },
         unit: function () {
             this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
+        }
+    },
+    computed: {
+        showDetail: function () {
+            return this.view === 2;
         },
-        filter: function () {
-            this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
+        filteredData: function () {
+            if(!this.filter) return this.reportData;
+            var rex = new RegExp(this.filter, "ig");
+            var _filtered = this.reportData.filter(function (item) {
+                return rex.test(item.account);
+            });
+            return _filtered;
         }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
-            this.users.items = [];
+            this.reportData = [];
+            this.summaryReportData = {};
             this.searched = false;
             this.currentPage = 1;
         },
@@ -2054,15 +2017,13 @@ const Agency = {
             var vm = this;
             vm.loading = true;
             Vue.http.get('/api/agency').then(function (res) {
-                vm.users.items = res.body.data;
-                vm.total = res.body.total;
-                vm.totalPage = Math.ceil(vm.total / vm.unit);
+                vm.reportData = res.body.data;
                 vm.loading = false;
             }).catch(app.handlerError);
         },
         toggleActive: function (id) {
             var vm = this;
-            var user = vm.users.items.filter(function (item) {
+            var user = vm.reportData.filter(function (item) {
                 return item.ID === id;
             });
             if (user && user.length === 1) {
@@ -2104,7 +2065,7 @@ const Agency = {
         },
         openChangePassword: function (id) {
             var vm = this;
-            var user = vm.users.items.filter(function (item) {
+            var user = vm.reportData.filter(function (item) {
                 return item.ID === id;
             });
             if (user && user.length === 1) {
@@ -2137,17 +2098,9 @@ const Agency = {
                 ev.preventDefault();
             }
         },
-        changePage: function (page) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(() => {
-                vm.loading = false;
-                vm.currentPage = page;
-            }, 200);
-        },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
-        },
+        // dataChanged: function (viewData) {
+        //     // this.viewData = viewData;
+        // },
         stateText: function (state) {
             switch (state) {
                 case 1: return "Active";
@@ -2160,27 +2113,6 @@ const Agency = {
                 case 1: return "Deactive";
                 case 2: return "Active";
             }
-        }
-    },
-    computed: {
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.users.items.length < s)
-                s = this.users.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.users.items.length < e)
-                e = this.users.items.length;
-            return e;
-        },
-        filteredData: function () {
-            var rex = new RegExp(this.filter, "ig");
-            var _filtered = this.users.items.filter(function (item) {
-                return rex.test(item.account);
-            });
-            return _filtered;
         }
     },
     created: function () {
@@ -2196,21 +2128,17 @@ const VersionSetting = {
         return {
             loading: false,
             filter: '',
-            machines: fakeMachines,
-            unit: 10,
+            machines: fakeMachines,            
+            reportData: [],
+            summaryReportData: {},
+            viewData: [], //current view data
             currentPage: 1,
-            totalPage: 1
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
         }
     },
     watch: {
-        unit: function () {
-            this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
-        },
-        filter: function () {
-            this.currentPage = 1;
-            this.totalPage = Math.ceil(this.filteredData.length / this.unit);
-        }
     },
     methods: {
         chkPageCurrent: function (page) {
@@ -2238,33 +2166,16 @@ const VersionSetting = {
         }
     },
     computed: {
-        startRow: function () {
-            var s = (this.currentPage - 1) * this.unit;
-            if (this.machines.items.length < s)
-                s = this.machines.items.length - 1;
-            return s;
-        },
-        endRow: function () {
-            var e = this.currentPage * this.unit;
-            if (this.machines.items.length < e)
-                e = this.machines.items.length;
-            return e;
-        },
         filteredData: function () {
+            if(!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
-            var _filtered = this.machines.items.filter(function (item) {
+            var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.machineId) || rex.test(item.machineName) || rex.test(item.storeName) || rex.test(item.currentVersion);
             });
             return _filtered;
-        },
-        viewData: function () {
-            var start = this.startRow;
-            var end = this.endRow;
-            return this.filteredData.slice(start, end);
         }
     },
     mounted: function () {
-        this.totalPage = Math.ceil(this.machines.items.length / this.unit);
     }
 };
 
@@ -2283,12 +2194,12 @@ const ReportJackpot = {
         return {
             loading: false,
             searchData: { groupBy: 'nogroup', startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
-            reportData: { items: [] },
-            searched: false,
-            unit: 10,
+            reportData: [],
+            viewData: [], //current view data
             currentPage: 1,
-            view: 1,
-            viewData: [],
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             users: {
                 type: "Account",
                 items: []
@@ -2304,23 +2215,44 @@ const ReportJackpot = {
         }
     },
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
+        unit: function () {
+            this.currentPage = 1;
         }
     },
     computed: {
+        showDetail: function () {
+            return this.view === 2;
+        }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
-            this.reportData.items = [];
+            this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
+            this.summaryReportData = {};
             this.currentPage = 1;
-            this.totalPage = 0;
             this.searchData.groupInterval = "nogroup";
         },
         changeGroup: function (group) {
@@ -2338,9 +2270,9 @@ const ReportJackpot = {
                 vm.currentPage = page;
             }, 300);
         },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
-        },
+        // dataChanged: function (viewData) {
+        //     // this.viewData = viewData;
+        // },
         search: function () {
             var vm = this;
             vm.loading = true;
@@ -2354,7 +2286,7 @@ const ReportJackpot = {
                 endTime: vm.searchData.endTime
             };
             Vue.http.post('/api/reports/jackpot', search).then(function (res) {
-                vm.reportData.items = res.body.data;
+                vm.reportData = res.body.data;
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
@@ -2379,12 +2311,12 @@ const ReportMachine = {
         return {
             loading: false,
             searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
-            reportData: { items: [] },
-            searched: false,
-            unit: 10,
+            reportData: [],
+            viewData: [], //current view data
             currentPage: 1,
-            view: 1,
-            viewData: [],
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             users: {
                 type: "Account",
                 items: []
@@ -2399,27 +2331,54 @@ const ReportMachine = {
             }
         }
     },
+    
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
+        unit: function () {
+            this.currentPage = 1;
         }
     },
     computed: {
         showDetail: function () {
             return this.view === 2;
+        },
+        filteredData: function () {
+            if(!this.filter) return this.reportData;
+            var rex = new RegExp(this.filter, "ig");
+            var _filtered = this.reportData.filter(function (item) {
+                return rex.test(item.account);
+            });
+            return _filtered;
         }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
-            this.reportData.items = [];
+            this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
+            this.summaryReportData = {};
             this.currentPage = 1;
-            this.totalPage = 0;
         },
         changeView: function (view) {
             var vm = this;
@@ -2440,9 +2399,9 @@ const ReportMachine = {
                 vm.currentPage = page;
             }, 300);
         },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
-        },
+        // dataChanged: function (viewData) {
+        //     // this.viewData = viewData;
+        // },
         search: function () {
             var vm = this;
             vm.loading = true;
@@ -2455,7 +2414,7 @@ const ReportMachine = {
                 endTime: vm.searchData.endTime
             };
             Vue.http.post('/api/reports/machine', search).then(function (res) {
-                vm.reportData.items = res.body.data;
+                vm.reportData = res.body.data;
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
@@ -2480,11 +2439,12 @@ const ReportRevenue = {
         return {
             loading: false,
             searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
-            reportData: { items: [] },
-            searched: false,
-            unit: 10,
+            reportData: [],
+            viewData: [], //current view data
             currentPage: 1,
-            viewData: [],
+            unit: 10, //numbers of row per page
+            view: 1, //1:simple, 2:detail
+            searched: false, //controll information
             users: {
                 type: "Account",
                 items: []
@@ -2500,23 +2460,51 @@ const ReportRevenue = {
         }
     },
     watch: {
-        '$route': function (route) {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false;
-            }, 300);
-            this.resetParams();
+        unit: function () {
+            this.currentPage = 1;
         }
     },
     computed: {
+        showDetail: function () {
+            return this.view === 2;
+        },
+        filteredData: function () {
+            if(!this.filter) return this.reportData;
+            var rex = new RegExp(this.filter, "ig");
+            var _filtered = this.reportData.filter(function (item) {
+                return rex.test(item.account);
+            });
+            return _filtered;
+        }
     },
     methods: {
+        changePage: function (page) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(() => {
+                vm.loading = false;
+                vm.currentPage = page;
+            }, 200);
+        },
+        dataChanged: function (viewData) {
+            this.viewData = viewData;
+        },
+        changeView: function (view) {
+            var vm = this;
+            vm.loading = true;
+            setTimeout(function () {
+                vm.loading = false;
+                vm.view = view;
+            }, 200);
+        },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         resetParams: function () {
-            this.reportData.items = [];
+            this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
             this.currentPage = 1;
-            this.totalPage = 0;
         },
         changePage: function (page) {
             var vm = this;
@@ -2526,9 +2514,9 @@ const ReportRevenue = {
                 vm.currentPage = page;
             }, 300);
         },
-        dataChanged: function (viewData) {
-            this.viewData = viewData;
-        },
+        // dataChanged: function (viewData) {
+        //     // this.viewData = viewData;
+        // },
         search: function () {
             var vm = this;
             vm.loading = true;
@@ -2541,7 +2529,7 @@ const ReportRevenue = {
                 endTime: vm.searchData.endTime
             };
             Vue.http.post('/api/reports/revenue', search).then(function (res) {
-                vm.reportData.items = res.body.data;
+                vm.reportData = res.body.data;
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
@@ -2559,30 +2547,6 @@ const ReportRevenue = {
     mounted: function () {
     }
 };
-
-Vue.component('date-picker', VueBootstrapDatetimePicker);
-$.extend(true, $.fn.datetimepicker.defaults, {
-    // debug: true,
-    format: 'YYYY/MM/DD H:mm:ss',
-    showClear: true,
-    showClose: true,
-    icons: {
-        time: 'far fa-clock',
-        date: 'far fa-calendar',
-        up: 'fas fa-arrow-up',
-        down: 'fas fa-arrow-down',
-        previous: 'fas fa-chevron-left',
-        next: 'fas fa-chevron-right',
-        today: 'fas fa-calendar-check',
-        clear: 'far fa-trash-alt',
-        close: 'far fa-times-circle'
-    }
-});
-Highcharts.setOptions({
-    time: {
-        timezone: 'Asia/Taipei'
-    }
-});
 
 const router = new VueRouter({
     mode: 'history',
@@ -2661,37 +2625,38 @@ var app = new Vue({
                     }
                 }
             }).catch(this.handlerError);
-        },
-        getAccounts: function (cb) {
-            var r = [];
-            for (var i = 0; i < 20; i++) {
-                r.push({ text: 'test test' + i, id: i, check: true });
-            } cb(r);
-        },
-        getStores: function (cb) {
-            var r = [];
-            for (var i = 0; i < 30; i++) {
-                r.push({ text: 'test test' + i, id: i, check: true });
-            } cb(r);
-        },
-        getMachines: function (cb) {
-            var r = [];
-            for (var i = 0; i < 50; i++) {
-                r.push({ text: 'test test' + i, id: i, check: true });
-            } cb(r);
-        },
-        getTransactionTypes: function (cb) {
-            var r = [];
-            for (var i = 0; i < 50; i++) {
-                r.push({ text: 'test test' + i, id: i, check: true });
-            } cb(r);
-        },
-        getGameTypes: function (cb) {
-            var r = [];
-            for (var i = 0; i < 10; i++) {
-                r.push({ text: 'test test' + i, id: i, check: true });
-            } cb(r);
         }
+        // ,
+        // getAccounts: function (cb) {
+        //     var r = [];
+        //     for (var i = 0; i < 20; i++) {
+        //         r.push({ text: 'test test' + i, id: i, check: true });
+        //     } cb(r);
+        // },
+        // getStores: function (cb) {
+        //     var r = [];
+        //     for (var i = 0; i < 30; i++) {
+        //         r.push({ text: 'test test' + i, id: i, check: true });
+        //     } cb(r);
+        // },
+        // getMachines: function (cb) {
+        //     var r = [];
+        //     for (var i = 0; i < 50; i++) {
+        //         r.push({ text: 'test test' + i, id: i, check: true });
+        //     } cb(r);
+        // },
+        // getTransactionTypes: function (cb) {
+        //     var r = [];
+        //     for (var i = 0; i < 50; i++) {
+        //         r.push({ text: 'test test' + i, id: i, check: true });
+        //     } cb(r);
+        // },
+        // getGameTypes: function (cb) {
+        //     var r = [];
+        //     for (var i = 0; i < 10; i++) {
+        //         r.push({ text: 'test test' + i, id: i, check: true });
+        //     } cb(r);
+        // }
     },
     watch: {
         loginUser: function(){
@@ -2703,4 +2668,29 @@ var app = new Vue({
     },
     mounted: function(){
     }
-})
+});
+
+Vue.component('date-picker', VueBootstrapDatetimePicker);
+$.extend(true, $.fn.datetimepicker.defaults, {
+    // debug: true,
+    format: 'YYYY/MM/DD H:mm:ss',
+    showClear: true,
+    showClose: true,
+    icons: {
+        time: 'far fa-clock',
+        date: 'far fa-calendar',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check',
+        clear: 'far fa-trash-alt',
+        close: 'far fa-times-circle'
+    }
+});
+
+Highcharts.setOptions({
+    time: {
+        timezone: 'Asia/Taipei'
+    }
+});
