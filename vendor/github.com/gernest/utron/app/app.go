@@ -89,7 +89,7 @@ func (a *App) options() *router.Options {
 func (a *App) Init() error {
 	if a.ConfigPath == "" {
 		ex, _ := os.Executable()
-		a.SetConfigPath(strings.Join([]string{filepath.Dir(ex), "config"}, "\\"))
+		a.SetConfigPath(strings.Join([]string{filepath.Dir(ex), "config"}, "/"))
 	}
 	return a.init()
 }
@@ -108,7 +108,7 @@ func (a *App) init() error {
 	a.Config = appConfig
 
 	ex, _ := os.Executable()
-	views, err := view.NewSimpleView(strings.Join([]string{filepath.Dir(ex), appConfig.ViewsDir}, "\\"))
+	views, err := view.NewSimpleView(strings.Join([]string{filepath.Dir(ex), appConfig.ViewsDir}, "/"))
 	if err != nil {
 		return err
 	}
