@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gernest/qlstore"
 	"github.com/gernest/utron/config"
@@ -28,10 +29,10 @@ type StaticServerFunc func(*config.Config) (prefix string, strip bool, h http.Ha
 
 // App is the main utron application.
 type App struct {
-	Router       *router.Router
-	Config       *config.Config
-	View         view.View
-	Log          logger.Logger
+	Router *router.Router
+	Config *config.Config
+	View   view.View
+	Log    logger.Logger
 	//Model        *models.Model
 	ConfigPath   string
 	StaticServer StaticServerFunc
@@ -87,7 +88,9 @@ func (a *App) options() *router.Options {
 // Init initializes the MVC App.
 func (a *App) Init() error {
 	if a.ConfigPath == "" {
-		a.SetConfigPath("config")
+		ex, _ := os.Executable()
+		exPath := filepath.Dir(ex)
+		a.SetConfigPath(strings.Join([]string{exPath, "config"}, "\\"))
 	}
 	return a.init()
 }
@@ -129,7 +132,7 @@ func (a *App) init() error {
 	}
 
 	a.Router.Options = a.options()
-	a.Router.LoadRoutes(a.ConfigPath) // Load a routes file if available.	
+	a.Router.LoadRoutes(a.ConfigPath) // Load a routes file if available.
 	a.isInit = true
 
 	// In case the StaticDir is specified in the Config file, register
