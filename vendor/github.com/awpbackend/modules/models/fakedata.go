@@ -236,13 +236,13 @@ func GenFakeData() {
 	machines := []string{}
 	r := ReturnData{}
 	for i := 0; i < 2; i++ {
-		r = AddUser(2, "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "a123456789"}, true)
+		r = AddUser(2, "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "4e83fa81ba02535ddc5d7e2f9b6ee1055df21f306aeead80942e013a85a72f0cb203bc3a2cb39477689656566d1b6c419ad03e0df6ae7950c5964c00c1e539a3"}, true)
 		lv1 = append(lv1, int(r.Data.(int64)))
 		for j := 0; j < 2; j++ {
-			r = AddUser(lv1[i], "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "a123456789"}, false)
+			r = AddUser(lv1[i], "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "4e83fa81ba02535ddc5d7e2f9b6ee1055df21f306aeead80942e013a85a72f0cb203bc3a2cb39477689656566d1b6c419ad03e0df6ae7950c5964c00c1e539a3"}, false)
 			lv2 = append(lv2, int(r.Data.(int64)))
 			for k := 0; k < 2; k++ {
-				r = AddUser(lv2[j], "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "a123456789"}, false)
+				r = AddUser(lv2[j], "", User{Account: adjectives[rand.Intn(len(adjectives))] + strconv.Itoa(rand.Intn(9999)), Password: "4e83fa81ba02535ddc5d7e2f9b6ee1055df21f306aeead80942e013a85a72f0cb203bc3a2cb39477689656566d1b6c419ad03e0df6ae7950c5964c00c1e539a3"}, false)
 				lv3 = append(lv3, int(r.Data.(int64)))
 			}
 		}
