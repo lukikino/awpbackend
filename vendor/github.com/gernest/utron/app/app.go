@@ -182,25 +182,33 @@ func keyPairs(src []string) [][]byte {
 // In case of any error, an empty string is returned.
 func getAbsolutePath(dir string) (string, error) {
 	info, err := os.Stat(dir)
+	fmt.Print(1)
 	if err != nil {
 		return "", err
 	}
+	fmt.Print(2)
 	if !info.IsDir() {
 		return "", fmt.Errorf("untron: %s is not a directory", dir)
 	}
 
+	fmt.Print(3)
 	if filepath.IsAbs(dir) { // If dir is already absolute, return it.
 		return dir, nil
 	}
-	wd, err := os.Getwd()
+	fmt.Print(4)
+	// wd, err := os.Getwd()
+	ex, _ := os.Executable()
+	wd := filepath.Dir(ex)
 	if err != nil {
 		return "", err
 	}
+	fmt.Print(5)
 	absDir := filepath.Join(wd, dir)
 	_, err = os.Stat(absDir)
 	if err != nil {
 		return "", err
 	}
+	fmt.Print(6)
 	return absDir, nil
 }
 
