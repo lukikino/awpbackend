@@ -364,7 +364,7 @@ Vue.component('pagination', {
                 end = Math.min(9, this.totalPage);
             }
             else if (this.currentPage > this.totalPage - 5) {
-                start = Math.max(this.totalPage - 9, this.totalPage);
+                start = Math.min(Math.max(this.totalPage - 9, 1), this.totalPage);
                 end = this.totalPage;
             }
             else {
@@ -417,6 +417,7 @@ Vue.component('pagination', {
             this.inputPage = Math.min(this.inputPage, this.totalPage);
             this.inputPage = Math.max(this.inputPage, 1);
             this._changePage(this.inputPage);
+            this.inputPage = "";
         },
         keydown: function (e) {
             if (e.keyCode === 13) {
