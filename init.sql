@@ -13,12 +13,10 @@
 
 
 -- 傾印 pcb 的資料庫結構
-DROP DATABASE IF EXISTS `pcb`;
 CREATE DATABASE IF NOT EXISTS `pcb` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `pcb`;
 
 -- 傾印  表格 pcb.behaviors 結構
-DROP TABLE IF EXISTS `behaviors`;
 CREATE TABLE IF NOT EXISTS `behaviors` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pcb_id` int(10) unsigned NOT NULL,
@@ -37,14 +35,13 @@ DELETE FROM `behaviors`;
 /*!40000 ALTER TABLE `behaviors` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.currencies 結構
-DROP TABLE IF EXISTS `currencies`;
 CREATE TABLE IF NOT EXISTS `currencies` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='幣別對應表';
 
--- 正在傾印表格  pcb.currencies 的資料：~0 rows (大約)
+-- 正在傾印表格  pcb.currencies 的資料：~1 rows (大約)
 DELETE FROM `currencies`;
 /*!40000 ALTER TABLE `currencies` DISABLE KEYS */;
 INSERT INTO `currencies` (`id`, `name`) VALUES
@@ -52,7 +49,6 @@ INSERT INTO `currencies` (`id`, `name`) VALUES
 /*!40000 ALTER TABLE `currencies` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.log_machine_change 結構
-DROP TABLE IF EXISTS `log_machine_change`;
 CREATE TABLE IF NOT EXISTS `log_machine_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `machine_id` int(10) unsigned NOT NULL,
@@ -71,7 +67,6 @@ DELETE FROM `log_machine_change`;
 /*!40000 ALTER TABLE `log_machine_change` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.log_user_change 結構
-DROP TABLE IF EXISTS `log_user_change`;
 CREATE TABLE IF NOT EXISTS `log_user_change` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
@@ -81,12 +76,13 @@ CREATE TABLE IF NOT EXISTS `log_user_change` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `FK_log_user_change_users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=665 DEFAULT CHARSET=utf8 COMMENT='使用者變更記錄';
+) ENGINE=InnoDB AUTO_INCREMENT=719 DEFAULT CHARSET=utf8 COMMENT='使用者變更記錄';
 
--- 正在傾印表格  pcb.log_user_change 的資料：~538 rows (大約)
+-- 正在傾印表格  pcb.log_user_change 的資料：~642 rows (大約)
 DELETE FROM `log_user_change`;
 /*!40000 ALTER TABLE `log_user_change` DISABLE KEYS */;
 INSERT INTO `log_user_change` (`id`, `user_id`, `action`, `memo`, `created_time`, `update_time`) VALUES
+	(2, NULL, 3, 'User changed password', '2018-07-30 11:39:25', '2018-07-30 11:39:25'),
 	(44, 2, 2, 'Set deactive by user 1', '2018-05-14 15:43:46', '2018-05-14 15:43:46'),
 	(48, 2, 2, 'Set active by user 1', '2018-05-14 15:43:48', '2018-05-14 15:43:48'),
 	(51, 2, 2, 'Set deactive by user 1', '2018-05-14 15:43:50', '2018-05-14 15:43:50'),
@@ -673,11 +669,64 @@ INSERT INTO `log_user_change` (`id`, `user_id`, `action`, `memo`, `created_time`
 	(661, 2, 1, 'Login: testtest1.IP:127.0.0.1:50590', '2018-07-10 13:50:59', '2018-07-10 13:50:59'),
 	(662, 2, 1, 'Login: testtest1.IP:127.0.0.1:61044', '2018-07-10 15:46:47', '2018-07-10 15:46:47'),
 	(663, 2, 1, 'Login: testtest1.IP:127.0.0.1:61197', '2018-07-10 15:48:17', '2018-07-10 15:48:17'),
-	(664, 2, 1, 'Login: testtest1.IP:127.0.0.1:50116', '2018-07-13 11:11:16', '2018-07-13 11:11:16');
+	(664, 2, 1, 'Login: testtest1.IP:127.0.0.1:50116', '2018-07-13 11:11:16', '2018-07-13 11:11:16'),
+	(665, NULL, 1, 'Try login not exist account: rakuten.IP: 127.0.0.1:64442', '2018-07-16 17:18:27', '2018-07-16 17:18:27'),
+	(666, NULL, 1, 'Try login not exist account: testtest1.IP: 127.0.0.1:64442', '2018-07-16 17:18:37', '2018-07-16 17:18:37'),
+	(667, NULL, 1, 'Try login not exist account: testtest1.IP: 127.0.0.1:64442', '2018-07-16 17:19:21', '2018-07-16 17:19:21'),
+	(668, NULL, 1, 'Try login not exist account: admin.IP: 127.0.0.1:64447', '2018-07-16 17:19:50', '2018-07-16 17:19:50'),
+	(669, NULL, 1, 'Try login not exist account: rakuten.IP: 127.0.0.1:64447', '2018-07-16 17:21:43', '2018-07-16 17:21:43'),
+	(670, NULL, 1, 'Try login not exist account: rakuten.IP: 127.0.0.1:64446', '2018-07-16 17:21:55', '2018-07-16 17:21:55'),
+	(671, NULL, 1, 'Try login not exist account: rakuten.IP: 127.0.0.1:64832', '2018-07-16 17:23:13', '2018-07-16 17:23:13'),
+	(672, NULL, 1, 'Try login not exist account: admin.IP: 127.0.0.1:64891', '2018-07-16 17:23:49', '2018-07-16 17:23:49'),
+	(673, 2, 1, 'Login: admin.IP:', '2018-07-16 17:27:00', '2018-07-16 17:27:00'),
+	(674, 2, 1, 'Login: admin.IP:127.0.0.1:49748', '2018-07-16 17:37:58', '2018-07-16 17:37:58'),
+	(675, 2, 1, 'Login: admin.IP:127.0.0.1:49876', '2018-07-16 17:39:10', '2018-07-16 17:39:10'),
+	(676, 2, 1, 'Login: admin.IP:127.0.0.1:49880', '2018-07-16 17:42:17', '2018-07-16 17:42:17'),
+	(677, 2, 1, 'Login: admin.IP:127.0.0.1:51110', '2018-07-16 17:53:59', '2018-07-16 17:53:59'),
+	(678, 2, 1, 'Login: admin.IP:127.0.0.1:60684', '2018-07-25 11:28:19', '2018-07-25 11:28:19'),
+	(679, 2, 1, 'Login: admin.IP:127.0.0.1:60307', '2018-07-25 14:28:32', '2018-07-25 14:28:32'),
+	(680, 2, 1, 'Login: admin.IP:127.0.0.1:62396', '2018-07-25 14:51:10', '2018-07-25 14:51:10'),
+	(681, 2, 1, 'Login: admin.IP:127.0.0.1:62168', '2018-07-25 17:57:24', '2018-07-25 17:57:24'),
+	(682, 2, 1, 'Login: admin.IP:127.0.0.1:50264', '2018-07-26 11:14:54', '2018-07-26 11:14:54'),
+	(683, 2, 1, 'Login: admin.IP:127.0.0.1:53689', '2018-07-26 11:52:14', '2018-07-26 11:52:14'),
+	(684, 2, 1, 'Login: admin.IP:127.0.0.1:53502', '2018-07-26 18:15:07', '2018-07-26 18:15:07'),
+	(685, 2, 1, 'Login: admin.IP:127.0.0.1:53730', '2018-07-26 18:15:22', '2018-07-26 18:15:22'),
+	(686, 2, 1, 'Login: admin.IP:127.0.0.1:49205', '2018-07-27 09:48:59', '2018-07-27 09:48:59'),
+	(687, 2, 1, 'Login: admin.IP:127.0.0.1:62441', '2018-07-27 15:27:29', '2018-07-27 15:27:29'),
+	(688, 2, 1, 'Login: admin.IP:127.0.0.1:57475', '2018-07-27 17:40:31', '2018-07-27 17:40:31'),
+	(689, 2, 1, 'Login: admin.IP:127.0.0.1:59809', '2018-07-27 18:06:26', '2018-07-27 18:06:26'),
+	(690, 2, 1, 'Login: admin.IP:127.0.0.1:59984', '2018-07-27 18:08:20', '2018-07-27 18:08:20'),
+	(691, 2, 1, 'Login: admin.IP:127.0.0.1:60402', '2018-07-27 18:12:56', '2018-07-27 18:12:56'),
+	(692, 2, 1, 'Login: admin.IP:127.0.0.1:62380', '2018-07-27 18:35:14', '2018-07-27 18:35:14'),
+	(693, 2, 1, 'Login: admin.IP:127.0.0.1:62522', '2018-07-27 18:36:33', '2018-07-27 18:36:33'),
+	(694, 2, 1, 'Login: admin.IP:127.0.0.1:62622', '2018-07-27 18:37:34', '2018-07-27 18:37:34'),
+	(695, 2, 1, 'Login: admin.IP:127.0.0.1:57833', '2018-07-30 11:04:38', '2018-07-30 11:04:38'),
+	(696, 2, 1, 'Login: admin.IP:127.0.0.1:60365', '2018-07-30 11:34:58', '2018-07-30 11:34:58'),
+	(697, 2, 1, 'Login: admin.IP:127.0.0.1:60468', '2018-07-30 11:36:09', '2018-07-30 11:36:09'),
+	(698, NULL, 1, 'Try login not exist account: ChangeSelfPassword.IP: 127.0.0.1:60634', '2018-07-30 11:37:41', '2018-07-30 11:37:41'),
+	(699, 2, 1, 'Login: admin.IP:127.0.0.1:60633', '2018-07-30 11:37:46', '2018-07-30 11:37:46'),
+	(700, 2, 1, 'Login: admin.IP:127.0.0.1:49988', '2018-07-30 17:02:28', '2018-07-30 17:02:28'),
+	(701, 2, 1, 'Login: admin.IP:127.0.0.1:50020', '2018-07-30 17:03:52', '2018-07-30 17:03:52'),
+	(702, 2, 1, 'Login: admin.IP:127.0.0.1:54880', '2018-08-02 10:42:42', '2018-08-02 10:42:42'),
+	(703, 2, 1, 'Login: admin.IP:127.0.0.1:56753', '2018-08-02 11:20:36', '2018-08-02 11:20:36'),
+	(704, 2, 1, 'Login: admin.IP:127.0.0.1:58942', '2018-08-02 11:46:45', '2018-08-02 11:46:45'),
+	(705, 2, 1, 'Login: admin.IP:127.0.0.1:61966', '2018-08-02 15:30:16', '2018-08-02 15:30:16'),
+	(706, 2, 1, 'Login: admin.IP:127.0.0.1:62289', '2018-08-02 15:33:46', '2018-08-02 15:33:46'),
+	(707, 2, 1, 'Login: admin.IP:127.0.0.1:61366', '2018-08-03 11:17:32', '2018-08-03 11:17:32'),
+	(708, 2, 1, 'Login: admin.IP:127.0.0.1:56764', '2018-08-06 11:31:18', '2018-08-06 11:31:18'),
+	(709, 2, 1, 'Login: admin.IP:127.0.0.1:50059', '2018-08-06 16:34:00', '2018-08-06 16:34:00'),
+	(710, 2, 1, 'Login: admin.IP:127.0.0.1:50201', '2018-08-06 16:35:14', '2018-08-06 16:35:14'),
+	(711, 2, 1, 'Login: admin.IP:127.0.0.1:50269', '2018-08-06 16:35:46', '2018-08-06 16:35:46'),
+	(712, 2, 1, 'Login: admin.IP:127.0.0.1:60890', '2018-08-07 11:11:50', '2018-08-07 11:11:50'),
+	(713, 2, 1, 'Login: admin.IP:127.0.0.1:58979', '2018-08-07 16:59:22', '2018-08-07 16:59:22'),
+	(714, 2, 1, 'Login: admin.IP:127.0.0.1:59101', '2018-08-10 17:47:20', '2018-08-10 17:47:20'),
+	(715, 2, 1, 'Login: admin.IP:127.0.0.1:59667', '2018-08-10 17:53:25', '2018-08-10 17:53:25'),
+	(716, 2, 1, 'Login: admin.IP:127.0.0.1:59940', '2018-08-10 17:56:27', '2018-08-10 17:56:27'),
+	(717, 2, 1, 'Login: admin.IP:127.0.0.1:60174', '2018-08-10 17:58:58', '2018-08-10 17:58:58'),
+	(718, 2, 1, 'Login: admin.IP:127.0.0.1:60467', '2018-08-10 18:02:03', '2018-08-10 18:02:03');
 /*!40000 ALTER TABLE `log_user_change` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.machines 結構
-DROP TABLE IF EXISTS `machines`;
 CREATE TABLE IF NOT EXISTS `machines` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `store_name` varchar(120) DEFAULT '',
@@ -692,15 +741,65 @@ CREATE TABLE IF NOT EXISTS `machines` (
   KEY `FK_machines_users` (`user_id`),
   KEY `store_name` (`store_name`),
   CONSTRAINT `FK_machines_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1642 DEFAULT CHARSET=utf8 COMMENT='機器實體';
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='機器實體';
 
--- 正在傾印表格  pcb.machines 的資料：~0 rows (大約)
+-- 正在傾印表格  pcb.machines 的資料：~50 rows (大約)
 DELETE FROM `machines`;
 /*!40000 ALTER TABLE `machines` DISABLE KEYS */;
+INSERT INTO `machines` (`id`, `store_name`, `machine_name`, `pcb_id`, `user_id`, `delete_flag`, `created_time`, `update_time`) VALUES
+	(1, 'dancer', '', 672992539, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(2, 'boa', '', 194700123, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(3, 'dragon', '', 583324436, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(4, 'reaper', '', 269017419, 7, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(5, 'raptor', '', 598825946, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(6, 'sargent', '', 173634315, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(7, 'princess', '', 625067202, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(8, 'nose', '', 836711269, 7, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(9, 'arm', '', 711735704, 14, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(10, 'gambler', '', 287296166, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(11, 'whimsey', '', 871708128, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(12, 'wolf', '', 323247432, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(13, 'gem', '', 910426838, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(14, 'jester', '', 725822546, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(15, 'bison', '', 463747547, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(16, 'friend', '', 905686586, 14, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(17, 'mole', '', 753802780, 14, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(18, 'paw', '', 758586852, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(19, 'tracker', '', 673612843, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(20, 'chanter', '', 390399546, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(21, 'runner', '', 698572591, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(22, 'weed', '', 955941834, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(23, 'princess', '', 411819776, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(24, 'bard', '', 355706781, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(25, 'arm', '', 214734463, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(26, 'whimsey', '', 745945584, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(27, 'leader', '', 186927683, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(28, 'hoof', '', 319826400, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(29, 'flame', '', 819738573, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(30, 'weaver', '', 267712694, 14, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(31, 'weasel', '', 619696512, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(32, 'scowl', '', 248852870, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(33, 'dive', '', 816185581, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(34, 'antler', '', 695564626, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(35, 'otter', '', 173936937, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(36, 'back', '', 338641573, 7, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(37, 'speaker', '', 784341064, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(38, 'painter', '', 313409826, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(39, 'vole', '', 969881983, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(40, 'parrot', '', 154801232, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(41, 'lizard', '', 160168970, 4, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(42, 'horn', '', 470649477, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(43, 'brow', '', 657412557, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(44, 'knight', '', 309636915, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(45, 'skinner', '', 985293169, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(46, 'seer', '', 284840431, 10, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(47, 'butterfly', '', 887219548, 11, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(48, 'boot', '', 876784228, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(49, 'samurai', '', 879923043, 7, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(50, 'sting', '', 657513980, 3, b'0', '2018-07-25 11:35:16', '2018-07-25 11:35:16');
 /*!40000 ALTER TABLE `machines` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.machine_version 結構
-DROP TABLE IF EXISTS `machine_version`;
 CREATE TABLE IF NOT EXISTS `machine_version` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `machine_id` int(10) unsigned NOT NULL,
@@ -720,7 +819,6 @@ DELETE FROM `machine_version`;
 /*!40000 ALTER TABLE `machine_version` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.maps 結構
-DROP TABLE IF EXISTS `maps`;
 CREATE TABLE IF NOT EXISTS `maps` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `map_name` varchar(32) NOT NULL,
@@ -737,7 +835,6 @@ DELETE FROM `maps`;
 /*!40000 ALTER TABLE `maps` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.permissions 結構
-DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
@@ -780,7 +877,6 @@ INSERT INTO `permissions` (`id`, `name`, `sort`, `description`, `admin_only`, `u
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.roles 結構
-DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
@@ -791,7 +887,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='角色表';
 
--- 正在傾印表格  pcb.roles 的資料：~3 rows (大約)
+-- 正在傾印表格  pcb.roles 的資料：~2 rows (大約)
 DELETE FROM `roles`;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` (`id`, `name`, `description`, `update_time`, `created_time`) VALUES
@@ -800,7 +896,6 @@ INSERT INTO `roles` (`id`, `name`, `description`, `update_time`, `created_time`)
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.role_permission 結構
-DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
@@ -812,7 +907,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   CONSTRAINT `FK_role_permission_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色權限對應表';
 
--- 正在傾印表格  pcb.role_permission 的資料：~36 rows (大約)
+-- 正在傾印表格  pcb.role_permission 的資料：~37 rows (大約)
 DELETE FROM `role_permission`;
 /*!40000 ALTER TABLE `role_permission` DISABLE KEYS */;
 INSERT INTO `role_permission` (`role_id`, `permission_id`, `created_time`, `update_time`) VALUES
@@ -856,9 +951,8 @@ INSERT INTO `role_permission` (`role_id`, `permission_id`, `created_time`, `upda
 /*!40000 ALTER TABLE `role_permission` ENABLE KEYS */;
 
 -- 傾印  程序 pcb.sp_addMachine 結構
-DROP PROCEDURE IF EXISTS `sp_addMachine`;
 DELIMITER //
-CREATE PROCEDURE `sp_addMachine`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addMachine`(
 	IN `p_exeid` INT,
 	IN `p_pcbID` VARCHAR(50),
 	IN `p_storeName` VARCHAR(50),
@@ -883,9 +977,8 @@ END IF//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_addTransaction 結構
-DROP PROCEDURE IF EXISTS `sp_addTransaction`;
 DELIMITER //
-CREATE PROCEDURE `sp_addTransaction`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addTransaction`(
 	IN `p_pcb_id` VARCHAR(50),
 	IN `p_round_id` VARCHAR(50),
 	IN `p_money_to_credit_radio` DOUBLE,
@@ -911,18 +1004,18 @@ CREATE PROCEDURE `sp_addTransaction`(
 
 
 
+
 )
 BEGIN
-	INSERT INTO TRANSACTIONS(pcb_id,round_id,currency_id,money_to_credit_radio,transaction_type,start_credit,result_credit,credit_in,credit_out,credit_type,original_bet,bet,win,jp1_win,jp2_win,jp3_win,jp4_win,game_type,game_id,memo,created_time)
+	INSERT INTO transactions(pcb_id,round_id,currency_id,money_to_credit_radio,transaction_type,start_credit,result_credit,credit_in,credit_out,credit_type,original_bet,bet,win,jp1_win,jp2_win,jp3_win,jp4_win,game_type,game_id,memo,created_time)
 	VALUES(p_pcb_id,p_round_id,1,p_money_to_credit_radio,p_transaction_type,p_start_credit,p_result_credit,p_credit_in,p_credit_out,p_credit_type,p_original_bet,p_bet,p_win,p_jp1_win,p_jp2_win,p_jp3_win,p_jp4_win,p_game_type,p_game_id,p_memo,p_created_time);
 	SELECT LAST_INSERT_ID() AS transaction_id;
 END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_addUser 結構
-DROP PROCEDURE IF EXISTS `sp_addUser`;
 DELIMITER //
-CREATE PROCEDURE `sp_addUser`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addUser`(
 	IN `p_ip` VARCHAR(50),
 	IN `p_exeid` INT,
 	IN `p_account` VARCHAR(50),
@@ -1037,9 +1130,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_deleteMachine 結構
-DROP PROCEDURE IF EXISTS `sp_deleteMachine`;
 DELIMITER //
-CREATE PROCEDURE `sp_deleteMachine`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deleteMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT
 
@@ -1087,13 +1179,13 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_editMachine 結構
-DROP PROCEDURE IF EXISTS `sp_editMachine`;
 DELIMITER //
-CREATE PROCEDURE `sp_editMachine`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT,
 	IN `p_storeName` VARCHAR(50),
 	IN `p_userID` INT
+
 
 
 
@@ -1123,6 +1215,7 @@ BEGIN
 	BEGIN
 		UPDATE machines SET store_name = p_storeName, user_id = p_userID
 		WHERE id = p_id;
+		SELECT 1;
 	END;
 	ELSE
 	BEGIN
@@ -1134,10 +1227,69 @@ BEGIN
 END//
 DELIMITER ;
 
--- 傾印  程序 pcb.sp_editUserActive 結構
-DROP PROCEDURE IF EXISTS `sp_editUserActive`;
+-- 傾印  程序 pcb.sp_editSelfPassword 結構
 DELIMITER //
-CREATE PROCEDURE `sp_editUserActive`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editSelfPassword`(
+	IN `p_exeid` INT,
+	IN `p_oldPwd` VARCHAR(500)
+
+
+
+
+
+
+
+
+
+
+
+
+,
+	IN `p_pwd` VARCHAR(500)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+)
+BEGIN
+	DECLARE exit handler for sqlexception
+	BEGIN
+	ROLLBACK;
+	GET DIAGNOSTICS CONDITION 1
+	@p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
+	SELECT 0;
+	RESIGNAL;
+	END;
+	
+	IF EXISTS(SELECT 1 FROM users WHERE id = p_exeid AND encrypted_password = p_oldPwd) AND p_pwd > '' THEN
+		BEGIN
+			UPDATE users SET encrypted_password = p_pwd
+			WHERE id = p_exeid;
+			INSERT INTO log_user_change(id, `action`, memo) VALUES(p_exeid, 3, 'User changed password');
+		END;
+	ELSE
+		BEGIN
+			SIGNAL SQLSTATE '45000'
+		 	SET MESSAGE_TEXT = 'Password change failed.'; 	
+		END;
+	END IF;
+	SELECT 1;
+END//
+DELIMITER ;
+
+-- 傾印  程序 pcb.sp_editUserActive 結構
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserActive`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -1183,9 +1335,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_editUserPassword 結構
-DROP PROCEDURE IF EXISTS `sp_editUserPassword`;
 DELIMITER //
-CREATE PROCEDURE `sp_editUserPassword`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserPassword`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_pwd` VARCHAR(500)
@@ -1234,9 +1385,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_editUserPermissions 結構
-DROP PROCEDURE IF EXISTS `sp_editUserPermissions`;
 DELIMITER //
-CREATE PROCEDURE `sp_editUserPermissions`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editUserPermissions`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_permissions` VARCHAR(500)
@@ -1367,9 +1517,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getAccountings 結構
-DROP PROCEDURE IF EXISTS `sp_getAccountings`;
 DELIMITER //
-CREATE PROCEDURE `sp_getAccountings`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getAccountings`(
 	IN `p_exeid` INT,
 	IN `p_users` TEXT,
 	IN `p_stores` TEXT,
@@ -1553,11 +1702,18 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getDashboard 結構
-DROP PROCEDURE IF EXISTS `sp_getDashboard`;
 DELIMITER //
-CREATE PROCEDURE `sp_getDashboard`(
-	IN `p_start_time` DATETIME,
-	IN `p_end_time` DATETIME
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getDashboard`(
+	IN `p_exeid` INT,
+	IN `p_users` TEXT,
+	IN `p_stores` TEXT,
+	IN `p_now` DATETIME
+
+
+
+
+
+
 
 
 
@@ -1566,71 +1722,162 @@ CREATE PROCEDURE `sp_getDashboard`(
 
 )
     COMMENT 'index'
-(SELECT *,
-IFNULL((total_out/total_in), 0.0) AS out_rate,
-IFNULL((total_win/total_bet), 0.0) AS win_rate,
-IFNULL((total_win_times/total_play_times), 0.0) AS hit_rate 
-FROM 
-(SELECT
-IFNULL(SUM(credit_in), 0) AS total_in,
-IFNULL(SUM(credit_out), 0) AS total_out,
-IFNULL(SUM(bet), 0) AS total_bet,
-IFNULL(SUM(win), 0) AS total_win,
-IFNULL(SUM(bet > 0), 0) AS total_play_times,
-IFNULL(SUM(bet > 0 && win > 0), 0) AS total_win_times
-FROM transactions
-WHERE created_time BETWEEN p_start_time AND p_end_time) T)
-UNION ALL
-(SELECT *,
-IFNULL((total_out/total_in), 0.0) AS out_rate,
-IFNULL((total_win/total_bet), 0.0) AS win_rate,
-IFNULL((total_win_times/total_play_times), 0.0) AS hit_rate 
-FROM 
-(SELECT
-IFNULL(SUM(credit_in), 0) AS total_in,
-IFNULL(SUM(credit_out), 0) AS total_out,
-IFNULL(SUM(bet), 0) AS total_bet,
-IFNULL(SUM(win), 0) AS total_win,
-IFNULL(SUM(bet > 0), 0) AS total_play_times,
-IFNULL(SUM(bet > 0 && win > 0), 0) AS total_win_times
-FROM transactions
-WHERE created_time BETWEEN DATE_SUB(p_start_time, INTERVAL 1 DAY) AND p_end_time) T)
-UNION ALL
-(SELECT *,
-IFNULL((total_out/total_in), 0.0) AS out_rate,
-IFNULL((total_win/total_bet), 0.0) AS win_rate,
-IFNULL((total_win_times/total_play_times), 0.0) AS hit_rate 
-FROM 
-(SELECT
-IFNULL(SUM(credit_in), 0) AS total_in,
-IFNULL(SUM(credit_out), 0) AS total_out,
-IFNULL(SUM(bet), 0) AS total_bet,
-IFNULL(SUM(win), 0) AS total_win,
-IFNULL(SUM(bet > 0), 0) AS total_play_times,
-IFNULL(SUM(bet > 0 && win > 0), 0) AS total_win_times
-FROM transactions
-WHERE created_time BETWEEN DATE_SUB(p_start_time, INTERVAL 1 WEEK) AND p_end_time) T)
-UNION ALL
-(SELECT *,
-IFNULL((total_out/total_in), 0.0) AS out_rate,
-IFNULL((total_win/total_bet), 0.0) AS win_rate,
-IFNULL((total_win_times/total_play_times), 0.0) AS hit_rate 
-FROM 
-(SELECT
-IFNULL(SUM(credit_in), 0) AS total_in,
-IFNULL(SUM(credit_out), 0) AS total_out,
-IFNULL(SUM(bet), 0) AS total_bet,
-IFNULL(SUM(win), 0) AS total_win,
-IFNULL(SUM(bet > 0), 0) AS total_play_times,
-IFNULL(SUM(bet > 0 && win > 0), 0) AS total_win_times
-FROM transactions
-WHERE created_time BETWEEN DATE_SUB(p_start_time, INTERVAL 1 MONTH) AND p_end_time) T)//
+BEGIN
+    DECLARE d_isAdmin BOOL;
+    DECLARE d_lft INT;
+    DECLARE d_rgt INT;
+    DECLARE d_total INT;
+    DECLARE d_pcb_ids VARCHAR(20000);
+    DECLARE d_group_interval_sql_string VARCHAR(200);
+    DECLARE d_no_search BOOL;
+    DECLARE d_start_time DATETIME;
+    DECLARE d_calculated_now DATETIME;
+    SET d_no_search = (ISNULL(p_users) AND ISNULL(p_stores));
+    SET d_start_time = CONCAT(YEAR(p_now), '/', MONTH(p_now), '/1 06:00:00');
+    SET d_calculated_now = DATE_ADD(p_now, INTERVAL -6 HOUR);
+
+    DROP TEMPORARY TABLE IF EXISTS `_tmp1`;
+    DROP TEMPORARY TABLE IF EXISTS `_tmp2`;
+    SELECT admin INTO d_isAdmin FROM users WHERE id = p_exeid;
+    SELECT lft, rgt INTO d_lft, d_rgt FROM user_node WHERE user_id = p_exeid;
+    SELECT group_concat(pcb_id  separator ',') INTO d_pcb_ids FROM machines WHERE
+        (ISNULL(p_users) OR FIND_IN_SET(user_id, p_users)) AND
+        (ISNULL(p_stores) OR FIND_IN_SET(store_name, p_stores));
+    SELECT CASE WHEN ISNULL(d_pcb_ids) THEN '' ELSE d_pcb_ids END INTO d_pcb_ids;
+
+    SET @d_sqlString1 = CONCAT('
+        CREATE TEMPORARY TABLE IF NOT EXISTS _tmp1 AS(
+        		SELECT SQL_CALC_FOUND_ROWS 
+			       calculated_created_date,
+                SUM(total_win_times)/SUM(total_play_times)*100 AS hit_rate,
+                SUM(total_out)/SUM(total_in)*100 AS out_rate,
+                SUM(total_win)/SUM(total_bet)*100 AS win_rate,
+                SUM(total_in) AS total_in,
+                SUM(total_out) AS total_out,
+                SUM(total_bet) AS total_bet,
+                SUM(total_win) AS total_win,
+                SUM(total_play_times) AS total_play_times,
+                SUM(total_win_times) AS total_win_times
+                FROM (
+		          	SELECT  
+		                pcb_id,
+		                SUM(credit_in) AS total_in,
+		                SUM(credit_out) AS total_out,
+		                SUM(bet) AS total_bet,
+		                SUM(win+jp1_win+jp2_win+jp3_win+jp4_win) AS total_win,
+		                DATE_ADD(t.created_time, INTERVAL -6 HOUR) AS calculated_created_date,
+		                SUM(CASE WHEN bet > 0 THEN 1 ELSE 0 END) AS total_play_times,
+		                SUM(CASE WHEN bet > 0 AND (win > 0 OR jp4_win > 0 OR jp3_win > 0 OR jp2_win > 0 OR jp1_win> 0) THEN 1 ELSE 0 END) AS total_win_times
+		                FROM transactions t 
+		                WHERE  created_time BETWEEN ''',d_start_time,''' AND ''',p_now,''' AND ((',d_no_search,') OR FIND_IN_SET(pcb_id, ''',d_pcb_ids,'''))
+		                GROUP BY 
+		                    YEAR(calculated_created_date), MONTH(calculated_created_date), DAY(calculated_created_date), pcb_id
+		                ORDER BY NULL) t
+                INNER JOIN machines m ON t.pcb_id = m.pcb_id
+                INNER JOIN user_node un ON (m.user_id = un.user_id) AND (',d_isAdmin,' OR un.lft BETWEEN ',d_lft,' AND ',d_rgt,')
+                INNER JOIN users u ON (un.user_id = u.id) 
+                WHERE m.delete_flag <> 1
+					 GROUP BY DAY(calculated_created_date)
+        );
+    ');
+    
+    SET @d_sqlString2 = CONCAT('CREATE TEMPORARY TABLE IF NOT EXISTS _tmp2 AS(
+		SELECT 1 AS id,CAST(0.0 AS DECIMAL) AS hit_rate,CAST(0 AS DECIMAL) out_rate,CAST(0 AS DECIMAL) win_rate,0 AS total_in,0 AS total_out,0 AS total_bet,0 AS total_win,0 AS total_play_times,0 AS total_win_times);
+		');
+    SET @d_sqlString3 = CONCAT('INSERT INTO _tmp2 SELECT 2 AS ID,0.0 AS hit_rate,0.0 out_rate,0.0 win_rate,0 AS total_in,0 AS total_out,0 AS total_bet,0 AS total_win,0 AS total_play_times,0 AS total_win_times;
+		');
+    SET @d_sqlString4 = CONCAT('INSERT INTO _tmp2 SELECT 3 AS ID,0.0 AS hit_rate,0.0 out_rate,0.0 win_rate,0 AS total_in,0 AS total_out,0 AS total_bet,0 AS total_win,0 AS total_play_times,0 AS total_win_times;
+		');
+    SET @d_sqlString5 = CONCAT('INSERT INTO _tmp2 SELECT 4 AS ID,0.0 AS hit_rate,0.0 out_rate,0.0 win_rate,0 AS total_in,0 AS total_out,0 AS total_bet,0 AS total_win,0 AS total_play_times,0 AS total_win_times;
+		');
+    SET @d_sqlString6 = CONCAT('UPDATE _tmp2 dest, (SELECT SUM(total_win_times)/SUM(total_play_times)*100 AS hit_rate,SUM(total_out)/SUM(total_in)*100 AS out_rate,SUM(total_win)/SUM(total_bet)*100 AS win_rate,SUM(total_in) AS total_in,SUM(total_out) AS total_out,SUM(total_bet) AS total_bet,SUM(total_win) AS total_win,SUM(total_play_times) AS total_play_times,SUM(total_win_times) AS total_win_times
+		FROM _tmp1 WHERE DAY(calculated_created_date) = ',DAY(d_calculated_now),') src SET dest.hit_rate=src.hit_rate,dest.out_rate=src.out_rate,dest.win_rate=src.win_rate,dest.total_in=src.total_in,dest.total_out=src.total_out,dest.total_bet=src.total_bet,dest.total_win=src.total_win,dest.total_play_times=src.total_play_times,dest.total_win_times=src.total_win_times
+		WHERE dest.ID=1;
+	');
+    SET @d_sqlString7 = CONCAT('UPDATE _tmp2 dest, (SELECT SUM(total_win_times)/SUM(total_play_times)*100 AS hit_rate,SUM(total_out)/SUM(total_in)*100 AS out_rate,SUM(total_win)/SUM(total_bet)*100 AS win_rate,SUM(total_in) AS total_in,SUM(total_out) AS total_out,SUM(total_bet) AS total_bet,SUM(total_win) AS total_win,SUM(total_play_times) AS total_play_times,SUM(total_win_times) AS total_win_times
+		FROM _tmp1 WHERE DAY(calculated_created_date) = ',DAY(DATE_ADD(d_calculated_now, INTERVAL -1 DAY)),') src SET dest.hit_rate=src.hit_rate,dest.out_rate=src.out_rate,dest.win_rate=src.win_rate,dest.total_in=src.total_in,dest.total_out=src.total_out,dest.total_bet=src.total_bet,dest.total_win=src.total_win,dest.total_play_times=src.total_play_times,dest.total_win_times=src.total_win_times
+		WHERE dest.ID=2;
+	');
+    SET @d_sqlString8 = CONCAT('UPDATE _tmp2 dest, (SELECT SUM(total_win_times)/SUM(total_play_times)*100 AS hit_rate,SUM(total_out)/SUM(total_in)*100 AS out_rate,SUM(total_win)/SUM(total_bet)*100 AS win_rate,SUM(total_in) AS total_in,SUM(total_out) AS total_out,SUM(total_bet) AS total_bet,SUM(total_win) AS total_win,SUM(total_play_times) AS total_play_times,SUM(total_win_times) AS total_win_times
+		FROM _tmp1 WHERE WEEK(calculated_created_date) = ',WEEK(d_calculated_now),' GROUP BY WEEK(calculated_created_date)) src SET dest.hit_rate=src.hit_rate,dest.out_rate=src.out_rate,dest.win_rate=src.win_rate,dest.total_in=src.total_in,dest.total_out=src.total_out,dest.total_bet=src.total_bet,dest.total_win=src.total_win,dest.total_play_times=src.total_play_times,dest.total_win_times=src.total_win_times
+		WHERE dest.ID=3;
+	');
+    SET @d_sqlString9 = CONCAT('UPDATE _tmp2 dest, (SELECT SUM(total_win_times)/SUM(total_play_times)*100 AS hit_rate,SUM(total_out)/SUM(total_in)*100 AS out_rate,SUM(total_win)/SUM(total_bet)*100 AS win_rate,SUM(total_in) AS total_in,SUM(total_out) AS total_out,SUM(total_bet) AS total_bet,SUM(total_win) AS total_win,SUM(total_play_times) AS total_play_times,SUM(total_win_times) AS total_win_times
+		FROM _tmp1 WHERE MONTH(calculated_created_date) = ',MONTH(d_calculated_now),' GROUP BY MONTH(calculated_created_date)) src SET dest.hit_rate=src.hit_rate,dest.out_rate=src.out_rate,dest.win_rate=src.win_rate,dest.total_in=src.total_in,dest.total_out=src.total_out,dest.total_bet=src.total_bet,dest.total_win=src.total_win,dest.total_play_times=src.total_play_times,dest.total_win_times=src.total_win_times
+		WHERE dest.ID=4;
+	');
+	 
+    PREPARE stmt FROM 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString1;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString2;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString3;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString4;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString5;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString6;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString7;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString8;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString9;
+    EXECUTE stmt;
+    
+    PREPARE stmt FROM 'SELECT * FROM _tmp2;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp1`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp2`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'COMMIT;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    /*
+    SELECT @d_sqlString1;
+    SELECT @d_sqlString2;
+    SELECT @d_sqlString3;
+    SELECT @d_sqlString4;
+    SELECT @d_sqlString5;
+    SELECT @d_sqlString6;
+    SELECT @d_sqlString7;
+    SELECT @d_sqlString8;
+    SELECT @d_sqlString9;
+    */
+END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getListMachines 結構
-DROP PROCEDURE IF EXISTS `sp_getListMachines`;
 DELIMITER //
-CREATE PROCEDURE `sp_getListMachines`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getListMachines`(
 	IN `p_exeid` INT
 
 
@@ -1649,9 +1896,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getListUsers 結構
-DROP PROCEDURE IF EXISTS `sp_getListUsers`;
 DELIMITER //
-CREATE PROCEDURE `sp_getListUsers`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getListUsers`(
 	IN `p_exeid` INT
 
 )
@@ -1672,9 +1918,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getMachine 結構
-DROP PROCEDURE IF EXISTS `sp_getMachine`;
 DELIMITER //
-CREATE PROCEDURE `sp_getMachine`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachine`(
 	IN `p_exeid` INT,
 	IN `p_id` INT
 
@@ -1710,9 +1955,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getMachines 結構
-DROP PROCEDURE IF EXISTS `sp_getMachines`;
 DELIMITER //
-CREATE PROCEDURE `sp_getMachines`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachines`(
 	IN `p_exeid` INT
 
 
@@ -1745,9 +1989,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getMachinesWithUsers 結構
-DROP PROCEDURE IF EXISTS `sp_getMachinesWithUsers`;
 DELIMITER //
-CREATE PROCEDURE `sp_getMachinesWithUsers`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getMachinesWithUsers`(
 	IN `p_exeid` INT
 
 
@@ -1785,9 +2028,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getOperations 結構
-DROP PROCEDURE IF EXISTS `sp_getOperations`;
 DELIMITER //
-CREATE PROCEDURE `sp_getOperations`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getOperations`(
 	IN `p_exeid` INT,
 	IN `p_users` TEXT,
 	IN `p_stores` TEXT,
@@ -2017,9 +2259,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getReportJackpot 結構
-DROP PROCEDURE IF EXISTS `sp_getReportJackpot`;
 DELIMITER //
-CREATE PROCEDURE `sp_getReportJackpot`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportJackpot`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT
@@ -2032,6 +2273,7 @@ CREATE PROCEDURE `sp_getReportJackpot`(
 	IN `p_endTime` DATETIME
 ,
 	IN `p_groupBy` VARCHAR(50)
+
 
 
 
@@ -2098,7 +2340,8 @@ BEGIN
 			store_name,
 			machine_name,
 			t.pcb_id, 
-			jp_server';
+			jp_server,
+			account';
 		SET d_group_by_sql_string = 'GROUP BY t.created_time';
 	END;
 	END IF;
@@ -2162,9 +2405,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getReportMachine 結構
-DROP PROCEDURE IF EXISTS `sp_getReportMachine`;
 DELIMITER //
-CREATE PROCEDURE `sp_getReportMachine`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportMachine`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT,
@@ -2311,9 +2553,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getReportRevenue 結構
-DROP PROCEDURE IF EXISTS `sp_getReportRevenue`;
 DELIMITER //
-CREATE PROCEDURE `sp_getReportRevenue`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getReportRevenue`(
 	IN `p_exeid` INT
 ,
 	IN `p_users` TEXT,
@@ -2325,6 +2566,10 @@ CREATE PROCEDURE `sp_getReportRevenue`(
 
 
 
+,
+	IN `p_groupBy` VARCHAR(50)
+
+
 )
 BEGIN
 	DECLARE d_isAdmin BOOL;
@@ -2334,6 +2579,7 @@ BEGIN
 	DECLARE d_now DATE;
 	DECLARE d_pcb_ids VARCHAR(20000);
 	DECLARE d_columns_sql_string VARCHAR(500);
+	DECLARE d_group_by_sql_string VARCHAR(500);
 	DECLARE d_no_search BOOL;
 	SET d_now = DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR));
 	SET d_no_search = (ISNULL(p_users) AND ISNULL(p_stores) AND ISNULL(p_machines));
@@ -2347,6 +2593,26 @@ BEGIN
 		(ISNULL(p_stores) OR FIND_IN_SET(store_name, p_stores)) AND
 		(ISNULL(p_machines) OR FIND_IN_SET(pcb_id, p_machines));
 	SELECT CASE WHEN ISNULL(d_pcb_ids) THEN '' ELSE d_pcb_ids END INTO d_pcb_ids;
+	
+	IF p_groupBy = 'machine' THEN
+	BEGIN
+		SET d_columns_sql_string = 'store_name,
+			machine_name,
+			t.pcb_id,
+			account';
+		SET d_group_by_sql_string = 'GROUP BY t.pcb_id';
+	END;
+	ELSEIF p_groupBy = 'user' THEN
+	BEGIN
+		SET d_columns_sql_string = 'account';
+		SET d_group_by_sql_string = 'GROUP BY u.id';
+	END;
+	ELSEIF p_groupBy = 'storename' THEN
+	BEGIN
+		SET d_columns_sql_string = 'store_name';
+		SET d_group_by_sql_string = 'GROUP BY store_name';
+	END;
+	END IF;
 	
 	SET @d_sqlString1 = CONCAT('
 		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp1 AS(
@@ -2365,19 +2631,17 @@ BEGIN
 	SET @d_sqlString2 = CONCAT('
 	CREATE TEMPORARY TABLE IF NOT EXISTS _tmp2 AS(
 		SELECT SQL_CALC_FOUND_ROWS 
-				t.pcb_id,
-				store_name,
-				machine_name,
-				account,
-				total_in,
-				total_out,
-				total_in-total_out AS gross_net,
-				total_out/total_in*100 AS out_rate
+			',d_columns_sql_string,',
+			total_in,
+			total_out,
+			total_in-total_out AS gross_net,
+			total_out/total_in*100 AS out_rate
 			FROM _tmp1 t
 			INNER JOIN machines m ON t.pcb_id = m.pcb_id
 			INNER JOIN user_node un ON (m.user_id = un.user_id) AND (',d_isAdmin,' OR un.lft BETWEEN ',d_lft,' AND ',d_rgt,')
 			INNER JOIN users u ON (un.user_id = u.id) -- AND (u.id = m.user_id)
 			WHERE m.delete_flag <> 1
+			' , d_group_by_sql_string , '
 			ORDER BY t.pcb_id);
 		');
 	
@@ -2409,16 +2673,110 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt; 
 	
-	#SELECT @d_sqlString1;
-	#SELECT @d_sqlString2;
+	SELECT @d_sqlString1;
+	SELECT @d_sqlString2;
 	
 END//
 DELIMITER ;
 
--- 傾印  程序 pcb.sp_getTopHitRate 結構
-DROP PROCEDURE IF EXISTS `sp_getTopHitRate`;
+-- 傾印  程序 pcb.sp_getTopGrossNet 結構
 DELIMITER //
-CREATE PROCEDURE `sp_getTopHitRate`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopGrossNet`(
+	IN `p_exeid` INT,
+	IN `p_users` TEXT,
+	IN `p_stores` TEXT
+
+
+
+)
+BEGIN
+    DECLARE d_isAdmin BOOL;
+    DECLARE d_lft INT;
+    DECLARE d_rgt INT;
+    DECLARE d_now DATE;
+    DECLARE d_pcb_ids VARCHAR(20000);
+    DECLARE d_no_search BOOL;
+    SET d_now = DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR));
+    SET d_no_search = (ISNULL(p_users) AND ISNULL(p_stores));
+    DROP TEMPORARY TABLE IF EXISTS `_tmp1`;
+    DROP TEMPORARY TABLE IF EXISTS `_tmp2`;
+    SELECT admin INTO d_isAdmin FROM users WHERE id = p_exeid;
+    SELECT lft, rgt INTO d_lft, d_rgt FROM user_node WHERE user_id = p_exeid;
+    SELECT group_concat(pcb_id  separator ',') INTO d_pcb_ids FROM machines WHERE
+        (ISNULL(p_users) OR FIND_IN_SET(user_id, p_users)) AND
+        (ISNULL(p_stores) OR FIND_IN_SET(store_name, p_stores));
+    SELECT CASE WHEN ISNULL(d_pcb_ids) THEN '' ELSE d_pcb_ids END INTO d_pcb_ids;
+    
+    SET @d_sqlString1 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp1(
+			pcb_id INT,
+			gross_net INT,
+			KEY(`pcb_id`)
+		);
+	 ');
+	 
+    SET @d_sqlString2 = CONCAT('
+		INSERT INTO _tmp1 
+			SELECT pcb_id, (CAST(credit_in AS SIGNED) - CAST(credit_out AS SIGNED)) AS gross_net 
+			FROM transactions
+	      WHERE created_time BETWEEN ''',DATE_ADD(d_now, INTERVAL -7 DAY),''' AND ''',d_now,''' AND ((',d_no_search,') OR FIND_IN_SET(pcb_id, ''',d_pcb_ids,'''));
+	 ');
+	 
+    SET @d_sqlString3 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp2 AS(
+			SELECT m.store_name, t.pcb_id, t.gross_net FROM
+			(SELECT pcb_id, SUM(gross_net) AS gross_net
+				FROM _tmp1
+				GROUP BY pcb_id) t
+			INNER JOIN machines m ON t.pcb_id = m.pcb_id
+			INNER JOIN user_node un ON (m.user_id = un.user_id) AND (',d_isAdmin,' OR un.lft BETWEEN ',d_lft,' AND ',d_rgt,')
+			INNER JOIN users u ON (un.user_id = u.id)
+			WHERE m.delete_flag <> 1
+			ORDER BY t.gross_net DESC
+			LIMIT 5
+		 );
+   ');
+   
+    PREPARE stmt FROM 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString1;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString2;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString3;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'SELECT * FROM _tmp2;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp1`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp2`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'COMMIT;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    SELECT @d_sqlString1;
+    SELECT @d_sqlString2;
+END//
+DELIMITER ;
+
+-- 傾印  程序 pcb.sp_getTopHitRate 結構
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopHitRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (IFNULL(SUM(bet > 0 && win > 0), 0)/IFNULL(SUM(bet > 0), 0)) AS value
@@ -2430,9 +2788,8 @@ LIMIT 5//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getTopOutRate 結構
-DROP PROCEDURE IF EXISTS `sp_getTopOutRate`;
 DELIMITER //
-CREATE PROCEDURE `sp_getTopOutRate`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopOutRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (SUM(credit_out)/SUM(credit_in)) AS value
@@ -2443,10 +2800,196 @@ ORDER BY value DESC
 LIMIT 5//
 DELIMITER ;
 
--- 傾印  程序 pcb.sp_getTopWinRate 結構
-DROP PROCEDURE IF EXISTS `sp_getTopWinRate`;
+-- 傾印  程序 pcb.sp_getTopPlaytimes 結構
 DELIMITER //
-CREATE PROCEDURE `sp_getTopWinRate`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopPlaytimes`(
+	IN `p_exeid` INT,
+	IN `p_users` TEXT,
+	IN `p_stores` TEXT
+)
+BEGIN
+    DECLARE d_isAdmin BOOL;
+    DECLARE d_lft INT;
+    DECLARE d_rgt INT;
+    DECLARE d_now DATE;
+    DECLARE d_pcb_ids VARCHAR(20000);
+    DECLARE d_no_search BOOL;
+    SET d_now = DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR));
+    SET d_no_search = (ISNULL(p_users) AND ISNULL(p_stores));
+    DROP TEMPORARY TABLE IF EXISTS `_tmp1`;
+    DROP TEMPORARY TABLE IF EXISTS `_tmp2`;
+    SELECT admin INTO d_isAdmin FROM users WHERE id = p_exeid;
+    SELECT lft, rgt INTO d_lft, d_rgt FROM user_node WHERE user_id = p_exeid;
+    SELECT group_concat(pcb_id  separator ',') INTO d_pcb_ids FROM machines WHERE
+        (ISNULL(p_users) OR FIND_IN_SET(user_id, p_users)) AND
+        (ISNULL(p_stores) OR FIND_IN_SET(store_name, p_stores));
+    SELECT CASE WHEN ISNULL(d_pcb_ids) THEN '' ELSE d_pcb_ids END INTO d_pcb_ids;
+    
+    SET @d_sqlString1 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp1(
+			pcb_id INT,
+			playtimes INT,
+			KEY(`pcb_id`)
+		);
+	 ');
+	 
+    SET @d_sqlString2 = CONCAT('
+		INSERT INTO _tmp1 
+			SELECT pcb_id, CASE WHEN(bet > 0) THEN 1 ELSE 0 END AS playtimes
+			FROM transactions
+	      WHERE created_time BETWEEN ''',DATE_ADD(d_now, INTERVAL -7 DAY),''' AND ''',d_now,''' AND ((',d_no_search,') OR FIND_IN_SET(pcb_id, ''',d_pcb_ids,'''));
+	 ');
+	 
+    SET @d_sqlString3 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp2 AS(
+			SELECT m.store_name, t.pcb_id, t.playtimes FROM
+			(SELECT pcb_id, SUM(playtimes) AS playtimes
+				FROM _tmp1
+				GROUP BY pcb_id) t
+			INNER JOIN machines m ON t.pcb_id = m.pcb_id
+			INNER JOIN user_node un ON (m.user_id = un.user_id) AND (',d_isAdmin,' OR un.lft BETWEEN ',d_lft,' AND ',d_rgt,')
+			INNER JOIN users u ON (un.user_id = u.id)
+			WHERE m.delete_flag <> 1
+			ORDER BY t.playtimes DESC
+			LIMIT 5
+		 );
+   ');
+   
+    PREPARE stmt FROM 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString1;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString2;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString3;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'SELECT * FROM _tmp2;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp1`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp2`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'COMMIT;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    SELECT @d_sqlString1;
+    SELECT @d_sqlString2;
+END//
+DELIMITER ;
+
+-- 傾印  程序 pcb.sp_getTopWin 結構
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopWin`(
+	IN `p_exeid` INT,
+	IN `p_users` INT,
+	IN `p_stores` INT
+
+
+
+)
+BEGIN
+    DECLARE d_isAdmin BOOL;
+    DECLARE d_lft INT;
+    DECLARE d_rgt INT;
+    DECLARE d_now DATE;
+    DECLARE d_pcb_ids VARCHAR(20000);
+    DECLARE d_no_search BOOL;
+    SET d_now = DATE(DATE_ADD(NOW(), INTERVAL -6 HOUR));
+    SET d_no_search = (ISNULL(p_users) AND ISNULL(p_stores));
+    DROP TEMPORARY TABLE IF EXISTS `_tmp1`;
+    DROP TEMPORARY TABLE IF EXISTS `_tmp2`;
+    SELECT admin INTO d_isAdmin FROM users WHERE id = p_exeid;
+    SELECT lft, rgt INTO d_lft, d_rgt FROM user_node WHERE user_id = p_exeid;
+    SELECT group_concat(pcb_id  separator ',') INTO d_pcb_ids FROM machines WHERE
+        (ISNULL(p_users) OR FIND_IN_SET(user_id, p_users)) AND
+        (ISNULL(p_stores) OR FIND_IN_SET(store_name, p_stores));
+    SELECT CASE WHEN ISNULL(d_pcb_ids) THEN '' ELSE d_pcb_ids END INTO d_pcb_ids;
+    
+    SET @d_sqlString1 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp1(
+			pcb_id INT,
+			win INT,
+			KEY(`pcb_id`)
+		);
+	 ');
+	 
+    SET @d_sqlString2 = CONCAT('
+		INSERT INTO _tmp1 
+			SELECT pcb_id, win+jp1_win+jp2_win+jp3_win+jp4_win AS win
+			FROM transactions
+	      WHERE created_time BETWEEN ''',DATE_ADD(d_now, INTERVAL -7 DAY),''' AND ''',d_now,''' AND ((',d_no_search,') OR FIND_IN_SET(pcb_id, ''',d_pcb_ids,'''));
+	 ');
+	 
+    SET @d_sqlString3 = CONCAT('
+		CREATE TEMPORARY TABLE IF NOT EXISTS _tmp2 AS(
+			SELECT m.store_name, t.pcb_id, t.win FROM
+			(SELECT pcb_id, SUM(win) AS win
+				FROM _tmp1
+				GROUP BY pcb_id) t
+			INNER JOIN machines m ON t.pcb_id = m.pcb_id
+			INNER JOIN user_node un ON (m.user_id = un.user_id) AND (',d_isAdmin,' OR un.lft BETWEEN ',d_lft,' AND ',d_rgt,')
+			INNER JOIN users u ON (un.user_id = u.id)
+			WHERE m.delete_flag <> 1
+			ORDER BY t.win DESC
+			LIMIT 5
+		 );
+   ');
+   
+    PREPARE stmt FROM 'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString1;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString2;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM @d_sqlString3;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'SELECT * FROM _tmp2;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp1`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'DROP TEMPORARY TABLE IF EXISTS `_tmp2`;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    PREPARE stmt FROM 'COMMIT;';
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt; 
+    
+    SELECT @d_sqlString1;
+    SELECT @d_sqlString2;
+END//
+DELIMITER ;
+
+-- 傾印  程序 pcb.sp_getTopWinRate 結構
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTopWinRate`()
     COMMENT 'index'
 SELECT 
 store_name, machine_name, (Sum(win)/SUM(bet)) AS value
@@ -2458,9 +3001,8 @@ LIMIT 5//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getTransactions 結構
-DROP PROCEDURE IF EXISTS `sp_getTransactions`;
 DELIMITER //
-CREATE PROCEDURE `sp_getTransactions`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getTransactions`(
 	IN `p_exeid` INT
 
 
@@ -2513,9 +3055,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getUser 結構
-DROP PROCEDURE IF EXISTS `sp_getUser`;
 DELIMITER //
-CREATE PROCEDURE `sp_getUser`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUser`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -2543,9 +3084,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getUserByAccount_temp 結構
-DROP PROCEDURE IF EXISTS `sp_getUserByAccount_temp`;
 DELIMITER //
-CREATE PROCEDURE `sp_getUserByAccount_temp`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUserByAccount_temp`(
 	IN `p_account` VARCHAR(50)
 
 
@@ -2576,9 +3116,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getUserPermissions 結構
-DROP PROCEDURE IF EXISTS `sp_getUserPermissions`;
 DELIMITER //
-CREATE PROCEDURE `sp_getUserPermissions`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUserPermissions`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT
 
@@ -2616,9 +3155,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getUsers 結構
-DROP PROCEDURE IF EXISTS `sp_getUsers`;
 DELIMITER //
-CREATE PROCEDURE `sp_getUsers`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUsers`(
 	IN `p_exeid` INT,
 	IN `p_admin` BIT
 
@@ -2647,9 +3185,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_getUsersTree 結構
-DROP PROCEDURE IF EXISTS `sp_getUsersTree`;
 DELIMITER //
-CREATE PROCEDURE `sp_getUsersTree`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getUsersTree`(
 	IN `p_exeid` INT
 
 
@@ -2677,9 +3214,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_login 結構
-DROP PROCEDURE IF EXISTS `sp_login`;
 DELIMITER //
-CREATE PROCEDURE `sp_login`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_login`(
 	IN `p_account` VARCHAR(50),
 	IN `p_pwd` CHAR(128)
 
@@ -2689,6 +3225,7 @@ CREATE PROCEDURE `sp_login`(
 
 ,
 	IN `p_ip` VARCHAR(50)
+
 
 
 
@@ -2706,6 +3243,7 @@ BEGIN
 	@p1 = RETURNED_SQLSTATE, @p2 = MESSAGE_TEXT;
 	RESIGNAL;
 	END;
+	DROP TEMPORARY TABLE IF EXISTS `_tmp`;
 	CREATE TEMPORARY TABLE IF NOT EXISTS _tmp AS (
 		SELECT id, account, created_time, login_fail_count, encrypted_password, state FROM users WHERE account = p_account LIMIT 1
 	);
@@ -2714,12 +3252,14 @@ BEGIN
 	#account locked or no account
 	IF NOT EXISTS(SELECT 1 FROM _tmp) THEN
 		BEGIN
+			DROP TEMPORARY TABLE IF EXISTS `_tmp`;
 			INSERT INTO log_user_change(user_id, action, memo, created_time, update_time) VALUES(NULL, 1, CONCAT('Try login not exist account: ', p_account, '.IP: ', p_ip), NOW(), NOW());
 			SIGNAL SQLSTATE '45000'
 		 	SET MESSAGE_TEXT = 'Account locked. Please contact to your administrator.';
 		END;
 	ELSEIF EXISTS(SELECT 1 FROM _tmp WHERE state <> 1) THEN
 		BEGIN
+			DROP TEMPORARY TABLE IF EXISTS `_tmp`;
 			INSERT INTO log_user_change(user_id, action, memo, created_time, update_time) VALUES(NULL, 1, CONCAT('Try login not locked account: ', p_account, '.IP: ', p_ip), NOW(), NOW());
 			SIGNAL SQLSTATE '45000'
 		 	SET MESSAGE_TEXT = 'Account locked. Please contact to your administrator.';
@@ -2731,6 +3271,7 @@ BEGIN
 			IF EXISTS(SELECT 1 FROM _tmp WHERE id = userID AND login_fail_count >= 3) THEN
 				UPDATE users SET state = 2 WHERE id = userID;
 			END IF;
+			DROP TEMPORARY TABLE IF EXISTS `_tmp`;
 			SIGNAL SQLSTATE '45000'
 		 	SET MESSAGE_TEXT = 'Account or password incorrect.';
 		END;
@@ -2741,13 +3282,13 @@ BEGIN
 			SELECT id, account, created_time FROM _tmp;
 		END;
 	END IF;
+	DROP TEMPORARY TABLE IF EXISTS `_tmp`;
 END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_loginPermisisons 結構
-DROP PROCEDURE IF EXISTS `sp_loginPermisisons`;
 DELIMITER //
-CREATE PROCEDURE `sp_loginPermisisons`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_loginPermisisons`(
 	IN `p_userid` INT
 
 
@@ -2759,9 +3300,8 @@ ORDER BY p.sort//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_transferMachines 結構
-DROP PROCEDURE IF EXISTS `sp_transferMachines`;
 DELIMITER //
-CREATE PROCEDURE `sp_transferMachines`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_transferMachines`(
 	IN `p_exeid` INT,
 	IN `p_machinids` VARCHAR(16384),
 	IN `p_targetid` INT
@@ -2842,9 +3382,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_userNodeAdd_temp 結構
-DROP PROCEDURE IF EXISTS `sp_userNodeAdd_temp`;
 DELIMITER //
-CREATE PROCEDURE `sp_userNodeAdd_temp`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_userNodeAdd_temp`(
 	IN `p_parentid` INT,
 	IN `p_userid` INT
 
@@ -2884,9 +3423,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.sp_userNodeMove 結構
-DROP PROCEDURE IF EXISTS `sp_userNodeMove`;
 DELIMITER //
-CREATE PROCEDURE `sp_userNodeMove`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_userNodeMove`(
 	IN `p_exeid` INT,
 	IN `p_userid` INT,
 	IN `p_targetid` INT
@@ -3015,9 +3553,8 @@ END//
 DELIMITER ;
 
 -- 傾印  程序 pcb.tempExec 結構
-DROP PROCEDURE IF EXISTS `tempExec`;
 DELIMITER //
-CREATE PROCEDURE `tempExec`(p_exeid int, p_account varchar(50), p_pwd varchar(50), p_admin bit, p_createdtime datetime)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `tempExec`(p_exeid int, p_account varchar(50), p_pwd varchar(50), p_admin bit, p_createdtime datetime)
 BEGIN
 	DECLARE `_rollback` BOOL DEFAULT 0;
 	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
@@ -3074,7 +3611,6 @@ END//
 DELIMITER ;
 
 -- 傾印  表格 pcb.transactions 結構
-DROP TABLE IF EXISTS `transactions`;
 CREATE TABLE IF NOT EXISTS `transactions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pcb_id` int(10) unsigned NOT NULL,
@@ -3130,7 +3666,6 @@ DELETE FROM `transactions`;
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.users 結構
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account` varchar(36) NOT NULL,
@@ -3144,17 +3679,30 @@ CREATE TABLE IF NOT EXISTS `users` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`)
-) ENGINE=InnoDB AUTO_INCREMENT=649 DEFAULT CHARSET=utf8 COMMENT='使用者主表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='使用者主表';
 
--- 正在傾印表格  pcb.users 的資料：~1 rows (大約)
+-- 正在傾印表格  pcb.users 的資料：~15 rows (大約)
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `account`, `encrypted_password`, `current_sign_in_ip`, `last_sign_in_ip`, `admin`, `state`, `login_fail_count`, `created_time`, `update_time`) VALUES
-	(2, 'admin', '8d60e43446ad6f2a0f2fd1608817843ec086cff247016123c4398c11412bc91e68a84e3113ef25352c57b8a48ae20480274bd66632523d6f6ca2328e694c0cbd', '', '', b'1', 1, 0, '2018-05-11 14:15:26', '2018-07-13 11:24:12');
+	(2, 'admin', '4b657d24c15b3282936b2a3133565e32ae9d6be0b661fd9feca82697adf28c7a4424826be97ba63c1a5e5249ad95e385b2a51cabccc924b2849f1cc5db35b16b', '', '', b'1', 1, 0, '2018-05-11 14:15:26', '2018-07-16 17:19:43'),
+	(3, 'Sky3060', '5d20c6743608ff7267a6d791f18f24095de75fdec04196e9dab8e549a5ef93e793a4a95c68a346868f54c861c0bf4c739a402b5d3ed787f4e6efc3dc6515fd3f', '', '', b'1', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(4, 'Spot4679', '8fc36c69c9444ee2db91414d4470ffe4ee6a7829979f714952824f5078c1b5bac5409494e8c450755ba13c1935446e6d3ec538c2555597001627356ab70e1cff', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(5, 'Snapdragon3924', '54661ad3f077d591fc85cf3be0b9228acfec89c6abcef344d7ab73b2495d5bf8811cecf96b967f1cd5e722e2e8d47d918b4477063e30d7a6f2e9f835cabb3a7d', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(6, 'Fog6845', '190298ead007247613cef16c1f08444420ef0de6871a3416a0fe2928122af84e52e8802a9ad1d684363d8869e8e1d7ea7c19d1cfd7f1a4095f49f3dcb8368d17', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(7, 'Denim895', '28459a65c2681d6da11b5d36075a37d8c8b84ab24108ba1031c3d301fa55fdd8c34e745a1c8ade9d469b81fbf1ce86d3c82c6b45989a1835a88a1ded3409fac3', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(8, 'Daffodil2944', '405c6310108fc5cd95a7eb6c34f6718c4b10cd0139af8901c7185e9958d516c9836695b58cfb06d850f9ea45e82432c3fedbe5fb2d71781aed59c4c1ce787413', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(9, 'Ripple4836', '92c1e40cc9adaaf198a4edcbabb14397afca1f60dd0efbf7e1f36f9e90be9d65c077c69583dce6c7a61d8bf18e0e4136b5617fb0eede9cd7f10a60469b795fb4', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(10, 'Fantasy9388', '444e68f7fba28d0d312420f2edb72215c031021e26579a6df2a032e9e7e6ed442a8ef99e1bb8f28c2df5405f15096e6ee2093e12188b4932c209036e6c70af8d', '', '', b'1', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(11, 'Prairie2859', '16dbaf077bf251b317b9e33bc05d906bfb0348dcd62bbc3728a3558c0bef24c6311ed3d7495c39bcfc9114433f5101bfa0815ad0f0612344a9ed33bdfa406d78', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(12, 'Mangrove7200', '49962d14b9cdb4cd86ac17915d84e2aa18a0ba6eda9e90b89b17596a27ee8fd739bdcfc9d2aa7020f3bbc8dcaf465529461b2a9ed5bc94677cc590e25012126a', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(13, 'Clever6114', '79bbb71ac2e59c15633d61de12ca32fe04fc5a7311aaf8290a0b941bca8ecb7e0291a48d718ef563eabfd9cfbc97aade818769cb16c84ad3fc66bb8bc1ddd458', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(14, 'Lake9086', '5d47b45f24ebdf154eafe6190a16fb9ca2cc18ba530a4b3bf104fe1e1793bdbc52368473b75173120879455c0bf0622f17e70c0f06f3c4cd62ef0929d26bdf8a', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(15, 'Hazel9422', '8c137de18e9ce5f5d2a17404bc73dcac87b2274ab9e3d7d87f522d11e4f19fd388109de8f91d97177c4144a77aabf08297daf6c882b5fb673f31393fdf884198', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(16, 'Bitter1390', 'd07f800634c3b5fee9cefa40214a0a72f09b50ae4fad2885c2f4146707245269bf33a61108c8e904617d0f1e7287a1fd121e08c4da136c0beedfe74ac5dc6949', '', '', b'0', 1, 0, '2018-07-25 11:35:16', '2018-07-25 11:35:16');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.user_node 結構
-DROP TABLE IF EXISTS `user_node`;
 CREATE TABLE IF NOT EXISTS `user_node` (
   `user_id` int(10) unsigned NOT NULL,
   `parent_id` int(10) unsigned NOT NULL,
@@ -3167,15 +3715,28 @@ CREATE TABLE IF NOT EXISTS `user_node` (
   CONSTRAINT `FK_user_node_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='使用者節點描述表';
 
--- 正在傾印表格  pcb.user_node 的資料：~1 rows (大約)
+-- 正在傾印表格  pcb.user_node 的資料：~15 rows (大約)
 DELETE FROM `user_node`;
 /*!40000 ALTER TABLE `user_node` DISABLE KEYS */;
 INSERT INTO `user_node` (`user_id`, `parent_id`, `lft`, `rgt`, `created_time`, `update_time`) VALUES
-	(2, 0, 1, 2, '2018-05-17 17:38:46', '2018-07-13 11:23:03');
+	(2, 0, 1, 30, '2018-05-17 17:38:46', '2018-07-25 11:35:16'),
+	(3, 2, 8, 29, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(4, 3, 19, 28, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(5, 4, 26, 27, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(6, 4, 24, 25, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(7, 3, 9, 18, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(8, 7, 16, 17, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(9, 7, 14, 15, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(10, 2, 2, 7, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(11, 10, 5, 6, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(12, 4, 22, 23, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(13, 4, 20, 21, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(14, 10, 3, 4, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(15, 7, 12, 13, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(16, 7, 10, 11, '2018-07-25 11:35:16', '2018-07-25 11:35:16');
 /*!40000 ALTER TABLE `user_node` ENABLE KEYS */;
 
 -- 傾印  表格 pcb.user_role 結構
-DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE IF NOT EXISTS `user_role` (
   `user_id` int(10) unsigned NOT NULL,
   `role_id` int(10) unsigned NOT NULL,
@@ -3187,11 +3748,25 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   CONSTRAINT `FK_user_role_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='使用者角色對應表';
 
--- 正在傾印表格  pcb.user_role 的資料：~1 rows (大約)
+-- 正在傾印表格  pcb.user_role 的資料：~15 rows (大約)
 DELETE FROM `user_role`;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
 INSERT INTO `user_role` (`user_id`, `role_id`, `created_time`, `update_time`) VALUES
-	(2, 1, '2018-05-15 16:50:10', '2018-06-22 09:30:33');
+	(2, 1, '2018-05-15 16:50:10', '2018-06-22 09:30:33'),
+	(3, 1, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(4, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(5, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(6, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(7, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(8, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(9, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(10, 1, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(11, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(12, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(13, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(14, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(15, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16'),
+	(16, 2, '2018-07-25 11:35:16', '2018-07-25 11:35:16');
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
