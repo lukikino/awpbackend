@@ -105,6 +105,7 @@ func main() {
 	app.AddController(c.NewCommon, c.CheckLoginStatus)
 	app.AddController(c.NewFileServe)
 	app.AddController(c.NewLogin)
+	app.AddController(c.NewProfile, c.CheckLoginStatus)
 
 	// Start the server
 	port := fmt.Sprintf(":%d", app.Config.Port)

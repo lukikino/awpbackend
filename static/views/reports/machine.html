@@ -116,5 +116,32 @@
                 </div>
             </div>
         </div>
+        <div class="card col-md-12" v-show="viewData.length > 0">
+            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+            </svg>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="clearfix" :class='{"loading-opacity": loading}'>
+                        <div class="form-group float-left">
+                            <dropdown :onChanged="updateGroupChart" :items="machinesForReport"></dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" v-show="viewData.length > 0">
+                    <div ref="chartTotalInTotalOut" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-12" v-show="viewData.length > 0">
+                    <div ref="chartTotalBetTotalWin" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-12" v-show="viewData.length > 0">
+                    <div ref="chartTotalPlayTotalWin" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-12" v-show="viewData.length > 0">
+                    <div ref="chartAvgBet" :class='{"loading-opacity": loading}'></div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 </div>

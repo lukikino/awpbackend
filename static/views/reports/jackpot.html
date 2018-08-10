@@ -57,13 +57,14 @@
                         <table v-if="viewData.length" id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info">
                             <thead>
                                 <tr role="row">
-                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending">Date</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending"
+                                        v-if="searchData.groupBy=='nogroup'">Date</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Machine ID: activate to sort column ascending"
                                         v-if="searchData.groupBy=='machine' || searchData.groupBy=='nogroup'">Machine</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending"
                                         v-if="searchData.groupBy!='user'">Store Name</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending"
-                                        v-if="searchData.groupBy=='user'">Account</th>
+                                        v-if="searchData.groupBy=='user' || searchData.groupBy=='nogroup'">Account</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending"
                                         v-if="searchData.groupBy=='nogroup'">JP Server</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">JP1 Win</th>
@@ -74,10 +75,10 @@
                             </thead>
                             <tbody>
                                 <tr role="row" v-for="item in viewData">
-                                    <td>{/ item.createdTime /}</td>
+                                    <td v-if="searchData.groupBy=='nogroup'">{/ item.createdTime /}</td>
                                     <td v-if="searchData.groupBy=='machine' || searchData.groupBy=='nogroup'">{/ item.pcbID /}({/ item.machineName /})</td>
                                     <td v-if="searchData.groupBy!='user'">{/ item.storeName /}</td>
-                                    <td v-if="searchData.groupBy=='user'">{/ item.account /}</td>
+                                    <td v-if="searchData.groupBy=='user' || searchData.groupBy=='nogroup'">{/ item.account /}</td>
                                     <td v-if="searchData.groupBy=='nogroup'">{/ item.jpServer /}</td>
                                     <td>{/ thousandFormat(item.totalJp1Win) /}</td>
                                     <td>{/ thousandFormat(item.totalJp2Win) /}</td>
@@ -88,6 +89,25 @@
                         </table>
                         <pagination :data="reportData" :dataChanged="dataChanged" :currentPage="currentPage" :changePage="changePage" :unit="unit"></pagination>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card col-md-12" v-show="viewData.length > 0">
+            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+            </svg>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="clearfix" :class='{"loading-opacity": loading}'>
+                        <div class="form-group float-left">
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='user'" :items="usersForReport"></dropdown>
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='storename'" :items="storesForReport"></dropdown>
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='machine'" :items="machinesForReport"></dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" v-show="viewData.length > 0">
+                    <div ref="chartTotalJp" :class='{"loading-opacity": loading}'></div>
                 </div>
             </div>
         </div>

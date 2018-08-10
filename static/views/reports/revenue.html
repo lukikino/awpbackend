@@ -37,6 +37,18 @@
                                     <option value="100">100</option>
                                 </select> entries</label>
                         </div>
+                        <div class="dataTables_length m-r-20">
+                            <label>Group View By </label>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('machine')" @click="changeGroup('machine')">
+                                Machine
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('user')" @click="changeGroup('user')">
+                                Account
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" :class="chkGroup('storename')" @click="changeGroup('storename')">
+                                Store
+                            </button>
+                        </div>
                         <div class="alert alert-danger" v-if="viewData.length === 0 && searched">There is no data cloud display.</div>
                         <div class="alert alert-info" v-if="viewData.length === 0 && !searched">Press search button to start.</div>
                         <table v-if="viewData.length" id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info">
@@ -65,6 +77,34 @@
                         </table>
                         <pagination :data="reportData" :dataChanged="dataChanged" :currentPage="currentPage" :changePage="changePage" :unit="unit"></pagination>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card col-md-12" v-show="viewData.length > 0">
+            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+            </svg>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="clearfix" :class='{"loading-opacity": loading}'>
+                        <div class="form-group float-left">
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='user'" :items="usersForReport"></dropdown>
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='storename'" :items="storesForReport"></dropdown>
+                            <dropdown :onChanged="updateGroupChart" v-if="searchData.groupBy=='machine'" :items="machinesForReport"></dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" v-show="viewData.length > 0">
+                    <div ref="chartTotalIn" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-6" v-show="viewData.length > 0">
+                    <div ref="chartTotalOut" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-12 my-3" v-show="viewData.length > 0">
+                    <div ref="chartTotalGrossNet" :class='{"loading-opacity": loading}'></div>
+                </div>
+                <div class="col-lg-12 my-3" v-show="viewData.length > 0">
+                    <div ref="chartTotalOutRate" :class='{"loading-opacity": loading}'></div>
                 </div>
             </div>
         </div>

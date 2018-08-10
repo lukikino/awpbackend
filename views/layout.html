@@ -157,8 +157,10 @@
                                     <span>{/ loginUserName /}</span>
                                 </template>
                                 <b-dropdown-item-button>
-                                    <a href="#">
-                                        <i class="ti-settings"></i> Setting</a>
+                                    <router-link :to="{ path:'/profile' }" aria-expanded="false">
+                                        <i class="ti-settings"></i>
+                                        <span class="hide-menu">Setting </span>
+                                    </router-link>
                                 </b-dropdown-item-button>
                                 <b-dropdown-item-button @click="logout">
                                     <a href="javascript:">
@@ -197,8 +199,8 @@
                     <ul id="sidebarnav">
                         <li class="nav-devider"></li>
                         <li class="nav-label">Home</li>
-                        <li>
-                            <router-link :to="{ path:'/dashboard' }" aria-expanded="false">
+                        <li v-if="$root.chkPermission('operations.view')">
+                            <router-link :to="{ path:'/dashboard' }">
                                 <i class="fas fa-tachometer-alt"></i>
                                 <span class="hide-menu">Dashboard </span>
                             </router-link>
@@ -472,15 +474,16 @@
     <!-- <script src="/static/js/lib/chartist/chartist.min.js"></script> -->
     <!-- <script src="/static/js/lib/chartist/chartist-plugin-tooltip.min.js"></script> -->
     <!-- <script src="/static/js/lib/chartist/chartist-init.js"></script> -->
+    <script src="/static/js/underscore-min.js"></script>
     <script src="/static/js/lib/highchart/highcharts.js"></script>
     <!-- <script src="/static/js/lib/chart-js/chartjs-init.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha512.min.js"></script>
-    <script src="/static/js/palette.js"></script>
+    <script src="/static/js/crypto-js.js"></script>
+    <script src="/static/js/sha512.min.js"></script>
+    <!-- <script src="/static/js/palette.js"></script> -->
     <script src="/static/js/vue.js"></script>
     <script src="/static/js/vue-router.js"></script>
     <script src="/static/js/vue-resource.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.0.0-rc.8/dist/bootstrap-vue.js"></script>
+    <script src="/static/js/bootstrap-vue.js"></script>
     <!--Custom JavaScript -->
     <script src="/static/js/moment.js"></script>
     <script src="/static/js/moment-timezone-with-data.js"></script>

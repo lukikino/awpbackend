@@ -7,15 +7,16 @@ import (
 )
 
 type Dashboard struct {
-	Total_In         int
-	Total_Out        int
-	Out_Rate         float32
-	Total_Bet        int
-	Total_Win        int
-	Win_Rate         float32
-	Total_Play_Times int
-	Total_Win_Times  int
-	Hit_Rate         float32
+	ID             *int     `db:"id" json:"-"`
+	TotalIn        *int     `db:"total_in" json:"totalIn"`
+	TotalOut       *int     `db:"total_out" json:"totalOut"`
+	OutRate        *float32 `db:"out_rate" json:"outRate"`
+	TotalBet       *int     `db:"total_bet" json:"totalBet"`
+	TotalWin       *int     `db:"total_win" json:"totalWin"`
+	WinRate        *float32 `db:"win_rate" json:"winRate"`
+	HitRate        *float32 `db:"hit_rate" json:"hitRate"`
+	TotalPlayTimes *int     `db:"total_play_times" json:"totalPlayTimes"`
+	TotalWinTimes  *int     `db:"total_win_times" json:"totalWinTimes"`
 }
 
 type Top struct {
@@ -24,18 +25,17 @@ type Top struct {
 	Value        float32
 }
 
-func GetDashboard() []Dashboard {
+type DashboardSearch struct {
+	Users  *string `json:"users"`
+	Stores *string `json:"stores"`
+}
+
+func GetDashboard(loginID int, search DashboardSearch) ReturnData {
 	db := GetConnection()
-	end_time := time.Now().UTC().Add(time.Hour * time.Duration(TimeZone))
-	start_time := time.Date(end_time.Year(), end_time.Month(), end_time.Day(), -3+TimeZone, 0, 0, 0, end_time.Location())
-	if end_time.Unix() < start_time.Unix() {
-		start_time = start_time.Add(time.Hour * time.Duration(-24))
-	}
-	dashboard := []Dashboard{}
-	db.Select(&dashboard, "call sp_getDashboard('%s','%s')", start_time.UTC().Format(DatetimeFormat), end_time.UTC().Format(DatetimeFormat))
-	// fmt.Printf("call sp_getDashboard('%s','%s')", start_time.UTC().Format(DatetimeFormat), end_time.UTC().Format(DatetimeFormat))
-	// fmt.Println(dashboard)
-	return dashboard
+	m := []Dashboard{}
+	err := db.Select(&m, "call sp_getDashboard(?,?,?,?)", loginID, search.Users, search.Stores, time.Now())
+	returnData := BoxingToResult(m, err)
+	return returnData
 }
 
 func GetTopOutRate() []Top {

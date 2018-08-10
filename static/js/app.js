@@ -7,7 +7,7 @@ const getTemplate = function (path, component, permission) {
             }
             app.getUserStatus(function () {
                 if (this.chkPermission(permission)) {
-                    Vue.http.get('/static/views/' + path + '.html').then(function (r) {
+                    Vue.http.get('/static/views/' + path + '.html?v=' + Math.random()).then(function (r) {
                         component.template = r.body;
                         component.delimiters = ['{/', '/}'];
                         resolve(component);
@@ -140,7 +140,7 @@ var ComponentBase = {
                     vm._listData = res.body.data;
                     cb.call(vm, vm._listData);
                 }
-            }).catch(this.handlerError);
+            }).catch(app.handlerError);
         }
     }
 };
@@ -434,51 +434,17 @@ const Home = {
     mixins: [PageBase],
     data: function () {
         return {
+            loadingMain: false,
             loading: false,
+            searched: false,
             summaryData: {
                 today: {
-                    Total_In: 0,
-                    Total_Out: 0,
-                    Out_Rate: 0,
-                    Total_Bet: 0,
-                    Total_Win: 0,
-                    Win_Rate: 0,
-                    Total_Play_Times: 0,
-                    Total_Win_Times: 0,
-                    Hit_Rate: 0
                 },
                 yesterday: {
-                    Total_In: 0,
-                    Total_Out: 0,
-                    Out_Rate: 0,
-                    Total_Bet: 0,
-                    Total_Win: 0,
-                    Win_Rate: 0,
-                    Total_Play_Times: 0,
-                    Total_Win_Times: 0,
-                    Hit_Rate: 0
                 },
                 wtd: {
-                    Total_In: 0,
-                    Total_Out: 0,
-                    Out_Rate: 0,
-                    Total_Bet: 0,
-                    Total_Win: 0,
-                    Win_Rate: 0,
-                    Total_Play_Times: 0,
-                    Total_Win_Times: 0,
-                    Hit_Rate: 0
                 },
                 mtd: {
-                    Total_In: 0,
-                    Total_Out: 0,
-                    Out_Rate: 0,
-                    Total_Bet: 0,
-                    Total_Win: 0,
-                    Win_Rate: 0,
-                    Total_Play_Times: 0,
-                    Total_Win_Times: 0,
-                    Hit_Rate: 0
                 }
             },
             topOutRate: {
@@ -507,22 +473,14 @@ const Home = {
                         value: 0
                     }
                 ]
-            },
-            accounts: {
-                type: "Account",
-                items: []
-            },
-            stores: {
-                type: "Store",
-                items: []
             }
         }
     },
     watch: {
         '$route': function (route) {
-            this.loading = true;
+            this.loadingMain = true;
             setTimeout(() => {
-                this.loading = false;
+                this.loadingMain = false;
             }, 300);
             this.resetParams();
         }
@@ -535,27 +493,26 @@ const Home = {
             this.searched = false;
             this.currentPage = 1;
         },
-        search: function () {
+        search: function(){
             var vm = this;
-            this.loading = true;
-            Vue.http.get('/').then(function () {
-                setTimeout(() => {
-                    vm.loading = false;
-                }, 2000);
+            vm.loadingMain = true;
+            vm.searched = true;
+            var search = {
+                users: vm.determineSearchString(vm.users.items, "checked"),
+                stores: vm.determineSearchString(vm.stores.items, "checked")
+            };
+            Vue.http.post('/api/index/dashboard', search).then(function (res) {
+                vm.summaryData.today = res.body.data[0] || {};
+                vm.summaryData.yesterday = res.body.data[1] || {};
+                vm.summaryData.wtd = res.body.data[2] || {};
+                vm.summaryData.mtd = res.body.data[3] || {};
+                vm.loadingMain = false;
             }).catch(app.handlerError);
         }
     },
     created: function () {
         var vm = this;
-        app.getAccounts((function (v) { this.accounts.items = v; }).bind(this));
-        app.getStores((function (v) { this.stores.items = v; }).bind(this));
-
-        Vue.http.get('/api/index/dashboard').then(function (res) {
-            vm.summaryData.today = res.body[0];
-            vm.summaryData.yesterday = res.body[1];
-            vm.summaryData.wtd = res.body[2];
-            vm.summaryData.mtd = res.body[3];
-        }).catch(app.handlerError);
+        vm.search();
         Vue.http.get('/api/index/topoutrate').then(function (res) {
             vm.topOutRate.items = res.body;
         }).catch(app.handlerError);
@@ -592,7 +549,7 @@ const Operations = {
             showGroupChart: false,
             columnsForReport: {
                 type: "Column",
-                items: seriesColumns.map(function (item) { return { checked: item==="totalIn", id: item, text: item } })
+                items: seriesColumns.map(function (item) { return { checked: item === "totalIn", id: item, text: item } })
             },
             usersForReport: {
                 type: "Account",
@@ -691,7 +648,7 @@ const Operations = {
                 vm.prepareReportData();
                 vm.drawSummaryChart();
                 vm.updateGroupChartFilters();
-                if(vm.showGroupChart){
+                if (vm.showGroupChart) {
                     vm.drawGroupChart();
                 }
             }).catch(app.handlerError);
@@ -812,20 +769,20 @@ const Operations = {
                     }
                 },
                 series: series
-            }, function(){
+            }, function () {
                 vm.loading = false;
             });
         },
         updateGroupChartFilters: function () {
             switch (this.searchData.groupBy) {
                 case 'machine':
-                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
                     break;
                 case 'user':
-                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
                     break;
                 case 'storename':
-                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
+                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
                     break;
             }
         },
@@ -874,7 +831,7 @@ const Operations = {
                     });
                 }
             }
-            ch = this.groupChart = this.genratorChart(this.$refs.groupChart, series, false);
+            this.groupChart = this.genratorChart(this.$refs.groupChart, series, false);
             this.showGroupChart = true;
             // } else {
             //     console.log(series)
@@ -909,7 +866,7 @@ const Operations = {
         this.resetParams();
     },
     mounted: function () {
-        
+
     }
 };
 
@@ -931,7 +888,7 @@ const Accounting = {
             showGroupChart: false,
             columnsForReport: {
                 type: "Column",
-                items: seriesColumns.map(function (item) { return { checked: item==="totalIn", id: item, text: item } })
+                items: seriesColumns.map(function (item) { return { checked: item === "totalIn", id: item, text: item } })
             },
             usersForReport: {
                 type: "Account",
@@ -1020,7 +977,7 @@ const Accounting = {
                 vm.prepareReportData();
                 vm.drawSummaryChart();
                 vm.updateGroupChartFilters();
-                if(vm.showGroupChart){
+                if (vm.showGroupChart) {
                     vm.drawGroupChart();
                 }
             }).catch(app.handlerError);
@@ -1096,7 +1053,7 @@ const Accounting = {
         genratorChart: function (el, series, legend) {
             var vm = this;
             vm.loading = true;
-            if(!series){
+            if (!series) {
                 console.warn("Can't draw empty series");
                 return null;
             }
@@ -1145,20 +1102,20 @@ const Accounting = {
                     }
                 },
                 series: series
-            }, function(){
+            }, function () {
                 vm.loading = false;
             });
         },
         updateGroupChartFilters: function () {
             switch (this.searchData.groupBy) {
                 case 'machine':
-                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
                     break;
                 case 'user':
-                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
                     break;
                 case 'storename':
-                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
+                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
                     break;
             }
         },
@@ -1197,7 +1154,7 @@ const Accounting = {
                     if (checkedColumns !== null && !checkedColumns[columnKey]) {
                         continue;
                     }
-                    singleRow[columnKey].sort(function(a,c){return a[0]-c[0];});
+                    singleRow[columnKey].sort(function (a, c) { return a[0] - c[0]; });
                     series.push({
                         type: 'spline',
                         name: [columnKey, "(", groupKey, ")"].join(""),
@@ -1208,7 +1165,7 @@ const Accounting = {
                     });
                 }
             }
-            ch = this.groupChart = this.genratorChart(this.$refs.groupChart, series, false);
+            this.groupChart = this.genratorChart(this.$refs.groupChart, series, false);
             this.showGroupChart = true;
         },
         drawSummaryChart: function () {
@@ -1222,7 +1179,7 @@ const Accounting = {
                 for (var date in singleSummaryData) {
                     seriesContent.push([+date, singleSummaryData[date]]);
                 }
-                seriesContent.sort(function(a,c){return a[0]-c[0];});
+                seriesContent.sort(function (a, c) { return a[0] - c[0]; });
                 series.push({
                     type: 'spline',
                     name: key,
@@ -1396,7 +1353,7 @@ const MachineList = {
             return this.view === 2;
         },
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.storeName) || rex.test(item.pcbID);
@@ -1670,7 +1627,7 @@ const Core = {
     data: function () {
         return {
             loading: false,
-            filter: '',            
+            filter: '',
             reportData: [],
             viewData: [], //current view data
             currentPage: 1,
@@ -1699,7 +1656,7 @@ const Core = {
             return this.view === 2;
         },
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.account);
@@ -1900,7 +1857,7 @@ const Agency = {
     data: function () {
         return {
             loading: false,
-            filter: '',            
+            filter: '',
             reportData: [],
             viewData: [], //current view data
             currentPage: 1,
@@ -1929,7 +1886,7 @@ const Agency = {
             return this.view === 2;
         },
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.account);
@@ -2129,7 +2086,7 @@ const VersionSetting = {
         return {
             loading: false,
             filter: '',
-            machines: fakeMachines,            
+            machines: fakeMachines,
             reportData: [],
             summaryReportData: {},
             viewData: [], //current view data
@@ -2168,7 +2125,7 @@ const VersionSetting = {
     },
     computed: {
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.machineId) || rex.test(item.machineName) || rex.test(item.storeName) || rex.test(item.currentVersion);
@@ -2192,6 +2149,7 @@ const JPServer = {
 const ReportJackpot = {
     mixins: [PageBase],
     data: function () {
+        var seriesColumns = ["totalJp1Win", "totalJp2Win", "totalJp3Win", "totalJp4Win"];
         return {
             loading: false,
             searchData: { groupBy: 'nogroup', startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
@@ -2201,15 +2159,19 @@ const ReportJackpot = {
             unit: 10, //numbers of row per page
             view: 1, //1:simple, 2:detail
             searched: false, //controll information
-            users: {
+            groupSeriesData: {},
+            groupSeriesDataTime: {},
+            groupChart: null,
+            seriesColumns: seriesColumns,
+            usersForReport: {
                 type: "Account",
                 items: []
             },
-            stores: {
+            storesForReport: {
                 type: "Store",
                 items: []
             },
-            machines: {
+            machinesForReport: {
                 type: "Machine",
                 items: []
             }
@@ -2252,9 +2214,12 @@ const ReportJackpot = {
             this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
-            this.summaryReportData = {};
-            this.currentPage = 1;
+            this.showGroupChart = false;
             this.searchData.groupInterval = "nogroup";
+            this.groupChart && this.groupChart.hasRendered && this.groupChart.destroy && this.groupChart.destroy();//reset chart
+            this.searchData.startTime = Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss');
+            this.searchData.endTime = Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss');
+            PageBase.methods.resetParams.call(this);
         },
         changeGroup: function (group) {
             this.searchData.groupBy = group;
@@ -2291,7 +2256,264 @@ const ReportJackpot = {
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
+                vm.prepareReportData();
+                vm.updateGroupChartFilters();
+                vm.drawGroupChart();
             }).catch(app.handlerError);
+        },
+        prepareReportData: function () {
+            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var data = {};
+            //used for forLoop
+            var singleDataByTime;
+            var dataSetGroup = {};
+            var groupKey;
+            var singleData = {};
+            var machineKey;
+            var item;
+
+            var dataSetGroupTime = {};
+
+            //group by machine, account, storename
+            for (var index in this.reportData) {
+                item = this.reportData[index];
+                //group data by user selected
+                machineKey = item.pcbID + "(" + item.machineName + ")";
+                switch (this.searchData.groupBy) {
+                    case 'machine':
+                        groupKey = machineKey;
+                        singleData = data[machineKey] = data[machineKey] || {};
+                        break;
+                    case 'user':
+                        groupKey = item.account;
+                        singleData = data[item.account] = data[item.account] || {};
+                        break;
+                    case 'storename':
+                        groupKey = item.storeName;
+                        singleData = data[item.storeName] = data[item.storeName] || {};
+                        break;
+                }
+                for (var key in item) {
+                    if (!columnsRegex.test(key)) {
+                        continue;
+                    }
+                    singleData[key] = Number(item[key]);
+                }
+                dataSetGroup[groupKey] = singleData;
+            }
+
+            //group by date
+            // for (var index in this.reportData) {
+            //     item = this.reportData[index];
+            //     for (var key in item) {
+            //         if (!columnsRegex.test(key)) {
+            //             continue;
+            //         }
+            //         var d = new Date(item.rangeEndTime).getTime();
+            //         dataSetGroupTime[key] = dataSetGroupTime[key] || [];
+            //         dataSetGroupTime[key].push([d, Number(item[key])]);
+            //     }
+            // }
+            this.groupSeriesData = dataSetGroup;
+            // this.groupSeriesDataTime = dataSetGroupTime;
+        },
+        genratorAreaChart: function (el, series) {
+            console.log(series)
+            var vm = this;
+            vm.loading = true;
+            return Highcharts.chart(el, {
+                chart: {
+                    type: 'area',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: "Jp Win Distribution "
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickmarkPlacement: 'on',
+                    labels: {
+                        format: '{value:%Y/%m/%d<br>%H:%M:%S}',
+                        rotation: -50,
+                        y: 33,
+                        align: 'center',
+                        step: 1
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Credits'
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value / 1000;
+                        }
+                    }
+                },
+                tooltip: {
+                    split: true
+                },
+                plotOptions: {
+                    area: {
+                        stacking: 'normal',
+                        lineColor: '#666666',
+                        lineWidth: 1,
+                        marker: {
+                            lineWidth: 1,
+                            lineColor: '#666666',
+                            enabled: null
+                        }
+                    }
+                },
+                series: series
+            }, function () {
+                vm.loading = false;
+            });
+        },
+        drawAreaChart: function () {
+            var vm = this;
+            var series = [];
+            var checkedGroups = [];
+            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var _filterMachine = vm.determineSearchString(vm.machinesForReport.items, "checked");
+            var _filterUser = vm.determineSearchString(vm.usersForReport.items, "checked");
+            var _filterStore = vm.determineSearchString(vm.storesForReport.items, "checked");
+            var _checkedMachines = _filterMachine && _filterMachine.split(",").toObject();
+            var _checkedUsers = _filterUser && _filterUser.split(",").toObject();
+            var _checkedStores = _filterStore && _filterStore.split(",").toObject();
+            //used for forLoop
+            var singleRow = {};
+
+            for (var index in this.reportData) {
+                item = this.reportData[index];
+                if (_checkedMachines !== null && !_checkedMachines[item.pcbID] ||
+                    _checkedUsers !== null && !_checkedUsers[item.account] ||
+                    _checkedStores !== null && !_checkedStores[item.storeName]) {
+                    continue;
+                }
+                for (var key in item) {
+                    if (!columnsRegex.test(key)) {
+                        continue;
+                    }
+                    var d = new Date(item.createdTime).getTime();
+                    singleRow[key] = singleRow[key] || [];
+                    singleRow[key].push([d, Number(item[key])]);
+                }
+            }
+
+            for (var key in singleRow) {
+                singleRow[key]
+                series.push({
+                    name: key,
+                    data: singleRow[key]
+                });
+            }
+            this.groupChart = this.genratorAreaChart(this.$refs.chartTotalJp, series);
+        },
+        genratorColumnChart: function (el, series, categories) {
+            var vm = this;
+            vm.loading = true;
+            return Highcharts.chart(el, {
+                chart: {
+                    type: 'column',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: ''
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                xAxis: {
+                    categories: categories,
+                    labels: {
+                        rotation: -50,
+                        y: 33,
+                        align: 'center',
+                        step: 1
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> <br>',
+                    shared: true
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: null,
+                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                        }
+                    }
+                },
+                series: series
+            }, function () {
+                vm.loading = false;
+            });
+        },
+        drawGroupChart: function () {
+            var vm = this;
+            var series = [];
+            var groupSeries = {};
+            var checkedGroups = [];
+            var _tempGroups = null;
+            switch (this.searchData.groupBy) {
+                case 'machine':
+                    _tempGroups = vm.determineSearchString(vm.machinesForReport.items, "checked");
+                    break;
+                case 'user':
+                    _tempGroups = vm.determineSearchString(vm.usersForReport.items, "checked");
+                    break;
+                case 'storename':
+                    _tempGroups = vm.determineSearchString(vm.storesForReport.items, "checked");
+                    break;
+                default:
+                    vm.drawAreaChart();
+                    return;
+            }
+            checkedGroups = _tempGroups && _tempGroups.split(",").toObject();
+            //used for forLoop
+            var singleRow = {};
+            for (var groupKey in this.groupSeriesData) {
+                if (checkedGroups !== null && !checkedGroups[groupKey]) {
+                    continue;
+                }
+                singleRow = this.groupSeriesData[groupKey];
+                for (var columnKey in singleRow) {
+                    groupSeries[columnKey] = groupSeries[columnKey] || [];
+                    groupSeries[columnKey].push(singleRow[columnKey]);
+                }
+            }
+            for (var seriesKey in groupSeries) {
+                series.push({
+                    name: seriesKey,
+                    data: groupSeries[seriesKey]
+                });
+            }
+            this.groupCharts = this.groupCharts || [];
+            this.groupChart = this.genratorColumnChart(this.$refs.chartTotalJp, series, Object.keys(this.groupSeriesData));
+        },
+        updateGroupChartFilters: function () {
+            switch (this.searchData.groupBy) {
+                case 'machine':
+                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    break;
+                case 'user':
+                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    break;
+                case 'storename':
+                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
+                    break;
+            }
+        },
+        updateGroupChart: function () {
+            if (!this.groupChart || !this.groupChart.hasRendered) { return; }
+            this.drawGroupChart();
         }
     },
     created: function () {
@@ -2309,6 +2531,7 @@ const ReportJackpot = {
 const ReportMachine = {
     mixins: [PageBase],
     data: function () {
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalPlayTimes", "totalWinTimes", "avgBet"];
         return {
             loading: false,
             searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
@@ -2318,21 +2541,16 @@ const ReportMachine = {
             unit: 10, //numbers of row per page
             view: 1, //1:simple, 2:detail
             searched: false, //controll information
-            users: {
-                type: "Account",
-                items: []
-            },
-            stores: {
-                type: "Store",
-                items: []
-            },
-            machines: {
+            groupSeriesData: {},
+            groupCharts: [],
+            seriesColumns: seriesColumns,
+            machinesForReport: {
                 type: "Machine",
                 items: []
             }
         }
     },
-    
+
     watch: {
         unit: function () {
             this.currentPage = 1;
@@ -2343,7 +2561,7 @@ const ReportMachine = {
             return this.view === 2;
         },
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.account);
@@ -2363,46 +2581,29 @@ const ReportMachine = {
         dataChanged: function (viewData) {
             this.viewData = viewData;
         },
+        chkView: function (view) {
+            return view != this.view || 'active';
+        },
         changeView: function (view) {
             var vm = this;
             vm.loading = true;
             setTimeout(function () {
                 vm.loading = false;
                 vm.view = view;
-            }, 200);
-        },
-        chkView: function (view) {
-            return view != this.view || 'active';
+            }, 300);
         },
         resetParams: function () {
             this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
-            this.summaryReportData = {};
-            this.currentPage = 1;
+            while (this.groupCharts && this.groupCharts.length) {
+                var groupChart = this.groupCharts.pop();
+                groupChart && groupChart.hasRendered && groupChart.destroy && groupChart.destroy();//reset chart
+            }
+            this.searchData.startTime = Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss');
+            this.searchData.endTime = Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss');
+            PageBase.methods.resetParams.call(this);
         },
-        changeView: function (view) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(function () {
-                vm.loading = false;
-                vm.view = view;
-            }, 300);
-        },
-        chkView: function (view) {
-            return view != this.view || 'active';
-        },
-        changePage: function (page) {
-            var vm = this;
-            vm.loading = true;
-            setTimeout(() => {
-                vm.loading = false;
-                vm.currentPage = page;
-            }, 300);
-        },
-        // dataChanged: function (viewData) {
-        //     // this.viewData = viewData;
-        // },
         search: function () {
             var vm = this;
             vm.loading = true;
@@ -2419,7 +2620,130 @@ const ReportMachine = {
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
+                vm.prepareReportData();
+                vm.updateGroupChartFilters();
+                vm.drawCharts();
             }).catch(app.handlerError);
+        },
+        prepareReportData: function () {
+            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var data = {};
+            //used for forLoop
+            var dataSetGroup = {};
+            var groupKey;
+            var singleData;
+            var machineKey;
+            var item;
+            for (var index in this.reportData) {
+                item = this.reportData[index];
+                //group data by user selected
+                machineKey = item.pcbID + "(" + item.machineName + ")";
+                groupKey = machineKey;
+                singleData = data[machineKey] = data[machineKey] || {};
+                for (var key in item) {
+                    if (!columnsRegex.test(key)) {
+                        continue;
+                    }
+                    singleData[key] = Math.floor(Number(item[key]));
+                }
+                dataSetGroup[groupKey] = singleData;
+            }
+            this.groupSeriesData = dataSetGroup;
+        },
+        genratorColumnChart: function (el, series, categories, title) {
+            var vm = this;
+            vm.loading = true;
+            return Highcharts.chart(el, {
+                chart: {
+                    type: 'column',
+                    zoomType: 'x'
+                },
+                title: {
+                    text: title
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                xAxis: {
+                    categories: categories,
+                    labels: {
+                        rotation: -50,
+                        y: 33,
+                        align: 'center',
+                        step: 1
+                    },
+                    crosshair: true
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> <br>',
+                    shared: true
+                },
+                plotOptions: {
+                    column: {
+                        cursor: 'pointer',
+                        showInLegend: false,
+                        dataLabels: {
+                            enabled: false,
+                            format: '{point.y}'
+                        }
+                    }
+                },
+                series: series
+            }, function () {
+                vm.loading = false;
+            });
+        },
+        drawCharts: function () {
+            this.groupCharts = [];
+            this.groupCharts.push(this.genratorColumnChart(this.$refs.chartTotalInTotalOut,
+                _.union(this.getSeriesFromColumn('totalIn', '#2B908F'), this.getSeriesFromColumn('totalOut', '#F45B5B')),
+                Object.keys(this.groupSeriesData),
+                "Total In And Total Out Compares"));
+            this.groupCharts.push(this.genratorColumnChart(this.$refs.chartTotalBetTotalWin,
+                _.union(this.getSeriesFromColumn('totalBet', '#2B908F'), this.getSeriesFromColumn('totalWinWithJp', '#F45B5B')),
+                Object.keys(this.groupSeriesData),
+                "Total Bet And Total Win Compares"));
+            this.groupCharts.push(this.genratorColumnChart(this.$refs.chartTotalPlayTotalWin,
+                _.union(this.getSeriesFromColumn('totalPlayTimes', '#2B908F'), this.getSeriesFromColumn('totalWinTimes', '#F45B5B')),
+                Object.keys(this.groupSeriesData),
+                "Play Times And Win Times Compares"));
+            this.groupCharts.push(this.genratorColumnChart(this.$refs.chartAvgBet,
+                this.getSeriesFromColumn('avgBet'),
+                Object.keys(this.groupSeriesData),
+                "Avg Bet"));
+        },
+        getSeriesFromColumn: function (column, color) {
+            var vm = this;
+            var series = [{
+                color: color||null,
+                name: column,
+                type: 'column',
+                data: [],
+                showInLegend: false
+            }];
+            var checkedGroups = [];
+            var _tempGroups = null;
+            var _tempColumns = null;
+            _tempGroups = vm.determineSearchString(vm.machinesForReport.items, "checked");
+            checkedGroups = _tempGroups && _tempGroups.split(",").toObject();
+            //used for forLoop
+            var singleRow = {};
+            for (var groupKey in this.groupSeriesData) {
+                if (checkedGroups !== null && !checkedGroups[groupKey]) {
+                    continue;
+                }
+                singleRow = this.groupSeriesData[groupKey];
+                series[0].data.push(singleRow[column] || 0);
+            }
+            return series;
+        },
+        updateGroupChartFilters: function () {
+            Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function(a,c){return (a>c)?1:-1;}).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+        },
+        updateGroupChart: function () {
+            if (!this.groupCharts || !this.groupCharts.length) { return; }
+            this.drawCharts();
         }
     },
     created: function () {
@@ -2437,24 +2761,28 @@ const ReportMachine = {
 const ReportRevenue = {
     mixins: [PageBase],
     data: function () {
+        var seriesColumns = ["totalIn", "totalOut", "grossNet", "outRate"];
         return {
             loading: false,
-            searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
+            searchData: { groupBy: 'machine', startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
             reportData: [],
             viewData: [], //current view data
             currentPage: 1,
             unit: 10, //numbers of row per page
             view: 1, //1:simple, 2:detail
             searched: false, //controll information
-            users: {
+            groupSeriesData: {},
+            groupCharts: [],
+            seriesColumns: seriesColumns,
+            usersForReport: {
                 type: "Account",
                 items: []
             },
-            stores: {
+            storesForReport: {
                 type: "Store",
                 items: []
             },
-            machines: {
+            machinesForReport: {
                 type: "Machine",
                 items: []
             }
@@ -2470,7 +2798,7 @@ const ReportRevenue = {
             return this.view === 2;
         },
         filteredData: function () {
-            if(!this.filter) return this.reportData;
+            if (!this.filter) return this.reportData;
             var rex = new RegExp(this.filter, "ig");
             var _filtered = this.reportData.filter(function (item) {
                 return rex.test(item.account);
@@ -2505,7 +2833,15 @@ const ReportRevenue = {
             this.reportData = [];
             this.summaryReportData = {};
             this.searched = false;
-            this.currentPage = 1;
+            this.showGroupChart = false;
+            this.groupBy = 'machine';
+            while (this.groupCharts && this.groupCharts.length) {
+                var groupChart = this.groupCharts.pop();
+                groupChart && groupChart.hasRendered && groupChart.destroy && groupChart.destroy();//reset chart
+            }
+            this.searchData.startTime = Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss');
+            this.searchData.endTime = Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss');
+            PageBase.methods.resetParams.call(this);
         },
         changePage: function (page) {
             var vm = this;
@@ -2515,9 +2851,13 @@ const ReportRevenue = {
                 vm.currentPage = page;
             }, 300);
         },
-        // dataChanged: function (viewData) {
-        //     // this.viewData = viewData;
-        // },
+        changeGroup: function (group) {
+            this.searchData.groupBy = group;
+            this.search();
+        },
+        chkGroup: function (group) {
+            return group != this.searchData.groupBy || 'active';
+        },
         search: function () {
             var vm = this;
             vm.loading = true;
@@ -2526,6 +2866,7 @@ const ReportRevenue = {
                 users: vm.determineSearchString(vm.users.items, "checked"),
                 machines: vm.determineSearchString(vm.machines.items, "checked"),
                 stores: vm.determineSearchString(vm.stores.items, "checked"),
+                groupBy: vm.searchData.groupBy,
                 startTime: vm.searchData.startTime,
                 endTime: vm.searchData.endTime
             };
@@ -2534,7 +2875,227 @@ const ReportRevenue = {
                 vm.total = res.body.total;
                 vm.totalPage = Math.ceil(vm.total / vm.unit);
                 vm.loading = false;
+                vm.prepareReportData();
+                vm.updateGroupChartFilters();
+                vm.drawCharts();
             }).catch(app.handlerError);
+        },
+        prepareReportData: function () {
+            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var data = {};
+            //used for forLoop
+            var dataSetSummary = {};
+            var dataSetGroup = {};
+            var singleRow = {};
+            var seriesData = {};
+            var dateData = {};
+            var groupKey;
+            var singleData;
+            var machineKey;
+            var item;
+            for (var index in this.reportData) {
+                item = this.reportData[index];
+                //group data by user selected
+                machineKey = item.pcbID + "(" + item.machineName + ")";
+                switch (this.searchData.groupBy) {
+                    case 'machine':
+                        groupKey = machineKey;
+                        singleData = data[machineKey] = data[machineKey] || {};
+                        break;
+                    case 'user':
+                        groupKey = item.account;
+                        singleData = data[item.account] = data[item.account] || {};
+                        break;
+                    case 'storename':
+                        groupKey = item.storeName;
+                        singleData = data[item.storeName] = data[item.storeName] || {};
+                        break;
+                }
+                for (var key in item) {
+                    if (!columnsRegex.test(key)) {
+                        continue;
+                    }
+                    singleData[key] = Number(item[key]);
+                }
+                dataSetGroup[groupKey] = singleData;
+            }
+            this.groupSeriesData = dataSetGroup;
+        },
+        drawCharts: function(){
+            this.groupCharts = [];
+            this.drawPieChart(this.$refs.chartTotalIn, 'totalIn');
+            this.drawPieChart(this.$refs.chartTotalOut, 'totalOut');
+            this.drawColumnChart(this.$refs.chartTotalGrossNet, 'grossNet');
+            this.drawColumnChart(this.$refs.chartTotalOutRate, 'outRate', '%');
+        },
+        genratorPieChart: function (el, series, title) {
+            var vm = this;
+            vm.loading = true;
+            return Highcharts.chart(el, {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: title
+                },
+                subtitle: {
+                    // text: document.ontouchstart === undefined ?
+                    //     'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        // colors: pieColors,
+                        showInLegend: false,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}<br>{point.percentage:.1f} %',
+                            // distance: -50,
+                            filter: {
+                                property: 'percentage',
+                                operator: '>',
+                                value: 0
+                            }
+                        }
+                    }
+                },
+                series: series
+            }, function () {
+                vm.loading = false;
+            });
+        },
+        drawPieChart: function (chartDom, column) {
+            var vm = this;
+            var series = [{
+                name: column,
+                colorByPoint: true,
+                data: []
+            }];
+            var checkedGroups = [];
+            var _tempGroups = null;
+            var _tempColumns = null;
+            switch (this.searchData.groupBy) {
+                case 'machine':
+                    _tempGroups = vm.determineSearchString(vm.machinesForReport.items, "checked");
+                    break;
+                case 'user':
+                    _tempGroups = vm.determineSearchString(vm.usersForReport.items, "checked");
+                    break;
+                case 'storename':
+                    _tempGroups = vm.determineSearchString(vm.storesForReport.items, "checked");
+                    break;
+            }
+            checkedGroups = _tempGroups && _tempGroups.split(",").toObject();
+            //used for forLoop
+            var singleRow = {};
+            for (var groupKey in this.groupSeriesData) {
+                if (checkedGroups !== null && !checkedGroups[groupKey]) {
+                    continue;
+                }
+                singleRow = this.groupSeriesData[groupKey];
+                series[0].data.push({ name: groupKey, y: singleRow[column] || 0 });
+            }
+            this.groupCharts = this.groupCharts || [];
+            this.groupCharts.push(this.genratorPieChart(chartDom, series, column));
+        },
+        genratorColumnChart: function (el, series, categories, title, unit) {
+            var vm = this;
+            vm.loading = true;
+            return Highcharts.chart(el, {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: title
+                },
+                subtitle: {
+                    // text: document.ontouchstart === undefined ?
+                    //     'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                xAxis: {
+                    categories: categories,
+                    labels: {
+                        rotation: -50,
+                        y: 33,
+                        align: 'center',
+                        step: 1
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.1f}</b> ' + (unit || ''),
+                    shared: true
+                },
+                plotOptions: {
+                    column: {
+                        cursor: 'pointer',
+                        showInLegend: false,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}' + (unit || '')
+                        }
+                    }
+                },
+                series: series
+            }, function () {
+                vm.loading = false;
+            });
+        },
+        drawColumnChart: function (chartDom, column, unit) {
+            var vm = this;
+            var series = [{
+                name: column,
+                type: 'column',
+                colorByPoint: true,
+                data: [],
+                showInLegend: false
+            }];
+            var checkedGroups = [];
+            var _tempGroups = null;
+            var _tempColumns = null;
+            switch (this.searchData.groupBy) {
+                case 'machine':
+                    _tempGroups = vm.determineSearchString(vm.machinesForReport.items, "checked");
+                    break;
+                case 'user':
+                    _tempGroups = vm.determineSearchString(vm.usersForReport.items, "checked");
+                    break;
+                case 'storename':
+                    _tempGroups = vm.determineSearchString(vm.storesForReport.items, "checked");
+                    break;
+            }
+            checkedGroups = _tempGroups && _tempGroups.split(",").toObject();
+            //used for forLoop
+            var singleRow = {};
+            for (var groupKey in this.groupSeriesData) {
+                if (checkedGroups !== null && !checkedGroups[groupKey]) {
+                    continue;
+                }
+                singleRow = this.groupSeriesData[groupKey];
+                series[0].data.push(singleRow[column] || 0);
+            }
+            this.groupCharts = this.groupCharts || [];
+            this.groupCharts.push(this.genratorColumnChart(chartDom, series, Object.keys(this.groupSeriesData), column, unit));
+        },
+        updateGroupChartFilters: function () {
+            switch (this.searchData.groupBy) {
+                case 'machine':
+                    Vue.set(this.machinesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    break;
+                case 'user':
+                    Vue.set(this.usersForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: item }; }));
+                    break;
+                case 'storename':
+                    Vue.set(this.storesForReport, "items", Object.keys(this.groupSeriesData).sort(function (a, c) { return (a > c) ? 1 : -1; }).map(function (item, index) { return { checked: index < 10, id: item, text: (item === "") ? "-" : item }; }));
+                    break;
+            }
+        },
+        updateGroupChart: function () {
+            if (!this.groupCharts || !this.groupCharts.length) { return; }
+            this.drawCharts();
         }
     },
     created: function () {
@@ -2548,6 +3109,73 @@ const ReportRevenue = {
     mounted: function () {
     }
 };
+
+const ProfileSetting = {
+    mixins: [PageBase],
+    data: function () {
+        return {
+            loading: false,
+            editModel: {
+                oldPassword: null, password: null, confirm: null
+            },
+            submited: false
+        }
+    },
+    watch: {
+    },
+    computed: {
+    },
+    methods: {
+        resetParams: function () {
+            this.editModel.oldPassword = null;
+            this.editModel.password = null;
+            this.editModel.confirm = null;
+            this.submited = false;
+            PageBase.methods.resetParams.call(this);
+        },
+        chkPassword: function (pwd) {
+            return /^(?=.*[0-9])(?=.*[a-z])(.{8,20})$/.test(pwd);
+        },
+        chkPolicy: function (model) {
+            return model.oldPassword && this.chkPassword(model.password) && model.password == model.confirm;
+        },
+        encryptedPassword: function (pwd) {
+            return CryptoJS.SHA512(pwd).toString(CryptoJS.enc.Hex);
+        },
+        changePassword: function (ev) {
+            var vm = this;
+            vm.submited = true;
+            if (vm.chkPolicy(vm.editModel)) {
+                vm.submited = false;
+                delete vm.editModel.confirm;
+                vm.editModel.oldPassword = vm.encryptedPassword(vm.editModel.oldPassword);
+                vm.editModel.password = vm.encryptedPassword(vm.editModel.password);
+                Vue.http.post('/api/profile/password', vm.editModel, { emulateJSON: true }).then(function (res) {
+                    if (res.body.code == 200) {
+                        alert("Password changed.");
+                    }
+                    else {
+                        vm.editModel.oldPassword = null;
+                        vm.editModel.password = null;
+                        alert("Change password failed: " + res.body.message);
+                    }
+                }).catch(function(){
+                    vm.editModel.oldPassword = null;
+                    vm.editModel.password = null;
+                    app.handlerError();
+                });
+            }
+            else {
+                vm.submited = true;
+                ev.preventDefault();
+            }
+        }
+    },
+    created: function () {
+    },
+    mounted: function () {
+    }
+}
 
 const router = new VueRouter({
     mode: 'history',
@@ -2570,7 +3198,8 @@ const router = new VueRouter({
         { path: '/settings/jpserver', component: getTemplate('settings/jpserver', JPServer, "jpStatus.view") },
         { path: '/reports/jackpot', component: getTemplate('reports/jackpot', ReportJackpot, "reportJackpot.view") },
         { path: '/reports/machine', component: getTemplate('reports/machine', ReportMachine, "reportMachine.view") },
-        { path: '/reports/revenue', component: getTemplate('reports/revenue', ReportRevenue, "reportRevenue.view") }
+        { path: '/reports/revenue', component: getTemplate('reports/revenue', ReportRevenue, "reportRevenue.view") },
+        { path: '/profile', component: getTemplate('profile/setting', ProfileSetting) }
     ]
 });
 
@@ -2600,8 +3229,9 @@ var app = new Vue({
             }
         },
         chkPermission: function (permission) {
+            if(!permission){return true;}
             if (!this.loginUser || !this.loginUser.permissions) { return false; }//get loginstatus not yet
-            var _permission = permission || "";
+            var _permission = permission;
             var _t = this.loginUser.permissions;
             var _ps = _permission.split(".");
             for (var i in _ps) {
@@ -2660,14 +3290,14 @@ var app = new Vue({
         // }
     },
     watch: {
-        loginUser: function(){
+        loginUser: function () {
             initJqueryPlugin();
         }
     },
     created: function () {
         this.getUserStatus();
     },
-    mounted: function(){
+    mounted: function () {
     }
 });
 

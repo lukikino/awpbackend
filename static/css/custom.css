@@ -114,6 +114,9 @@ html{
     color: #fff;
     border-left: 0;
 }
+.sidebar-nav ul li a.active i{
+    color: #fff;
+}
 .sidebar-nav ul li a.active {
     color: #fff;
 }

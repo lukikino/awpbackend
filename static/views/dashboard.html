@@ -11,7 +11,7 @@
                     <div class="card-body">
                         <form>
                             <div class="form-group">
-                                <dropdown :items="accounts"></dropdown>
+                                <dropdown :items="users"></dropdown>
                                 <dropdown :items="stores"></dropdown>
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-sm" type="button" @click="search">
@@ -21,10 +21,10 @@
                             </div>
                         </form>
                         <div class="table-responsive">
-                            <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                            <svg class="circular" viewBox="25 25 50 50" v-if="loadingMain">
                                 <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
                             </svg>
-                            <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loading}'>
+                            <div id="myTable_wrapper" class="dataTables_wrapper no-footer" :class='{"loading-opacity": loadingMain}'>
                                 <table id="myTable" class="table no-footer table-hover" role="grid" aria-describedby="myTable_info">
                                     <thead>
                                         <tr role="row">
@@ -38,66 +38,66 @@
                                     <tbody>
                                         <tr role="row">
                                             <td>Total In</td>
-                                            <td>{/ thousandFormat(summaryData.today.Total_In) /}</td>
-                                            <td>{/ thousandFormat(summaryData.yesterday.Total_In) /}</td>
-                                            <td>{/ thousandFormat(summaryData.wtd.Total_In) /}</td>
-                                            <td>{/ thousandFormat(summaryData.mtd.Total_In) /}</td>
+                                            <td>{/ thousandFormat(summaryData.today.totalIn) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.totalIn) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.totalIn) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.totalIn) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Total Out</td>
-                                            <td>{/ thousandFormat(summaryData.today.Total_Out) /}</td>
-                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Out) /}</td>
-                                            <td>{/ thousandFormat(summaryData.wtd.Total_Out) /}</td>
-                                            <td>{/ thousandFormat(summaryData.mtd.Total_Out) /}</td>
+                                            <td>{/ thousandFormat(summaryData.today.totalOut) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.totalOut) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.totalOut) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.totalOut) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Out Rate</td>
-                                            <td>{/ percentageFormat(summaryData.today.Out_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.yesterday.Out_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.wtd.Out_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.mtd.Out_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.today.outRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.outRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.outRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.outRate) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Total Bet</td>
-                                            <td>{/ thousandFormat(summaryData.today.Total_Bet) /}</td>
-                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Bet) /}</td>
-                                            <td>{/ thousandFormat(summaryData.wtd.Total_Bet) /}</td>
-                                            <td>{/ thousandFormat(summaryData.mtd.Total_Bet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.today.totalBet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.totalBet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.totalBet) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.totalBet) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Total Win</td>
-                                            <td>{/ thousandFormat(summaryData.today.Total_Win) /}</td>
-                                            <td>{/ thousandFormat(summaryData.yesterday.Total_Win) /}</td>
-                                            <td>{/ thousandFormat(summaryData.wtd.Total_Win) /}</td>
-                                            <td>{/ thousandFormat(summaryData.mtd.Total_Win) /}</td>
+                                            <td>{/ thousandFormat(summaryData.today.totalWin) /}</td>
+                                            <td>{/ thousandFormat(summaryData.yesterday.totalWin) /}</td>
+                                            <td>{/ thousandFormat(summaryData.wtd.totalWin) /}</td>
+                                            <td>{/ thousandFormat(summaryData.mtd.totalWin) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Win Rate</td>
-                                            <td>{/ percentageFormat(summaryData.today.Win_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.yesterday.Win_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.wtd.Win_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.mtd.Win_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.today.winRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.winRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.winRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.winRate) /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Total Play Times</td>
-                                            <td>{/ summaryData.today.Total_Play_Times /}</td>
-                                            <td>{/ summaryData.yesterday.Total_Play_Times /}</td>
-                                            <td>{/ summaryData.wtd.Total_Play_Times /}</td>
-                                            <td>{/ summaryData.mtd.Total_Play_Times /}</td>
+                                            <td>{/ summaryData.today.totalPlayTimes /}</td>
+                                            <td>{/ summaryData.yesterday.totalPlayTimes /}</td>
+                                            <td>{/ summaryData.wtd.totalPlayTimes /}</td>
+                                            <td>{/ summaryData.mtd.totalPlayTimes /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Total Win Times</td>
-                                            <td>{/ summaryData.today.Total_Win_Times /}</td>
-                                            <td>{/ summaryData.yesterday.Total_Win_Times /}</td>
-                                            <td>{/ summaryData.wtd.Total_Win_Times /}</td>
-                                            <td>{/ summaryData.mtd.Total_Win_Times /}</td>
+                                            <td>{/ summaryData.today.totalWinTimes /}</td>
+                                            <td>{/ summaryData.yesterday.totalWinTimes /}</td>
+                                            <td>{/ summaryData.wtd.totalWinTimes /}</td>
+                                            <td>{/ summaryData.mtd.totalWinTimes /}</td>
                                         </tr>
                                         <tr role="row">
                                             <td>Hit Rate</td>
-                                            <td>{/ percentageFormat(summaryData.today.Hit_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.yesterday.Hit_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.wtd.Hit_Rate) /}</td>
-                                            <td>{/ percentageFormat(summaryData.mtd.Hit_Rate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.today.hitRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.yesterday.hitRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.wtd.hitRate) /}</td>
+                                            <td>{/ percentageFormat(summaryData.mtd.hitRate) /}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -105,19 +105,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-title">
                         <h4>Charts</h4>
                     </div>
                     <div class="card-body">
-                        <div>
-                            <img src="/static/2018-04-20_183732.png" />
-                        </div>
-                        <div>
-                            <img src="/static/2018-04-20_184045.png" />
-                        </div>
+                        <div ref="groupChart" :class='{"loading-opacity": loading}'></div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="col-lg-4">
                 <div class="">

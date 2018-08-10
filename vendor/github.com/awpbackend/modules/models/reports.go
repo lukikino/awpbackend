@@ -84,6 +84,6 @@ type ReportRevenue struct {
 func GetReportRevenue(loginID int, search ReportSearch) ReturnData {
 	db := GetConnection()
 	t := []ReportRevenue{}
-	err := db.Select(&t, "call sp_getReportRevenue(?,?,?,?,?,?)", loginID, search.Users, search.Stores, search.Machines, search.StartTime, search.EndTime)
+	err := db.Select(&t, "call sp_getReportRevenue(?,?,?,?,?,?,?)", loginID, search.Users, search.Stores, search.Machines, search.StartTime, search.EndTime, search.GroupBy)
 	return BoxingToResult(t, err)
 }

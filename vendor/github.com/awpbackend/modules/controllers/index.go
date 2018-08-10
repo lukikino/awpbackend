@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	m "github.com/awpbackend/modules/models"
@@ -26,9 +27,22 @@ func (t *Layout) Home() {
 	t.HTML(http.StatusOK)
 }
 
+func (t *Layout) Redirect() {
+	t.Ctx.Redirect("/dashboard", http.StatusSeeOther)
+}
+
 //Home renders a todo list
 func (t *Layout) GetDashboard() {
-	t.RenderJSON(m.GetDashboard(), http.StatusOK)
+	req := t.Ctx.Request()
+	decoder := json.NewDecoder(req.Body)
+	var data m.DashboardSearch
+	if err := decoder.Decode(&data); err != nil {
+		t.Ctx.Data["Message"] = err.Error()
+		t.RenderJSON(m.ErrorResult(err.Error(), "400"), http.StatusBadRequest)
+		return
+	} else {
+		t.RenderJSON(m.GetDashboard(GetLoginStatus(t.Ctx.Request()).ID, data), http.StatusOK)
+	}
 }
 
 func (t *Layout) GetTopOutRate() {
@@ -47,12 +61,13 @@ func (t *Layout) GetTopHitRate() {
 func NewLayout() controller.Controller {
 	return &Layout{
 		Routes: []string{
-			"get;/api/index/dashboard;GetDashboard",
+			"post;/api/index/dashboard;GetDashboard",
 			"get;/api/index/topoutrate;GetTopOutRate",
 			"get;/api/index/topwinrate;GetTopWinRate",
 			"get;/api/index/tophitrate;GetTopHitRate",
 
-			"get;/;Home",
+			"get;/;Redirect",
+			"get;/dashboard;Home",
 			"get;/accounting/{name};Home",
 			"get;/machines/{name};Home",
 			"get;/operations/{name};Home",
@@ -60,6 +75,8 @@ func NewLayout() controller.Controller {
 			"get;/settings/{name};Home",
 			"get;/transactions;Home",
 			"get;/users/{name};Home",
+			"get;/profile;Home",
+			"get;/profile/{name};Home",
 		},
 	}
 }

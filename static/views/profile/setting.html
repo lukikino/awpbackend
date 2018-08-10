@@ -1,0 +1,46 @@
+<div class="page-wrapper">
+    <!-- <div class="row page-titles">
+        <div class="col-md-12 align-self-center">
+            <h2 class="text-primary">Change Password</h2>
+        </div>
+    </div> -->
+    <div class="unix-login">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="login-form">
+                            <h4>Change Password</h4>
+                            <b-form @submit="changePassword" method="POST">
+                                <b-form-group label="*Old Password:">
+                                    <b-form-input type="password" name="oldPassword" v-model="editModel.oldPassword" required placeholder="Input old password" :class='{"is-invalid": !chkPassword(editModel.oldPassword)&&submited}'>
+                                    </b-form-input>
+                                    <div class="invalid-feedback">
+                                        Input old password, 8-20 number/english.
+                                    </div>
+                                </b-form-group>
+                                <b-form-group label="*Password:">
+                                        <b-form-input type="password" v-model="editModel.password" required placeholder="Input Password" :class='{"is-invalid": !chkPassword(editModel.password)&&submited}'>
+                                        </b-form-input>
+                                        <div class="invalid-feedback">
+                                            Please input password, 8-20 number/english.
+                                        </div>
+                                    </b-form-group>
+                                    <b-form-group label="*Password Confirm:">
+                                        <b-form-input type="password" v-model="editModel.confirm" required placeholder="Input Password Again" :class='{"is-invalid": editModel.confirm!=editModel.password&&submited}'>
+                                        </b-form-input>
+                                        <div class="invalid-feedback">
+                                            Please input password again.
+                                        </div>
+                                    </b-form-group>
+                                <b-form-group>
+                                    <b-button type="button" variant="primary" @click="changePassword">Save</b-button>
+                                </b-form-group>
+                            </b-form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
