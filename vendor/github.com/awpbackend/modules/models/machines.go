@@ -104,10 +104,7 @@ func GetMachine(loginId int, id string) ReturnData {
 func EditMachine(loginId int, id string, data Machine) ReturnData {
 	db := GetConnection()
 	var count int64
-	res, err := db.Exec("call sp_editMachine(?,?,?,?)", loginId, id, data.StoreName, data.UserID)
-	if err == nil {
-		count, _ = res.RowsAffected()
-	}
+	err := db.Get(&count, "call sp_editMachine(?,?,?,?)", loginId, id, data.StoreName, data.UserID)
 	returnData := BoxingToResult(count, err)
 	return returnData
 }
@@ -115,10 +112,7 @@ func EditMachine(loginId int, id string, data Machine) ReturnData {
 func DeleteMachine(loginId int, id string) ReturnData {
 	db := GetConnection()
 	var count int64 = 0
-	res, err := db.Exec("call sp_deleteMachine(?,?)", loginId, id)
-	if err == nil {
-		count, _ = res.RowsAffected()
-	}
+	err := db.Get(&count, "call sp_deleteMachine(?,?)", loginId, id)
 	returnData := BoxingToResult(count, err)
 	return returnData
 }

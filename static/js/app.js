@@ -433,9 +433,12 @@ Vue.component('pagination', {
 const Home = {
     mixins: [PageBase],
     data: function () {
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
         return {
+            loadingTop1: false,
+            loadingTop2: false,
+            loadingTop3: false,
             loadingMain: false,
-            loading: false,
             searched: false,
             summaryData: {
                 today: {
@@ -447,7 +450,7 @@ const Home = {
                 mtd: {
                 }
             },
-            topOutRate: {
+            topGrossNet: {
                 items: [
                     {
                         storeName: '-',
@@ -456,7 +459,7 @@ const Home = {
                     }
                 ]
             },
-            topWinRate: {
+            topPlaytimes: {
                 items: [
                     {
                         storeName: '-',
@@ -465,7 +468,7 @@ const Home = {
                     }
                 ]
             },
-            topHitRate: {
+            topWin: {
                 items: [
                     {
                         storeName: '-',
@@ -473,7 +476,12 @@ const Home = {
                         value: 0
                     }
                 ]
-            }
+            },
+            seriesColumns: seriesColumns,
+            reportData:[],
+            summaryReportData: {},
+            summarySeriesData: {},
+            summaryChart: null
         }
     },
     watch: {
@@ -489,13 +497,17 @@ const Home = {
     },
     methods: {
         resetParams: function () {
-            this.reportData.items = [];
             this.searched = false;
             this.currentPage = 1;
+            this.reportData = [];
+            this.summaryChart && this.summaryChart.hasRendered && this.summaryChart.destroy && this.summaryChart.destroy();//reset chart
         },
         search: function(){
             var vm = this;
             vm.loadingMain = true;
+            vm.loadingTop1 = true;
+            vm.loadingTop2 = true;
+            vm.loadingTop3 = true;
             vm.searched = true;
             var search = {
                 users: vm.determineSearchString(vm.users.items, "checked"),
@@ -508,20 +520,177 @@ const Home = {
                 vm.summaryData.mtd = res.body.data[3] || {};
                 vm.loadingMain = false;
             }).catch(app.handlerError);
+
+            Vue.http.post('/api/index/topgrossnet', search).then(function (res) {
+                vm.loadingTop1 = false;
+                vm.topGrossNet.items = res.body;
+            }).catch(app.handlerError);
+
+            Vue.http.post('/api/index/topplaytimes', search).then(function (res) {
+                vm.loadingTop2 = false;
+                vm.topPlaytimes.items = res.body;
+            }).catch(app.handlerError);
+
+            Vue.http.post('/api/index/topwin', search).then(function (res) {
+                vm.loadingTop3 = false;
+                vm.topWin.items = res.body;
+            }).catch(app.handlerError);
+        },
+        getOperationData: function () {
+            var vm = this;
+            var timezoneOffset = new Date().getTimezoneOffset();
+            vm.loadingChart = true;
+            var search = {
+                users: vm.determineSearchString(vm.users.items, "checked"),
+                stores: vm.determineSearchString(vm.stores.items, "checked"),
+                groupBy: 'machine',
+                groupInterval: 'day',
+                startTime: Utils.date.todayEnd().addMonths(-1).toString('yyyy/M/d'),
+                endTime: Utils.date.todayEnd().toString('yyyy/M/d')
+            };
+            Vue.http.post('/api/operations', search).then(function (res) {
+                vm.reportData = (res.body.data) ? res.body.data.operations : [];
+                vm.summaryReportData = (res.body.data) ? res.body.data.summary : [];
+                vm.loadingChart = false;
+                vm.prepareReportData();
+                vm.drawSummaryChart();
+            }).catch(app.handlerError);
+        },
+        prepareReportData: function () {
+            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var data = {};
+            //used for forLoop
+            var dataSetSummary = {};
+            var dataSetGroup = {};
+            var singleRow = {};
+            var seriesData = {};
+            var dateData = {};
+            var singleData;
+            var machineKey;
+            var item;
+            for (var index in this.reportData) {
+                item = this.reportData[index];
+                //group data by user selected
+                machineKey = item.pcbID + "(" + item.machineName + ")";
+                singleData = data[machineKey] = data[machineKey] || {};
+                for (var key in item) {
+                    if (!columnsRegex.test(key)) {
+                        continue;
+                    }
+                    var d = new Date(item.date).getTime();
+                    singleData[key] = singleData[key] || {};
+                    if (!singleData[key][d]) {
+                        singleData[key][d] = 0;
+                    }
+                    singleData[key][d] += Number(item[key]);
+                }
+            }
+
+            for (var singleRowKey in data) {
+                //single row (already Group)
+                singleRow = data[singleRowKey];
+                //init data(group)
+                if (!dataSetGroup[singleRowKey]) { dataSetGroup[singleRowKey] = {}; }
+                for (var seriesColumnKey in singleRow) {
+                    //series column
+                    seriesData = singleRow[seriesColumnKey];
+                    //init data(group)
+                    if (!dataSetGroup[singleRowKey][seriesColumnKey]) { dataSetGroup[singleRowKey][seriesColumnKey] = []; }
+                    //init data(summary)
+                    if (!dataSetSummary[seriesColumnKey]) { dataSetSummary[seriesColumnKey] = {}; }
+                    for (var dateKey in seriesData) {
+                        //date key is number(time.getTime())
+                        //result like {"group": {totalIn: [[10524885, 999],[10524885, 777]]} }
+                        dataSetGroup[singleRowKey][seriesColumnKey].push([+dateKey, seriesData[dateKey]]);
+
+                        //result like {totalIn: [[10524885, 999],[10524885, 777]] ...}
+                        if (!dataSetSummary[seriesColumnKey][dateKey]) {
+                            dataSetSummary[seriesColumnKey][dateKey] = 0;
+                        }
+                        dataSetSummary[seriesColumnKey][dateKey] += seriesData[dateKey];
+                    }
+                }
+            }
+            this.groupSeriesData = dataSetGroup;
+            this.summarySeriesData = dataSetSummary;
+        },
+        genratorChart: function (el, series, legend) {
+            var vm = this;
+            return Highcharts.chart(el, {
+                chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: 'Credits Run chart'
+                },
+                subtitle: {
+                    text: document.ontouchstart === undefined ?
+                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    labels: {
+                        format: '{value:%Y/%m/%d}',
+                        rotation: -50,
+                        y: 33,
+                        align: 'center',
+                        step: 1
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Credits'
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            radius: 1,
+                            enabled: null
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 3
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+                series: series
+            }, function () {
+            });
+        },
+        drawSummaryChart: function () {
+            var series = [];
+            var seriesContent = [];
+            var singleSummaryData;
+            for (var key in this.summarySeriesData) {
+                singleSummaryData = this.summarySeriesData[key];
+                seriesContent = [];
+                for (var date in singleSummaryData) {
+                    seriesContent.push([+date, singleSummaryData[date]]);
+                }
+                seriesContent.sort(function (a, c) { return a[0] - c[0]; });
+                series.push({
+                    type: 'spline',
+                    name: key,
+                    tooltip: {
+                        xDateFormat: '%Y/%m/%d'
+                    },
+                    data: seriesContent
+                });
+            }
+            this.summaryCart = this.genratorChart(this.$refs.summaryChart, series);
         }
     },
     created: function () {
         var vm = this;
         vm.search();
-        Vue.http.get('/api/index/topoutrate').then(function (res) {
-            vm.topOutRate.items = res.body;
-        }).catch(app.handlerError);
-        Vue.http.get('/api/index/topwinrate').then(function (res) {
-            vm.topWinRate.items = res.body;
-        }).catch(app.handlerError);
-        Vue.http.get('/api/index/tophitrate').then(function (res) {
-            vm.topHitRate.items = res.body;
-        }).catch(app.handlerError);
+        vm.getOperationData();
     },
     mounted: function () {
     }
@@ -612,10 +781,10 @@ const Operations = {
                     this.searchData.startTime = Utils.date.yesterdayStart().toString('yyyy/M/d');
                     break;
                 case 'week':
-                    this.searchData.startTime = Utils.date.yesterdayStart().toString('yyyy/M/d');
+                    this.searchData.startTime = Utils.date.weekStart().toString('yyyy/M/d');
                     break;
                 case 'month':
-                    this.searchData.startTime = Utils.date.yesterdayStart().toString('yyyy/M/d');
+                    this.searchData.startTime = Utils.date.monthStart().toString('yyyy/M/d');
                     break;
             }
             PageBase.methods.resetParams.call(this);
@@ -1493,7 +1662,7 @@ const MachineList = {
     mounted: function () {
         var vm = this;
         vm.getLists((function (data) {
-            Vue.set(vm, "listUsers", data.users.map(function (item) { return { checked: true, id: item.userID, text: item.account } }));
+            Vue.set(vm, "listUsers", data.users.map(function (item) { return { checked: true, value: item.userID, text: item.account } }));
             vm.listUsers.unshift({ text: vm.$root.loginUser.account, value: vm.$root.loginUser.ID });
             vm.listUsers.unshift({ text: "Select an owner", value: null });
         }).bind(vm));

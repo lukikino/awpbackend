@@ -45,16 +45,43 @@ func (t *Layout) GetDashboard() {
 	}
 }
 
-func (t *Layout) GetTopOutRate() {
-	t.RenderJSON(m.GetTopOutRate(), http.StatusOK)
+func (t *Layout) GetTopGrossNet() {
+	req := t.Ctx.Request()
+	decoder := json.NewDecoder(req.Body)
+	var data m.DashboardSearch
+	if err := decoder.Decode(&data); err != nil {
+		t.Ctx.Data["Message"] = err.Error()
+		t.RenderJSON(m.ErrorResult(err.Error(), "400"), http.StatusBadRequest)
+		return
+	} else {
+		t.RenderJSON(m.GetTopGrossNet(GetLoginStatus(t.Ctx.Request()).ID, data), http.StatusOK)
+	}
 }
 
-func (t *Layout) GetTopWinRate() {
-	t.RenderJSON(m.GetTopWinRate(), http.StatusOK)
+func (t *Layout) GetTopPlaytimes() {
+	req := t.Ctx.Request()
+	decoder := json.NewDecoder(req.Body)
+	var data m.DashboardSearch
+	if err := decoder.Decode(&data); err != nil {
+		t.Ctx.Data["Message"] = err.Error()
+		t.RenderJSON(m.ErrorResult(err.Error(), "400"), http.StatusBadRequest)
+		return
+	} else {
+		t.RenderJSON(m.GetTopPlaytimes(GetLoginStatus(t.Ctx.Request()).ID, data), http.StatusOK)
+	}
 }
 
-func (t *Layout) GetTopHitRate() {
-	t.RenderJSON(m.GetTopHitRate(), http.StatusOK)
+func (t *Layout) GetTopWin() {
+	req := t.Ctx.Request()
+	decoder := json.NewDecoder(req.Body)
+	var data m.DashboardSearch
+	if err := decoder.Decode(&data); err != nil {
+		t.Ctx.Data["Message"] = err.Error()
+		t.RenderJSON(m.ErrorResult(err.Error(), "400"), http.StatusBadRequest)
+		return
+	} else {
+		t.RenderJSON(m.GetTopWin(GetLoginStatus(t.Ctx.Request()).ID, data), http.StatusOK)
+	}
 }
 
 //NewTodo returns a new  todo list controller
@@ -62,9 +89,9 @@ func NewLayout() controller.Controller {
 	return &Layout{
 		Routes: []string{
 			"post;/api/index/dashboard;GetDashboard",
-			"get;/api/index/topoutrate;GetTopOutRate",
-			"get;/api/index/topwinrate;GetTopWinRate",
-			"get;/api/index/tophitrate;GetTopHitRate",
+			"post;/api/index/topgrossnet;GetTopGrossNet",
+			"post;/api/index/topplaytimes;GetTopPlaytimes",
+			"post;/api/index/topwin;GetTopWin",
 
 			"get;/;Redirect",
 			"get;/dashboard;Home",

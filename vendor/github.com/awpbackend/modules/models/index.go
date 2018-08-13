@@ -20,9 +20,9 @@ type Dashboard struct {
 }
 
 type Top struct {
-	Store_Name   string
-	Machine_Name string
-	Value        float32
+	StoreName   string  `db:"store_name" json:"storeName"`
+	MachineName string  `db:"machine_name" json:"machineName"`
+	Value       float32 `db:"value" json:"value"`
 }
 
 type DashboardSearch struct {
@@ -38,23 +38,23 @@ func GetDashboard(loginID int, search DashboardSearch) ReturnData {
 	return returnData
 }
 
-func GetTopOutRate() []Top {
+func GetTopGrossNet(loginID int, search DashboardSearch) []Top {
 	db := GetConnection()
 	top := []Top{}
-	db.Select(&top, "call sp_getTopOutRate")
+	db.Select(&top, "call sp_getTopGrossNet(?,?,?)", loginID, search.Users, search.Stores)
 	return top
 }
 
-func GetTopWinRate() []Top {
+func GetTopPlaytimes(loginID int, search DashboardSearch) []Top {
 	db := GetConnection()
 	top := []Top{}
-	db.Select(&top, "call sp_getTopWinRate")
+	db.Select(&top, "call sp_getTopPlaytimes(?,?,?)", loginID, search.Users, search.Stores)
 	return top
 }
 
-func GetTopHitRate() []Top {
+func GetTopWin(loginID int, search DashboardSearch) []Top {
 	db := GetConnection()
 	top := []Top{}
-	db.Select(&top, "call sp_getTopHitRate")
+	db.Select(&top, "call sp_getTopWin(?,?,?)", loginID, search.Users, search.Stores)
 	return top
 }

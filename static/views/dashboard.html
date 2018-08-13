@@ -105,27 +105,27 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="card">
-                    <div class="card-title">
-                        <h4>Charts</h4>
-                    </div>
+                <div class="card">
+                        <svg class="circular" viewBox="25 25 50 50" v-if="loadingMain">
+                            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+                        </svg>
                     <div class="card-body">
-                        <div ref="groupChart" :class='{"loading-opacity": loading}'></div>
+                        <div ref="summaryChart" :class='{"loading-opacity": loadingMain}'></div>
                     </div>
-                </div> -->
+                </div>
             </div>
             <div class="col-lg-4">
                 <div class="">
                     <div class="card">
                         <div class="card-title">
-                            <h4>Top 5 Out Rate Machine</h4>
+                            <h4>Top 5 Gross Net Machine</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loadingTop1">
                                     <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
                                 </svg>
-                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loadingTop1}'>
                                     <thead>
                                         <tr>
                                             <th>Store Name</th>
@@ -134,12 +134,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="item in topOutRate.items">
-                                            <td>{/ item.Store_Name /}</td>
+                                        <tr v-for="item in topGrossNet.items">
+                                            <td>{/ item.storeName /}</td>
                                             <td>
-                                                <a>{/ item.Machine_Name /}</a>
+                                                <a>{/ item.machineName /}</a>
                                             </td>
-                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                            <td>{/ thousandFormat(item.value) /}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -148,14 +148,14 @@
                     </div>
                     <div class="card">
                         <div class="card-title">
-                            <h4>Top 5 Win Rate Machine</h4>
+                            <h4>Top 5 Win Machine</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loadingTop3">
                                     <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
                                 </svg>
-                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loadingTop3}'>
                                     <thead>
                                         <tr>
                                             <th>Store Name</th>
@@ -164,12 +164,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="item in topWinRate.items">
-                                            <td>{/ item.Store_Name /}</td>
+                                        <tr v-for="item in topWin.items">
+                                            <td>{/ item.storeName /}</td>
                                             <td>
-                                                <a>{/ item.Machine_Name /}</a>
+                                                <a>{/ item.machineName /}</a>
                                             </td>
-                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                            <td>{/ thousandFormat(item.value) /}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -178,14 +178,14 @@
                     </div>
                     <div class="card">
                         <div class="card-title">
-                            <h4>Top 5 Hit Rate Machine</h4>
+                            <h4>Top 5 Playtimes Machine</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <svg class="circular" viewBox="25 25 50 50" v-if="loading">
+                                <svg class="circular" viewBox="25 25 50 50" v-if="loadingTop2">
                                     <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
                                 </svg>
-                                <table class="table table-hover " v-bind:class='{"loading-opacity": loading}'>
+                                <table class="table table-hover " v-bind:class='{"loading-opacity": loadingTop2}'>
                                     <thead>
                                         <tr>
                                             <th>Store Name</th>
@@ -194,12 +194,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="item in topHitRate.items">
-                                            <td>{/ item.Store_Name /}</td>
+                                        <tr v-for="item in topPlaytimes.items">
+                                            <td>{/ item.storeName /}</td>
                                             <td>
-                                                <a>{/ item.Machine_Name /}</a>
+                                                <a>{/ item.machineName /}</a>
                                             </td>
-                                            <td>{/ percentageFormat(item.Value) /}</td>
+                                            <td>{/ item.value /}</td>
                                         </tr>
                                     </tbody>
                                 </table>
