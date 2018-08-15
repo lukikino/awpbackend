@@ -10,35 +10,35 @@ type AccountingsWithSummary struct {
 }
 
 type Accountings struct {
-	StoreName      string   `db:"store_name" json:"storeName"`
-	MachineName    string   `db:"machine_name" json:"machineName"`
-	Account        string   `db:"account" json:"account"`
-	PcbId          string   `db:"pcb_id" json:"pcbID"`
-	TotalIn        int      `db:"total_in" json:"totalIn"`
-	TotalCoinIn    int      `db:"total_coin_in" json:"totalCoinIn"`
-	TotalBillIn    int      `db:"total_bill_in" json:"totalBillIn"`
-	TotalKeyIn     int      `db:"total_key_in" json:"totalKeyIn"`
-	TotalOut       int      `db:"total_out" json:"totalOut"`
-	TotalCoinOut   int      `db:"total_coin_out" json:"totalCoinOut"`
-	TotalBillOut   int      `db:"total_bill_out" json:"totalBillOut"`
-	TotalKeyOut    int      `db:"total_key_out" json:"totalKeyOut"`
-	TotalBet       int      `db:"total_bet" json:"totalBet"`
-	TotalWin       int      `db:"total_win" json:"totalWin"`
-	TotalWinWithJp int      `db:"total_win_with_jp" json:"totalWinWithJp"`
-	TotalJpWin     int      `db:"total_jp_win" json:"totalJpWin"`
-	TotalJp1Win    int      `db:"total_jp1_win" json:"totalJp1Win"`
-	TotalJp2Win    int      `db:"total_jp2_win" json:"totalJp2Win"`
-	TotalJp3Win    int      `db:"total_jp3_win" json:"totalJp3Win"`
-	TotalJp4Win    int      `db:"total_jp4_win" json:"totalJp4Win"`
-	TotalPlayTimes int      `db:"total_play_times" json:"totalPlayTimes"`
-	TotalWinTimes  int      `db:"total_win_times" json:"totalWinTimes"`
-	RangeStartTime string   `db:"range_start_time" json:"rangeStartTime"`
-	RangeEndTime   string   `db:"range_end_time" json:"rangeEndTime"`
-	OutRate        *float32 `db:"out_rate" json:"outRate"`
-	WinRate        *float32 `db:"win_rate" json:"winRate"`
-	HitRate        *float32 `db:"hit_rate" json:"hitRate"`
-	WinRateWithJp  *float32 `db:"win_rate_with_jp" json:"winRateWithJp"`
-	Total          int      `db:"total" json:"total"`
+	StoreName         string   `db:"store_name" json:"storeName"`
+	MachineName       string   `db:"machine_name" json:"machineName"`
+	Account           string   `db:"account" json:"account"`
+	PcbId             string   `db:"pcb_id" json:"pcbID"`
+	TotalIn           int      `db:"total_in" json:"totalIn"`
+	TotalCoinIn       int      `db:"total_coin_in" json:"totalCoinIn"`
+	TotalBillIn       int      `db:"total_bill_in" json:"totalBillIn"`
+	TotalKeyIn        int      `db:"total_key_in" json:"totalKeyIn"`
+	TotalOut          int      `db:"total_out" json:"totalOut"`
+	TotalCoinOut      int      `db:"total_coin_out" json:"totalCoinOut"`
+	TotalBillOut      int      `db:"total_bill_out" json:"totalBillOut"`
+	TotalKeyOut       int      `db:"total_key_out" json:"totalKeyOut"`
+	TotalBet          int      `db:"total_bet" json:"totalBet"`
+	TotalWinWithoutJp int      `db:"total_win_without_jp" json:"totalWinWithoutJp"`
+	TotalWin          int      `db:"total_win" json:"totalWin"`
+	TotalJpWin        int      `db:"total_jp_win" json:"totalJpWin"`
+	TotalJp1Win       int      `db:"total_jp1_win" json:"totalJp1Win"`
+	TotalJp2Win       int      `db:"total_jp2_win" json:"totalJp2Win"`
+	TotalJp3Win       int      `db:"total_jp3_win" json:"totalJp3Win"`
+	TotalJp4Win       int      `db:"total_jp4_win" json:"totalJp4Win"`
+	TotalPlayTimes    int      `db:"total_play_times" json:"totalPlayTimes"`
+	TotalWinTimes     int      `db:"total_win_times" json:"totalWinTimes"`
+	RangeStartTime    string   `db:"range_start_time" json:"rangeStartTime"`
+	RangeEndTime      string   `db:"range_end_time" json:"rangeEndTime"`
+	OutRate           *float32 `db:"out_rate" json:"outRate"`
+	WinRateWithoutJp  *float32 `db:"win_rate_without_jp" json:"winRateWithoutJp"`
+	HitRate           *float32 `db:"hit_rate" json:"hitRate"`
+	WinRate           *float32 `db:"win_rate" json:"winRate"`
+	Total             int      `db:"total" json:"total"`
 }
 
 type AccountingSearch struct {
@@ -68,8 +68,8 @@ func GetAccountings(loginID int, search AccountingSearch) ReturnData {
 			r.Summary.TotalBillOut += item.TotalBillOut
 			r.Summary.TotalKeyOut += item.TotalKeyOut
 			r.Summary.TotalBet += item.TotalBet
+			r.Summary.TotalWinWithoutJp += item.TotalWinWithoutJp
 			r.Summary.TotalWin += item.TotalWin
-			r.Summary.TotalWinWithJp += item.TotalWinWithJp
 			r.Summary.TotalJpWin += item.TotalJpWin
 			r.Summary.TotalJp1Win += item.TotalJp1Win
 			r.Summary.TotalJp2Win += item.TotalJp2Win
@@ -84,8 +84,8 @@ func GetAccountings(loginID int, search AccountingSearch) ReturnData {
 		r.Summary.WinRate = &t2
 		t3 := (float32)(r.Summary.TotalWinTimes) / (float32)(r.Summary.TotalPlayTimes) * 100
 		r.Summary.HitRate = &t3
-		t4 := (float32)(r.Summary.TotalWinWithJp) / (float32)(r.Summary.TotalBet) * 100
-		r.Summary.WinRateWithJp = &t4
+		t4 := (float32)(r.Summary.TotalWinWithoutJp) / (float32)(r.Summary.TotalBet) * 100
+		r.Summary.WinRateWithoutJp = &t4
 	}
 	return BoxingToResult(r, err)
 }

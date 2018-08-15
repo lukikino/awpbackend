@@ -92,13 +92,13 @@
                                         v-if="showDetail">Out Rate</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Bet: activate to sort column ascending">Total Bet</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Win: activate to sort column ascending"
-                                        v-if="showDetail">Total Win</th>
-                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Win: activate to sort column ascending">Total Win With JP</th>
+                                        v-if="showDetail">Total Win Without JP</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Win: activate to sort column ascending">Total Win</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Win: activate to sort column ascending">Total JP Win</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Win Rate: activate to sort column ascending"
-                                        v-if="showDetail">Win Rate</th>
+                                        v-if="showDetail">Win Rate Without JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Win Rate: activate to sort column ascending"
-                                        v-if="showDetail">Win Rate With JP</th>
+                                        v-if="showDetail">Win Rate</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Play Times: activate to sort column ascending">Total Play Times</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Total Win Times: activate to sort column ascending">Total Win Times</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Hit Rate: activate to sort column ascending"
@@ -121,11 +121,11 @@
                                     <td v-if="showDetail">{/ thousandFormat(item.totalKeyOut) /}</td>
                                     <td v-if="showDetail">{/ percentageFormat(item.outRate) /}</td>
                                     <td>{/ thousandFormat(item.totalBet) /}</td>
-                                    <td v-if="showDetail">{/ thousandFormat(item.totalWin) /}</td>
-                                    <td>{/ thousandFormat(item.totalWinWithJp) /}</td>
+                                    <td v-if="showDetail">{/ thousandFormat(item.totalWinWithoutJp) /}</td>
+                                    <td>{/ thousandFormat(item.totalWin) /}</td>
                                     <td>{/ thousandFormat(item.totalJpWin) /}</td>
+                                    <td v-if="showDetail">{/ percentageFormat(item.winRateWithoutJp) /}</td>
                                     <td v-if="showDetail">{/ percentageFormat(item.winRate) /}</td>
-                                    <td v-if="showDetail">{/ percentageFormat(item.winRateWithJp) /}</td>
                                     <td>{/ item.totalPlayTimes /}</td>
                                     <td>{/ item.totalWinTimes /}</td>
                                     <td v-if="showDetail">{/ percentageFormat(item.hitRate) /}</td>
@@ -186,11 +186,11 @@
                                         v-if="showDetail">Total Key Out</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Out Rate</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Bet</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Win Without JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Win</th>
-                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Win With JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total JP Win</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Win Rate Without JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Win Rate</th>
-                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Win Rate With JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Play Times</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Total Win Times</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Hit Rate</th>
@@ -209,11 +209,11 @@
                                         <td v-if="showDetail">{/ thousandFormat(summaryReportData.totalKeyOut) /}</td>
                                         <td>{/ percentageFormat(summaryReportData.outRate) /}</td>
                                         <td>{/ thousandFormat(summaryReportData.totalBet) /}</td>
+                                        <td>{/ thousandFormat(summaryReportData.totalWinWithoutJp) /}</td>
                                         <td>{/ thousandFormat(summaryReportData.totalWin) /}</td>
-                                        <td>{/ thousandFormat(summaryReportData.totalWinWithJp) /}</td>
                                         <td>{/ thousandFormat(summaryReportData.totalJpWin) /}</td>
+                                        <td>{/ percentageFormat(summaryReportData.winRateWithoutJp) /}</td>
                                         <td>{/ percentageFormat(summaryReportData.winRate) /}</td>
-                                        <td>{/ percentageFormat(summaryReportData.winRateWithJp) /}</td>
                                         <td>{/ summaryReportData.totalPlayTimes /}</td>
                                         <td>{/ summaryReportData.totalWinTimes /}</td>
                                         <td>{/ percentageFormat(summaryReportData.hitRate) /}

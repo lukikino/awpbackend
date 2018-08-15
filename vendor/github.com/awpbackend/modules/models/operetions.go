@@ -24,8 +24,8 @@ type Operations struct {
 	TotalBillOut   int      `db:"total_bill_out" json:"totalBillOut"`
 	TotalKeyOut    int      `db:"total_key_out" json:"totalKeyOut"`
 	TotalBet       int      `db:"total_bet" json:"totalBet"`
-	TotalWin       int      `db:"total_win" json:"totalWin"`
-	TotalWinWithJp int      `db:"total_win_with_jp" json:"totalWinWithJp"`
+	TotalWin       int      `db:"total_win_without_jp" json:"totalWinWithoutJp"`
+	TotalWinWithJp int      `db:"total_win" json:"totalWin"`
 	TotalJpWin     int      `db:"total_jp_win" json:"totalJpWin"`
 	TotalJp1Win    int      `db:"total_jp1_win" json:"totalJp1Win"`
 	TotalJp2Win    int      `db:"total_jp2_win" json:"totalJp2Win"`
@@ -34,9 +34,9 @@ type Operations struct {
 	TotalPlayTimes int      `db:"total_play_times" json:"totalPlayTimes"`
 	TotalWinTimes  int      `db:"total_win_times" json:"totalWinTimes"`
 	OutRate        *float32 `db:"out_rate" json:"outRate"`
-	WinRate        *float32 `db:"win_rate" json:"winRate"`
+	WinRate        *float32 `db:"win_rate_without_jp" json:"winRateWithoutJp"`
 	HitRate        *float32 `db:"hit_rate" json:"hitRate"`
-	WinRateWithJp  *float32 `db:"win_rate_with_jp" json:"winRateWithJp"`
+	WinRateWithJp  *float32 `db:"win_rate" json:"winRate"`
 	Total          int      `db:"total" json:"total"`
 }
 

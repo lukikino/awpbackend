@@ -70,7 +70,7 @@
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending">In</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending">Out</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Bet</th>
-                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Win</th>
+                                    <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Win Without JP</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">JP Win</th>
                                     <th class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending">Description</th>
                                     <th style="display:none;!important" class="sorting" tabindex="0" aria-controls="myTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending"
@@ -87,12 +87,12 @@
                                     <td>{/ item.storeName /}</td>
                                     <td v-if="view==2">{/ item.pcbID /}</td>
                                     <td>{/ item.machineName /}</td>
-                                    <td>{/ item.transactionType /}</td>
-                                    <td>{/ item.gameType /}</td>
+                                    <td>{/ transactionTypeText(item.transactionType) /}</td>
+                                    <td>{/ gameTypeText(item.gameType) /}</td>
                                     <td v-if="view==2">{/ item.startCredit /}</td>
                                     <td v-if="view==2">{/ item.resultCredit /}</td>
-                                    <td>{/ thousandFormat(item.in) /}</td>
-                                    <td>{/ thousandFormat(item.out) /}</td>
+                                    <td>{/ thousandFormat(item.creditIn) /}</td>
+                                    <td>{/ thousandFormat(item.creditOut) /}</td>
                                     <td>{/ thousandFormat(item.bet) /}</td>
                                     <td>{/ thousandFormat(item.win) /}</td>
                                     <td :title="jpTitle(item)">{/ thousandFormat(item.jp1Win + item.jp2Win + item.jp3Win + item.jp4Win) /}</td>

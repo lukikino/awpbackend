@@ -45,9 +45,9 @@ type ReportMachine struct {
 	TotalBillOut   int      `db:"total_bill_out" json:"totalBillOut"`
 	TotalKeyOut    int      `db:"total_key_out" json:"totalKeyOut"`
 	TotalBet       int      `db:"total_bet" json:"totalBet"`
-	TotalWin       int      `db:"total_win" json:"totalWin"`
+	TotalWin       int      `db:"total_win_without_jp" json:"totalWinWithoutJp"`
 	TotalJpWin     int      `db:"total_jp_win" json:"totalJpWin"`
-	TotalWinWithJp int      `db:"total_win_with_jp" json:"totalWinWithJp"`
+	TotalWinWithJp int      `db:"total_win" json:"totalWin"`
 	TotalJp1Win    int      `db:"total_jp1_win" json:"totalJp1Win"`
 	TotalJp2Win    int      `db:"total_jp2_win" json:"totalJp2Win"`
 	TotalJp3Win    int      `db:"total_jp3_win" json:"totalJp3Win"`
@@ -56,8 +56,8 @@ type ReportMachine struct {
 	TotalWinTimes  int      `db:"total_win_times" json:"totalWinTimes"`
 	HitRate        *float32 `db:"hit_rate" json:"hitRate"`
 	OutRate        *float32 `db:"out_rate" json:"outRate"`
-	WinRate        *float32 `db:"win_rate" json:"winRate"`
-	WinRateWithJp  *float32 `db:"win_rate_with_jp" json:"winRateWithJp"`
+	WinRate        *float32 `db:"win_rate_without_jp" json:"winRateWithoutJp"`
+	WinRateWithJp  *float32 `db:"win_rate" json:"winRate"`
 	AvgBet         *float32 `db:"avg_bet" json:"avgBet"`
 	Total          int      `db:"total" json:"total"`
 }

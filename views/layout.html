@@ -427,7 +427,7 @@
             v-if="!onlyAccount"
             v-show="showChildren"
             v-for="machine in nodes.machines" 
-            v-bind:key="machine.machineID"
+            v-bind:key="'m'+machine.machineID"
             :checkList="checkList"
             :onlyAccount="onlyAccount"
             :machine="machine"
@@ -437,7 +437,7 @@
             <treemenu 
             v-show="showChildren"
             v-for="node in nodes.children" 
-            v-bind:key="node.userID"
+            v-bind:key="'u'+node.userID"
             :checkList="checkList"
             :onlyAccount="onlyAccount"
             :extendLevel="extendLevel"

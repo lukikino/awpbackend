@@ -270,10 +270,16 @@ Vue.component('treemenu', {
         'depth': Number,
         'machine': Object,
         'onlyAccount': Boolean,
-        'extendLevel': Number
+        'extendLevel': Number,
+        'uniqueID': {
+            type: String,
+            default: Math.random().toString()
+        }
     },
     data: function () {
-        return { inited: false }
+        return { 
+            inited: false
+        }
     },
     watch: {
         nodes: function () {
@@ -433,7 +439,7 @@ Vue.component('pagination', {
 const Home = {
     mixins: [PageBase],
     data: function () {
-        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWin", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
         return {
             loadingTop1: false,
             loadingTop2: false,
@@ -535,6 +541,7 @@ const Home = {
                 vm.loadingTop3 = false;
                 vm.topWin.items = res.body;
             }).catch(app.handlerError);
+            vm.getOperationData();
         },
         getOperationData: function () {
             var vm = this;
@@ -557,7 +564,7 @@ const Home = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var dataSetSummary = {};
@@ -690,7 +697,6 @@ const Home = {
     created: function () {
         var vm = this;
         vm.search();
-        vm.getOperationData();
     },
     mounted: function () {
     }
@@ -699,7 +705,7 @@ const Home = {
 const Operations = {
     mixins: [PageBase],
     data: function () {
-        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWin", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
         return {
             datePickerOptions: { format: 'YYYY/MM/DD' }, //datetime picker options
             searchData: { groupInterval: 'day', groupBy: 'machine', startTime: Utils.date.yesterdayStart().toString('yyyy/M/d'), endTime: Utils.date.yesterdayStart().toString('yyyy/M/d') },
@@ -823,7 +829,7 @@ const Operations = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var dataSetSummary = {};
@@ -1042,7 +1048,7 @@ const Operations = {
 const Accounting = {
     mixins: [PageBase],
     data: function () {
-        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWin", "totalJpWin", "totalPlayTimes", "totalWinTimes"];
         return {
             options: {},
             searchData: { timeRange: "10", groupBy: 'machine', startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
@@ -1152,7 +1158,7 @@ const Accounting = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var dataSetSummary = {};
@@ -1471,6 +1477,22 @@ const Transactions = {
         },
         dropClick: function (ev) {
             ev.stopPropagation;
+        },
+        transactionTypeText: function (code) {
+            switch (code) {
+                case 1: return "Credit In";
+                case 2: return "Credit Out";
+                case 10: return "Play";
+                default: return "-";
+            }
+        },
+        gameTypeText: function (code) {
+            switch (code) {
+                case 1: return "Main Game";
+                case 2: return "Free Game";
+                case 3: return "Bonus Game";
+                default: return "-";
+            }
         }
     },
     created: function () {
@@ -2431,7 +2453,7 @@ const ReportJackpot = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var singleDataByTime;
@@ -2547,7 +2569,7 @@ const ReportJackpot = {
             var vm = this;
             var series = [];
             var checkedGroups = [];
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var _filterMachine = vm.determineSearchString(vm.machinesForReport.items, "checked");
             var _filterUser = vm.determineSearchString(vm.usersForReport.items, "checked");
             var _filterStore = vm.determineSearchString(vm.storesForReport.items, "checked");
@@ -2700,7 +2722,7 @@ const ReportJackpot = {
 const ReportMachine = {
     mixins: [PageBase],
     data: function () {
-        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWinWithJp", "totalPlayTimes", "totalWinTimes", "avgBet"];
+        var seriesColumns = ["totalIn", "totalOut", "totalBet", "totalWin", "totalPlayTimes", "totalWinTimes", "avgBet"];
         return {
             loading: false,
             searchData: { startTime: Utils.date.todayStart().toString('yyyy/M/d HH:mm:ss'), endTime: Utils.date.todayEnd().toString('yyyy/M/d HH:mm:ss') },
@@ -2795,7 +2817,7 @@ const ReportMachine = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var dataSetGroup = {};
@@ -2870,7 +2892,7 @@ const ReportMachine = {
                 Object.keys(this.groupSeriesData),
                 "Total In And Total Out Compares"));
             this.groupCharts.push(this.genratorColumnChart(this.$refs.chartTotalBetTotalWin,
-                _.union(this.getSeriesFromColumn('totalBet', '#2B908F'), this.getSeriesFromColumn('totalWinWithJp', '#F45B5B')),
+                _.union(this.getSeriesFromColumn('totalBet', '#2B908F'), this.getSeriesFromColumn('totalWin', '#F45B5B')),
                 Object.keys(this.groupSeriesData),
                 "Total Bet And Total Win Compares"));
             this.groupCharts.push(this.genratorColumnChart(this.$refs.chartTotalPlayTotalWin,
@@ -3050,7 +3072,7 @@ const ReportRevenue = {
             }).catch(app.handlerError);
         },
         prepareReportData: function () {
-            var columnsRegex = new RegExp(this.seriesColumns.join("|"));
+            var columnsRegex = new RegExp("^(" + this.seriesColumns.join("|") + ")$");
             var data = {};
             //used for forLoop
             var dataSetSummary = {};
