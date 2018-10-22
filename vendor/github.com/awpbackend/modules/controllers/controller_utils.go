@@ -1,16 +1,20 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	common "github.com/awpbackend/modules/common"
 	"github.com/awpbackend/modules/common/gametype"
 	"github.com/awpbackend/modules/common/transactiontype"
+	"github.com/awpbackend/modules/controllers/pb"
 	m "github.com/awpbackend/modules/models"
+	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/sessions"
 
 	"github.com/gernest/utron/controller"
+	"github.com/streadway/amqp"
 )
 
 // "github.com/awpbackend/modules/common/transactiontype"
@@ -75,6 +79,72 @@ func (t *Common) GenTransactions() {
 	}
 }
 
+func (t *Common) Test2() {
+	conn, err := amqp.Dial("amqp://test:test@127.0.0.1:5672/")
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	err = ch.ExchangeDeclare(
+		"s2c_BroadcastQueue", // name
+		"fanout",             // type
+		true,                 // durable
+		false,                // auto-deleted
+		false,                // internal
+		false,                // no-wait
+		nil,                  // arguments
+	)
+	failOnError(err, "Failed to declare an exchange")
+
+	s2cBroadcastQueue, err := ch.QueueDeclare(
+		"s2c_BroadcastQueue", // name
+		false,                // durable
+		false,                // delete when unused
+		false,                // exclusive
+		false,                // no-wait
+		nil,                  // arguments
+	)
+
+	err = ch.QueueBind(
+		s2cBroadcastQueue.Name, // queue name
+		"",                   // routing key
+		"s2c_BroadcastQueue", // exchange
+		false,
+		nil)
+
+	p := &pb.Person{
+		Id:    1234,
+		Name:  "John Doe",
+		Email: "joe@sample.com",
+		Phones: []*pb.Person_PhoneNumber{
+			{Number: "5547318444", Type: pb.Person_HOME},
+		},
+	}
+	out, err := proto.Marshal(p)
+	body := out
+
+	err = ch.Publish(
+		"s2c_BroadcastQueue", // exchange
+		"",                   // routing key
+		false,                // mandatory
+		false,                // immediate
+		amqp.Publishing{
+			DeliveryMode: amqp.Persistent,
+			ContentType:  "text/plain",
+			Body:         []byte(body),
+		})
+	failOnError(err, "Failed to publish a message")
+}
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		fmt.Sprintf("%s: %s", msg, err)
+	}
+}
+
 //NewTodo returns a new  todo list controller
 func NewCommon() controller.Controller {
 	return &Common{
@@ -85,6 +155,8 @@ func NewCommon() controller.Controller {
 			"get;/api/common/list/all;GetLists",
 			"get;/api/common/fake;GenFakeData",
 			"get;/api/common/faketurn/{turns};GenTransactions",
+			"get;/api/common/test;Test",
+			"get;/api/common/test2;Test2",
 		},
 	}
 }

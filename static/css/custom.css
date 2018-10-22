@@ -9,6 +9,9 @@ html{
 .page-titles {
     margin: 0 0 0px;
 }
+.page-wrapper{
+    padding-top: 60px;
+}
 
 /*pagination*/
 .dataTables_paginate .pagination-input{
@@ -122,6 +125,10 @@ html{
 }
 .sidebar-nav > ul > li.active > a i {
     color: #fff;
+}
+.header.topfix{
+    position: fixed;
+    width: 100%;
 }
 /*user dropdown*/
 .nav-item.dropdown .dropdown-menu button.dropdown-item{

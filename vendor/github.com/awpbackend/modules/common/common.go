@@ -5,9 +5,21 @@ import (
 	"strings"
 )
 
+type ProtocEnum struct {
+	B2SJPValueResetNotify     string
+	B2SJPSettingChangedNotify string
+}
+
+type settings struct {
+	RabbitMQConnectionString string
+}
+
 //permission enum
 var (
 	permissionEnum PermissionEnum
+	Settings       = settings{
+		RabbitMQConnectionString: "amqp://test:test@10.20.46.102:5672",
+	}
 )
 
 func GetStaticPermissions() PermissionEnum {
@@ -21,7 +33,7 @@ func GetStaticPermissions() PermissionEnum {
 			CoreUser:        PermissionEnumAction{View: "active", Create: "active", Edit: "active", Delete: "active"},
 			Agency:          PermissionEnumAction{View: "active", Create: "active", Edit: "active", Delete: "active"},
 			VersionSetting:  PermissionEnumAction{View: "active", Edit: "active"},
-			JPStatus:        PermissionEnumAction{View: "active"},
+			JPStatus:        PermissionEnumAction{View: "active", Edit: "active"},
 			ReportJackpot:   PermissionEnumAction{View: "active"},
 			ReportMachine:   PermissionEnumAction{View: "active"},
 			ReportRevenue:   PermissionEnumAction{View: "active"},
@@ -72,6 +84,17 @@ type PermissionEnumAction struct {
 //contains
 func Contains(slice []string, item string) bool {
 	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
+
+//contains
+func ContainsFloat(slice []float64, item float64) bool {
+	set := make(map[float64]struct{}, len(slice))
 	for _, s := range slice {
 		set[s] = struct{}{}
 	}

@@ -106,10 +106,17 @@ func main() {
 	app.AddController(c.NewFileServe)
 	app.AddController(c.NewLogin)
 	app.AddController(c.NewProfile, c.CheckLoginStatus)
+	app.AddController(c.NewJPStatus)
 
 	// Start the server
 	port := fmt.Sprintf(":%d", app.Config.Port)
 	app.Log.Info("staring server on port", port)
 	log.Fatal(http.ListenAndServe(port, app))
 	appengine.Main()
+}
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		fmt.Sprintf("%s: %s", msg, err)
+	}
 }

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -66,7 +65,7 @@ func Login(account, pw, ip string) ReturnData {
 				for i := 0; i < v.Type().NumField(); i++ {
 					v2 := v.Field(i)
 					foundName := common.Contains(strings.Split(v.Type().Field(i).Tag.Get("db"), ","), name)
-					fmt.Println(v.Type().Field(i).Tag)
+					// fmt.Println(v.Type().Field(i).Tag)
 					if foundName {
 						for j := 0; j < v2.Type().NumField(); j++ {
 							foundAction := common.Contains(strings.Split(v2.Type().Field(j).Tag.Get("db"), ","), action)

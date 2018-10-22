@@ -20,7 +20,7 @@ type transaction struct {
 	PcbId              string
 	RoundId            string
 	CurrencyId         int
-	MoneyToCreditRadio float64
+	MoneyToCreditRatio float64
 	TransactionType    int
 	StartCredit        int
 	ResultCredit       int
@@ -45,7 +45,7 @@ func CreditIn(pcbid string, startcredit, num int, now time.Time) int {
 	t.PcbId = pcbid
 	t.RoundId = strconv.FormatInt(now.Unix(), 10)
 	t.CurrencyId = 1
-	t.MoneyToCreditRadio = 100
+	t.MoneyToCreditRatio = 100
 	t.TransactionType = (int)(transactiontype.CreditIn)
 	t.StartCredit = startcredit
 	t.ResultCredit = startcredit + num
@@ -71,7 +71,7 @@ func CreditOut(pcbid string, startcredit int, now time.Time) int {
 	t.PcbId = pcbid
 	t.RoundId = strconv.FormatInt(now.Unix(), 10)
 	t.CurrencyId = 1
-	t.MoneyToCreditRadio = 100
+	t.MoneyToCreditRatio = 100
 	t.TransactionType = (int)(transactiontype.CreditOut)
 	t.StartCredit = startcredit
 	t.ResultCredit = 0
@@ -147,7 +147,7 @@ func Play(pcbid string) int {
 	now := time.Now().Add(24 * 30 * time.Hour).Add(-time.Duration(rand.Intn(60*24*60)) * time.Minute)
 	t.PcbId = pcbid
 	t.CurrencyId = 1
-	t.MoneyToCreditRadio = 100
+	t.MoneyToCreditRatio = 100
 	t.TransactionType = (int)(transactiontype.Play)
 	t.GameID = rand.Intn(5) + 1
 	t.Memo = "{\"gameName\":" + strconv.Itoa(t.GameID) + "}"
@@ -212,7 +212,7 @@ func Play(pcbid string) int {
 }
 func SaveTransaction(t *transaction) {
 	db := GetConnection()
-	_, err := db.Exec("call sp_addTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", t.PcbId, t.RoundId, t.MoneyToCreditRadio, t.TransactionType, t.StartCredit, t.ResultCredit, t.CreditIn, t.CreditOut, t.CreditType, t.OriginalBet, t.Bet, t.Win, t.Jp1Win, t.Jp2Win, t.Jp3Win, t.Jp4Win, t.GameType, t.GameID, t.Memo, t.CreatedTime)
+	_, err := db.Exec("call sp_addTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", t.PcbId, t.RoundId, t.MoneyToCreditRatio, t.TransactionType, t.StartCredit, t.ResultCredit, t.CreditIn, t.CreditOut, t.CreditType, t.OriginalBet, t.Bet, t.Win, t.Jp1Win, t.Jp2Win, t.Jp3Win, t.Jp4Win, t.GameType, t.GameID, t.Memo, t.CreatedTime)
 	if err != nil {
 		fmt.Println(err)
 	}

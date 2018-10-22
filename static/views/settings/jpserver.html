@@ -1,65 +1,148 @@
 <div class="page-wrapper">
     <div class="row page-titles">
         <div class="col-md-12 align-self-center">
-            <h2 class="text-primary">JP Server Status</h2>
+            <h2 class="text-primary">JP Server Setting</h2>
         </div>
     </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="table-responsive">
-                        <div id="myTable_wrapper" class="dataTables_wrapper no-footer">
-                            <table id="myTable" class="table table-hover no-footer" role="grid" aria-describedby="myTable_info">
-                                <thead>
-                                    <tr role="row">
-                                        <th>JP Server No.</th>
-                                        <th>Link Machines</th>
-                                        <th>Grand</th>
-                                        <th>Majon</th>
-                                        <th>Minor</th>
-                                        <th>Mini</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr role="row">
-                                        <td>1</td>
-                                        <td>98</td>
-                                        <td>$1,251,520</td>
-                                        <td>$651,515</td>
-                                        <td>$11,150</td>
-                                        <td>$500</td>
-                                    </tr>
-                                    <tr role="row">
-                                        <td>2</td>
-                                        <td>98</td>
-                                        <td>$1,251,520</td>
-                                        <td>$651,515</td>
-                                        <td>$11,150</td>
-                                        <td>$500</td>
-                                    </tr>
-                                    <tr role="row">
-                                        <td>3</td>
-                                        <td>98</td>
-                                        <td>$1,251,520</td>
-                                        <td>$651,515</td>
-                                        <td>$11,150</td>
-                                        <td>$500</td>
-                                    </tr>
-                                    <tr role="row">
-                                        <td>4</td>
-                                        <td>98</td>
-                                        <td>$1,251,520</td>
-                                        <td>$651,515</td>
-                                        <td>$11,150</td>
-                                        <td>$500</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div v-show="!showEditor" class="card-title">
+                        <div class="alert alert-info">請選擇要使用的功能</div>
+                        <b-btn @click="openEdit" variant="btn btn-primary">
+                            <i class="far fa-edit"></i> 變更設定
+                        </b-btn>
+                        <b-btn v-b-modal.resetJPDialog variant="btn btn-danger">
+                            <i class="far fa-trash-alt"></i> 清除JP累積值
+                        </b-btn>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div v-show="showEditor" class="dataTables_wrapper no-footer col-lg-6" :class='{"loading-opacity": loading}'>
+                                    <div class="basic-form">
+                                        <b-form @submit="saveEdit">
+                                            <b-form-group label="選擇彩金累積率:"
+                                                            label-for="rtpRate">
+                                                <b-form-select id="rtpRate"
+                                                            :options="options.rtpRate"
+                                                            v-model="optionData.rtpRate"
+                                                            :class='{"is-invalid": !optionData.rtpRate&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                    必須選擇彩金累積率
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇錢分比:"
+                                                            label-for="creditRatio">
+                                                <b-form-select id="creditRatio"
+                                                            :options="options.creditRatio"
+                                                            v-model="optionData.creditRatio"
+                                                            :class='{"is-invalid": !optionData.creditRatio&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇錢分比
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇贏得JP的最低押注分數:"
+                                                            label-for="minBetForJP">
+                                                <b-form-select id="minBetForJP"
+                                                            :options="options.minBetForJP"
+                                                            v-model="optionData.minBetForJP"
+                                                            :class='{"is-invalid": !optionData.minBetForJP&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇贏得JP的最低押注分數
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇GRAND基底金額:"
+                                                            label-for="grandBase">
+                                                <b-form-select id="grandBase"
+                                                            :options="options.grandBase"
+                                                            v-model="optionData.grandBase"
+                                                            :class='{"is-invalid": !optionData.grandBase&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇GRAND基底金額
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇GRAND上限金額:"
+                                                            label-for="grandTop">
+                                                <b-form-select id="grandTop"
+                                                            :options="options.grandTop"
+                                                            v-model="optionData.grandTop"
+                                                            :class='{"is-invalid": !optionData.grandTop&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇GRAND上限金額
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇MAJOR基底金額:"
+                                                            label-for="majorBase">
+                                                <b-form-select id="majorBase"
+                                                            :options="options.majorBase"
+                                                            v-model="optionData.majorBase"
+                                                            :class='{"is-invalid": !optionData.majorBase&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇MAJOR基底金額
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇MAJOR上限金額:"
+                                                            label-for="majorTop">
+                                                <b-form-select id="majorTop"
+                                                            :options="options.majorTop"
+                                                            v-model="optionData.majorTop"
+                                                            :class='{"is-invalid": !optionData.majorTop&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇MAJOR上限金額
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇MINOR金額:"
+                                                            label-for="minor">
+                                                <b-form-select id="minor"
+                                                            :options="options.minor"
+                                                            v-model="optionData.minor"
+                                                            :class='{"is-invalid": !optionData.minor&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇MINOR金額
+                                                </div>
+                                            </b-form-group>
+                                            <b-form-group label="選擇MINI金額:"
+                                                            label-for="mini">
+                                                <b-form-select id="mini"
+                                                            :options="options.mini"
+                                                            v-model="optionData.mini"
+                                                            :class='{"is-invalid": !optionData.mini&&submited}'>
+                                                </b-form-select>
+                                                <div class="invalid-feedback">
+                                                        必須選擇MINI金額
+                                                </div>
+                                            </b-form-group>
+                                            <div class="">
+                                                <b-button type="submit" variant="primary">儲存</b-button>
+                                                <b-button type="button" variant="secondary" @click="cancelEdit">取消</b-button>
+                                            </div>
+                                        </b-form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <b-modal cancel-title="取消" ok-title="確定清除" @hidden="cancelResetJP" @ok="confirmResetJP" :no-close-on-backdrop="true" :no-close-on-esc="true" id="resetJPDialog"
+            title="清除JP累積值">
+                <div class="alert alert-danger">
+                        清除JP累積值將會將現有的的累積JP重設為基底金額，<br>
+                    <b>「Grand」將重設為「Grand基底金額」</b>，<br>
+                    <b>「 Major」將重設為「Major基底金額」</b>，<br>
+                    是否確定要清除JP累積值？
+                </div>
+            </b-modal>
         </div>
     </div>
 </div>

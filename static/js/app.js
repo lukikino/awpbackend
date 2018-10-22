@@ -2331,9 +2331,112 @@ const VersionSetting = {
 const JPServer = {
     data: function () {
         return {
+            inited: false,
+            submited: false,
+            showEditor: false,
+            loading: true,
+            options: {},
+            optionsSource: {},
+            optionData: {"rtpRate":null, "creditRatio":null, "minBetForJP":null, "grandBase":null, "grandTop":null, "majorBase":null, "majorTop":null, "minor":null, "mini":null}
+        }
+    },
+    watch: {
+        "optionData.creditRatio": function(newValue, oldValue){
+            if(!this.inited || oldValue == null){return;}
+            var _this = this;
+            var con = confirm("錢分比應於營業時間外進行變更，變更錢分比將影響所有的客端機器。\n變更錢分比也需重新設定Grand與Major的設定值。\n是否確認要繼續?")
+            if(con){
+                _this.loading = true;
+                var _this = this;
+                Vue.http.get('/api/jpstatus/getoptions?creditRatio=' + newValue).then(function (res) {
+                    _this.optionsSource = res.data.data;
+                    for(var key in _this.optionsSource){
+                        _this.options[key] = _this.optionsSource[key].values;
+                        _this.options[key].unshift({text: "請選擇一個選項", value: null});
+                    }
+                    _this.optionData.grandBase = null;
+                    _this.optionData.grandTop = null;
+                    _this.optionData.majorBase = null;
+                    _this.optionData.majorTop = null;
+                    _this.loading = false;
+                }).catch(app.handlerError);
+            }
+        }
+    },
+    methods: {
+        cancelResetJP: function(){
+            this.submited = false;
+        },
+        confirmResetJP: function(ev){
+            ev.preventDefault();
+            var con = confirm("再次確認，是否清除JP累積值？")
+            if(con){
+                Vue.http.post('/api/jpstatus/resetjp').then(function (res) {
+                    alert("JP累積值已清除，所有機台將於下ㄧ手生效。");
+                }).catch(app.handlerError.bind(ev));
+            }
+        },
+        openEdit: function(){
+            this.showEditor = true;
+            this.submited = false;
+        },
+        cancelEdit: function(){
+            this.showEditor = false;
+        },
+        saveEdit: function(ev){
+            ev.preventDefault();
+            var _this = this;
+            var check = true;
+            _this.submited = true;
+            for(var key in _this.optionData){check = check&&_this.optionData[key];}
+            if(check){
+                var con = confirm("是否確定更改JP設定?")
+                if(con){
+                    Vue.http.post('/api/jpstatus/savesettings', _this.optionData).then(function (res) {
+                        alert("儲存完成，所有機台將於下ㄧ手生效。");
+                        _this.showEditor = false;
+                    }).catch(app.handlerError.bind(ev));
+                }
+            }
+            else{
+                this.submited = true;
+            }
         }
     },
     mounted: function () {
+        var _this = this;
+        Vue.http.get('/api/jpstatus/getoptions', {creditRatio: this.optionData.creditRatio}).then(function (res) {
+            _this.optionsSource = res.data.data;
+            for(var key in _this.optionsSource){
+                _this.options[key] = _this.optionsSource[key].values.map(function(item){
+                    var text = item.toString();
+                    switch(key){
+                        case "rtpRate":
+                        text = text + "%";
+                        break;
+                        case "creditRatio":
+                        text = "1:" + text;
+                        break;
+                    }
+                    return {text: text, value: item};
+                });
+                _this.options[key].unshift({text: "請選擇一個選項", value: null});
+            }
+        }).catch(app.handlerError);
+        Vue.http.get('/api/jpstatus/getsettings', {creditRatio: this.optionData.creditRatio}).then(function (res) {
+            _this.optionData = res.data.data;
+            _this.loading = false;
+            _this.inited = true;
+        }).catch(app.handlerError);
+        // this.optionData = {creditRatio: 2,
+        //     grandBase: 10000,
+        //     grandTop: 30000,
+        //     majorBase: 5000,
+        //     majorTop: 15000,
+        //     minBetForJP: 50,
+        //     mini: 500,
+        //     minor: 2000,
+        //     rtpRate: 6.5}
     }
 };
 
@@ -3410,13 +3513,19 @@ var app = new Vue({
         logout: function () {
             $('<form action="/logout" method="POST"></form>').appendTo('body').submit();
         },
-        handlerError: function (err) {
-            console.warn(err);
+        handlerError: function (err, ev) {
+            // console.warn(err);
             if (err && err.status === 403) {
-                alert('Login session expired or no permission, please login.');
+                alert('登入逾時或權限不足，請重新登入');
                 location = ["/login", "?r=", location.pathname, location.search].join('');
-            } else {
-                alert('There are some exceptions occured, please try later.');
+            } 
+            else if(err && err.status === 400){
+                alert('要求發生錯誤，' + err.message);
+                ev&&ev.preventDefault();
+            }
+            else {
+                alert('發生無法預測的錯誤，請稍後重新嘗試');
+                ev&&ev.preventDefault();
             }
         },
         chkPermission: function (permission) {

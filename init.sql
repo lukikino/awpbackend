@@ -981,7 +981,7 @@ DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addTransaction`(
 	IN `p_pcb_id` VARCHAR(50),
 	IN `p_round_id` VARCHAR(50),
-	IN `p_money_to_credit_radio` DOUBLE,
+	IN `p_money_to_credit_ratio` DOUBLE,
 	IN `p_transaction_type` INT,
 	IN `p_start_credit` INT,
 	IN `p_result_credit` INT,
@@ -1007,8 +1007,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addTransaction`(
 
 )
 BEGIN
-	INSERT INTO transactions(pcb_id,round_id,currency_id,money_to_credit_radio,transaction_type,start_credit,result_credit,credit_in,credit_out,credit_type,original_bet,bet,win,jp1_win,jp2_win,jp3_win,jp4_win,game_type,game_id,memo,created_time)
-	VALUES(p_pcb_id,p_round_id,1,p_money_to_credit_radio,p_transaction_type,p_start_credit,p_result_credit,p_credit_in,p_credit_out,p_credit_type,p_original_bet,p_bet,p_win,p_jp1_win,p_jp2_win,p_jp3_win,p_jp4_win,p_game_type,p_game_id,p_memo,p_created_time);
+	INSERT INTO transactions(pcb_id,round_id,currency_id,money_to_credit_ratio,transaction_type,start_credit,result_credit,credit_in,credit_out,credit_type,original_bet,bet,win,jp1_win,jp2_win,jp3_win,jp4_win,game_type,game_id,memo,created_time)
+	VALUES(p_pcb_id,p_round_id,1,p_money_to_credit_ratio,p_transaction_type,p_start_credit,p_result_credit,p_credit_in,p_credit_out,p_credit_type,p_original_bet,p_bet,p_win,p_jp1_win,p_jp2_win,p_jp3_win,p_jp4_win,p_game_type,p_game_id,p_memo,p_created_time);
 	SELECT LAST_INSERT_ID() AS transaction_id;
 END//
 DELIMITER ;
@@ -3616,7 +3616,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `pcb_id` int(10) unsigned NOT NULL,
   `round_id` bigint(20) unsigned NOT NULL,
   `currency_id` int(10) unsigned NOT NULL,
-  `money_to_credit_radio` int(10) unsigned NOT NULL COMMENT '這邊是1元換幾分',
+  `money_to_credit_ratio` int(10) unsigned NOT NULL COMMENT '這邊是1元換幾分',
   `transaction_type` int(10) unsigned NOT NULL,
   `start_credit` int(10) unsigned NOT NULL,
   `result_credit` int(10) unsigned NOT NULL,
