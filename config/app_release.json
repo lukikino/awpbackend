@@ -1,6 +1,6 @@
 {
 	"app_name": "pcb backend",
-	"base_url": "http://35.231.252.92",
+	"base_url": "http://35.237.85.193",
 	"port": 80,
 	"verbose": false,
 	"view_dir": "views",

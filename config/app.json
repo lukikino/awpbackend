@@ -6,7 +6,7 @@
 	"view_dir": "views",
 	"database": "mysql",
 	"static_dir": "static",
-	"database_conn": "root:0956787248@tcp(localhost)/pcb",
+	"database_conn": "root:0956787248@tcp(35.231.24.41)/pcb",
 	"no_model": true,
 	"session_store": "8fcafa2e652816fa7339c18589e83202"
 }
